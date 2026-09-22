@@ -1,0 +1,15 @@
+M.Tech in Computer Science and Engineering - admission 2026
+
+Programme
+A two-year taught programme covering advanced algorithms, systems and theory, with a one-year project.
+
+Eligibility and selection
+- Bachelor's degree in Computer Science, IT or a related engineering discipline
+- Valid GATE score in Computer Science and Information Technology (CS)
+- Shortlisting is based on GATE score; some specialisations hold a written test and interview
+
+What we look for
+- Strong foundation in algorithms, data structures, theory of computation and discrete mathematics
+- Coursework in operating systems, computer architecture and compilers
+- Programming ability in C or C++
+- Prior projects or research exposure in systems, theory or machine learning is an advantage

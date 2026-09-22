@@ -1,0 +1,219 @@
+category: tech_product_fulltime
+cases:
+  - id: tpf_strong_arjun
+    tier: strong
+    name: Arjun Mehta
+    text: |
+      ARJUN MEHTA
+      arjun.mehta@gmail.com | +91 98450 12345 | linkedin.com/in/arjunmehta | github.com/arjunm
+
+      EDUCATION
+      B.Tech in Computer Science and Engineering, NIT Trichy | 2022 - 2026
+      CGPA: 8.92/10
+      Class XII (CBSE), Kendriya Vidyalaya | 2022 | 94.2%
+      Class X (CBSE), Kendriya Vidyalaya | 2020 | 96%
+
+      EXPERIENCE
+      Software Engineering Intern | Microsoft, Hyderabad | May 2025 - Jul 2025
+      - Built a telemetry ingestion service in C# and Azure Functions handling 1.2M events/day
+      - Reduced dashboard query latency by 45% by adding a Redis cache layer
+      Software Development Intern | Razorpay, Bengaluru | Dec 2024 - Jan 2025
+      - Implemented idempotent refund APIs in Go with PostgreSQL; cut duplicate refunds to zero
+
+      PROJECTS
+      DistKV - Distributed Key-Value Store | C++, gRPC | Aug 2024 - Nov 2024
+      - Raft-based replicated store sustaining 20k writes/sec on a 5-node cluster
+      - Open-sourced on GitHub; 150+ stars
+      PlacementPal - Interview Prep Platform | React, Node.js, MongoDB | Jan 2024 - Apr 2024
+      - Deployed at placementpal.app; used by 3,000+ students across 12 colleges
+      Visual Search Engine | Python, PyTorch, FAISS
+      - Image retrieval over 500k product images with 92% top-5 accuracy
+
+      TECHNICAL SKILLS
+      Languages: C++, Go, Python, Java, C#, SQL
+      Frameworks & Tools: React, Node.js, gRPC, Docker, Kubernetes, Redis, PostgreSQL, MongoDB, Git, Linux, AWS
+      Fundamentals: Data Structures, Algorithms, Operating Systems, DBMS, Computer Networks, System Design
+
+      CODING PROFILES
+      LeetCode: 612 problems solved (180 Easy, 352 Medium, 80 Hard)
+      Codeforces: Expert, max rating 1745
+      CodeChef: 5 star (max rating 2045)
+
+      ACHIEVEMENTS
+      - Winner, Smart India Hackathon 2024 (Software Edition)
+      - Finalist, Flipkart GRiD 5.0 Hackathon
+      - Participant, MLH Local Hack Day 2023
+      - ICPC Asia Regionals 2024: Rank 41 (Amritapuri)
+
+      CERTIFICATIONS
+      - AWS Certified Cloud Practitioner
+      - Google Cloud Associate Cloud Engineer
+    labels:
+      education.has_bachelor: true
+      academics.ug_cgpa: 8.92
+      academics.class12_pct: 94.2
+      academics.class10_pct: 96
+      experience.internship_count: 2
+      experience.internship_months: 5
+      experience.product_company_count: 2
+      projects.count: 3
+      projects.quantified_count: 3
+      projects.deployed_count: 1
+      contact.github: true
+      contact.linkedin: true
+      coding.leetcode.total: 612
+      coding.leetcode.easy: 180
+      coding.leetcode.medium: 352
+      coding.leetcode.hard: 80
+      coding.codeforces.rating: 1745
+      coding.codechef.rating: 2045
+      achievements.hackathon_participations: 3
+      achievements.hackathon_wins: 2
+      achievements.awards_count: 1
+      certifications.count: 2
+      certifications.recognized_count: 2
+      skills.languages: [C++, Go, Python, Java, C#, SQL]
+      skills.cs_fundamentals: [Data Structures, Algorithms, Operating Systems, DBMS, Computer Networks, System Design]
+
+  - id: tpf_average_sneha
+    tier: average
+    name: Sneha Reddy
+    text: |
+      Sneha Reddy
+      Email: sneha.reddy22@outlook.com   Phone: 9876501234
+      LinkedIn: linkedin.com/in/sneha-reddy
+
+      Education
+      Bachelor of Engineering (Information Technology), Vasavi College of Engineering, Hyderabad, 2022-2026, CGPA 7.8
+      Intermediate (MPC), Sri Chaitanya Junior College, 2022, 91%
+      SSC, Narayana High School, 2020, CGPA 9.5
+
+      Internship
+      Web Development Intern, Infosys Springboard (virtual), Jun 2025 - Jul 2025
+      - Built a leave-management portal using Spring Boot and MySQL
+      - Wrote REST APIs and unit tests with JUnit
+
+      Projects
+      1. Library Management System - Java, MySQL. CRUD application for the college library with fine calculation.
+      2. Weather Dashboard - JavaScript, HTML, CSS. Shows 7-day forecast using the OpenWeather API; hosted on Netlify.
+
+      Skills
+      Java, Python, JavaScript, HTML, CSS, MySQL, Spring Boot, Git
+      Data Structures and Algorithms, OOPs, DBMS
+
+      Achievements
+      - Solved 210+ problems on LeetCode
+      - Participated in HackWithInfy 2024
+      - Class representative, 2023-24
+    labels:
+      education.has_bachelor: true
+      academics.ug_cgpa: 7.8
+      academics.class12_pct: 91
+      academics.class10_pct: 90.25
+      experience.internship_count: 1
+      experience.internship_months: 2
+      projects.count: 2
+      projects.quantified_count: 0
+      projects.deployed_count: 1
+      contact.linkedin: true
+      coding.leetcode.total: 210
+      achievements.hackathon_participations: 1
+      achievements.leadership_count: 1
+      skills.languages: [Java, Python, JavaScript]
+      skills.cs_fundamentals: [Data Structures, Algorithms, OOP, DBMS]
+
+  - id: tpf_weak_rahul
+    tier: weak
+    name: Rahul Verma
+    text: |
+      RESUME
+
+      Rahul Verma
+      rahulverma1999@yahoo.com
+      Mobile: 8800112233
+
+      CAREER OBJECTIVE
+      To work in a reputed organisation where I can utilise my skills and grow with the company.
+
+      EDUCATIONAL QUALIFICATION
+      B.Tech (CSE), ABC Engineering College, Meerut - 2026 - 64%
+      12th, UP Board - 2022 - 72%
+      10th, UP Board - 2020 - 78%
+
+      PROJECTS
+      - Calculator using C
+      - Student result system in PHP
+
+      SKILLS
+      C, PHP, HTML, MS Office
+
+      STRENGTHS
+      Hard working, punctual, team player
+
+      HOBBIES
+      Cricket, music
+
+      DECLARATION
+      I hereby declare that the above information is true to the best of my knowledge.
+    labels:
+      education.has_bachelor: true
+      academics.ug_pct: 64
+      academics.class12_pct: 72
+      academics.class10_pct: 78
+      projects.count: 2
+      skills.languages: [C, PHP]
+
+  - id: tpf_edge_karthik
+    tier: strong
+    name: Karthik Iyer
+    note: Working professional; en dashes, bullets as dots, CPI, CodeChef stars with rating, no bullets under projects.
+    text: |
+      Karthik Iyer | Software Engineer
+      Bengaluru, India • karthik.iyer@proton.me • +91-97310-55667 • github.com/karthik-iyer • linkedin.com/in/karthikiyer
+
+      SUMMARY
+      Backend engineer with 1.5 years of experience building Java microservices for banking clients.
+
+      WORK EXPERIENCE
+      Systems Engineer, Tata Consultancy Services (TCS), Chennai          Aug 2024 – Present
+      • Migrated 14 legacy SOAP endpoints to Spring Boot REST APIs, cutting average response time from 900 ms to 220 ms
+      • Automated nightly reconciliation with Kafka consumers, saving the ops team ~6 hours a week
+      Summer Intern, Zoho Corporation, Chennai          May 2023 – Jul 2023
+      • Built an internal log-search tool in Java and Elasticsearch
+
+      EDUCATION
+      B.E. Electronics and Communication, PSG College of Technology, Coimbatore — 2020–2024 — CPI 8.1
+      Class 12, TN State Board — 2020 — 95.5%
+
+      PROJECTS
+      Rate Limiter as a Service — Go, Redis — token-bucket limiter handling 50k req/s in load tests; deployed on AWS ECS
+      Expense Splitter — Kotlin Android app, 500+ Play Store downloads
+
+      SKILLS
+      Java, Go, Kotlin, SQL, Spring Boot, Kafka, Redis, Elasticsearch, Docker, AWS, Git, Microservices, System Design, OOP
+
+      COMPETITIVE PROGRAMMING
+      LeetCode – 340 solved | CodeChef – 3★ (1712)
+
+      CERTIFICATIONS
+      Oracle Certified Professional: Java SE 11 Developer
+      Microservices with Spring Boot (Udemy)
+    labels:
+      education.has_bachelor: true
+      academics.ug_cgpa: 8.1
+      academics.class12_pct: 95.5
+      experience.internship_count: 1
+      experience.internship_months: 3
+      experience.fulltime_months: 26
+      experience.product_company_count: 1
+      projects.count: 2
+      projects.quantified_count: 2
+      projects.deployed_count: 2
+      contact.github: true
+      contact.linkedin: true
+      coding.leetcode.total: 340
+      coding.codechef.rating: 1712
+      certifications.count: 2
+      certifications.recognized_count: 1
+      skills.languages: [Java, Go, Kotlin, SQL]
+      skills.cs_fundamentals: [System Design, OOP]

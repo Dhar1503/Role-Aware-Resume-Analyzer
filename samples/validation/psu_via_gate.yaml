@@ -1,0 +1,148 @@
+category: psu_via_gate
+cases:
+  - id: psu_strong_harsh
+    tier: strong
+    name: Harsh Vardhan
+    inputs: {reservation_category: GEN, date_of_birth: "2004-05-20"}
+    text: |
+      Harsh Vardhan
+      harsh.vardhan@iitr.ac.in | +91 99971 33445 | linkedin.com/in/harsh-vardhan-me
+
+      GATE 2026
+      Mechanical Engineering (ME): GATE Score 872 | All India Rank 188 | 99.8 percentile
+
+      EDUCATION
+      B.Tech, Mechanical Engineering, IIT Roorkee | 2022 - 2026 | CGPA 8.62/10
+      Class XII (CBSE), 2022 - 95.6%
+      Class X (CBSE), 2020 - 97.2%
+
+      INTERNSHIPS
+      Summer Intern, Oil and Natural Gas Corporation (ONGC), Mumbai High | May 2025 - Jul 2025
+      - Analysed pump efficiency across 6 offshore platforms; recommended impeller trimming saving 4% power
+      Industrial Trainee, Tata Motors, Pune | Jun 2024 - Jul 2024
+      - Time-study of the chassis assembly line; reduced cycle time by 7%
+
+      PROJECTS
+      - Design and fabrication of a solar dryer for agricultural produce; 35% faster drying than open-sun
+      - CFD analysis of a centrifugal pump impeller in ANSYS Fluent
+
+      SKILLS
+      SolidWorks, ANSYS, AutoCAD, MATLAB, Python, CFD, Six Sigma
+
+      POSITIONS OF RESPONSIBILITY
+      - Secretary, Mechanical Engineering Association, IIT Roorkee (2024-25)
+    labels:
+      education.has_bachelor: true
+      exam.gate.score: 872
+      exam.gate.air: 188
+      exam.gate.percentile: 99.8
+      exam.gate.year: 2026
+      academics.ug_cgpa: 8.62
+      academics.class12_pct: 95.6
+      academics.class10_pct: 97.2
+      experience.internship_count: 2
+      experience.internship_months: 5
+      experience.core_company_count: 2
+      projects.count: 2
+      projects.quantified_count: 1
+      achievements.leadership_count: 1
+      contact.linkedin: true
+      skills.languages: [MATLAB, Python]
+
+  - id: psu_average_sanjana
+    tier: average
+    name: Sanjana Pillai
+    inputs: {reservation_category: GEN, date_of_birth: "2003-02-14"}
+    text: |
+      Sanjana Pillai
+      sanjana.pillai.ee@gmail.com | 9895012233
+
+      EDUCATION
+      B.Tech Electrical and Electronics Engineering, College of Engineering Trivandrum, 2021 - 2025, CGPA 7.3
+      Class XII, Kerala State Board, 2021, 88%
+      Class X, CBSE, 2019, 9.4 CGPA
+
+      GATE
+      GATE 2026 - Electrical Engineering - Score: 702, AIR: 2,150
+
+      PROJECT
+      Smart energy meter with IoT-based billing (Arduino, ESP8266)
+
+      INTERNSHIP
+      Intern, KSEB Ltd, Thiruvananthapuram, Jun 2024 (2 weeks)
+      - Observed 110 kV substation operations
+    labels:
+      education.has_bachelor: true
+      exam.gate.score: 702
+      exam.gate.air: 2150
+      exam.gate.year: 2026
+      academics.ug_cgpa: 7.3
+      academics.class12_pct: 88
+      academics.class10_pct: 89.3
+      experience.internship_count: 1
+      experience.internship_months: 0.5
+      experience.core_company_count: 1
+      projects.count: 1
+
+  - id: psu_weak_ravi
+    tier: weak
+    name: Ravi Teja
+    inputs: {reservation_category: GEN, date_of_birth: "2001-08-08"}
+    text: |
+      Ravi Teja
+      raviteja.mech@gmail.com | 9000123456
+
+      EDUCATION
+      B.Tech Mechanical, JNTU Kakinada affiliated college, 2019 - 2023, 62%
+      Intermediate, 2019, 70%
+      SSC, 2017, CGPA 7.8
+
+      GATE
+      GATE 2023 ME - 28.5 marks (qualified), score 412
+
+      SKILLS
+      AutoCAD, MS Office
+    labels:
+      education.has_bachelor: true
+      exam.gate.score: 412
+      exam.gate.year: 2023
+      academics.ug_pct: 62
+      academics.class12_pct: 70
+      academics.class10_pct: 74.1
+
+  - id: psu_edge_megha
+    tier: strong
+    name: Megha Chatterjee
+    inputs: {reservation_category: GEN}
+    note: Percentile-only GATE; experienced engineer; Graduate Engineer Trainee is full-time; dotted DOB.
+    text: |
+      MEGHA CHATTERJEE
+      Instrumentation Engineer | megha.chatterjee@gmail.com | +91 98310 44556 | Kolkata
+      DOB: 19.09.1999
+
+      GATE SCORECARD
+      GATE 2026, Instrumentation Engineering (IN): 99.1 percentile
+
+      WORK EXPERIENCE
+      Instrumentation Engineer, Tata Steel, Jamshedpur | Aug 2021 - Present
+      - Calibrated and maintained 300+ field instruments on the blast furnace; cut unplanned trips by 18%
+      Graduate Engineer Trainee, Haldia Petrochemicals | Jul 2020 - Jul 2021
+
+      EDUCATION
+      B.E. Instrumentation and Electronics, Jadavpur University, 2016-2020, CGPA 8.05
+      Higher Secondary (WBCHSE), 2016, 87%
+      Madhyamik (WBBSE), 2014, 90%
+
+      SKILLS
+      PLC, SCADA, LabVIEW, MATLAB
+    labels:
+      education.has_bachelor: true
+      candidate.date_of_birth: "1999-09-19"
+      exam.gate.percentile: 99.1
+      exam.gate.year: 2026
+      academics.ug_cgpa: 8.05
+      academics.class12_pct: 87
+      academics.class10_pct: 90
+      experience.fulltime_months: 75
+      experience.core_company_count: 2
+      skills.languages: [MATLAB]

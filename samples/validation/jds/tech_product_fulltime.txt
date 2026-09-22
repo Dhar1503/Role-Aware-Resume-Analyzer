@@ -1,0 +1,17 @@
+Software Development Engineer - New Grad
+
+About the role
+You will design, build and operate services used by millions of customers.
+
+Basic qualifications
+- Bachelor's degree in Computer Science or a related field
+- Proficiency in at least one of Java, C++ or Python
+- Strong grasp of Data Structures and Algorithms
+- Experience building REST APIs and working with SQL databases such as PostgreSQL
+- Comfortable with Git and Linux
+- Knowledge of Operating Systems and Computer Networks
+
+Preferred qualifications
+- Experience with AWS, Docker or Kubernetes
+- Familiarity with JavaScript and React
+- Exposure to System Design and Microservices

@@ -1,0 +1,174 @@
+category: higher_ed_mtech
+cases:
+  - id: mt_strong_vikram
+    tier: strong
+    name: Vikram Singh
+    inputs: {reservation_category: GEN}
+    text: |
+      VIKRAM SINGH
+      vikram.singh.gate@gmail.com | +91 94140 77889 | linkedin.com/in/vikram-singh-cs
+
+      GATE
+      GATE 2026 (Computer Science and IT): Score 812/1000 | AIR 312 | 99.62 percentile
+
+      EDUCATION
+      B.Tech, Computer Science and Engineering, Rajasthan Technical University, Kota | 2022-2026 | CGPA 8.7/10
+      Senior Secondary (RBSE), 2022: 93.4%
+      Secondary (RBSE), 2020: 91%
+
+      RELEVANT COURSEWORK
+      Algorithms, Theory of Computation, Compiler Design, Computer Architecture, Operating Systems, Linear Algebra, Probability
+
+      RESEARCH EXPERIENCE
+      Summer Research Intern, IIT Bombay (guided by Prof. A. Deshpande) | May 2025 - Jul 2025
+      - Studied cache-oblivious algorithms for sparse matrix multiplication; 1.8x speed-up over baseline
+
+      PROJECTS
+      - Mini-C Compiler: lexer, LALR parser and x86 code generator in C++
+      - Page Replacement Simulator: compared LRU, LFU and ARC on 10 traces; ARC reduced faults by 12%
+      - Handwritten digit recogniser: CNN in PyTorch, 98.9% test accuracy on MNIST
+
+      PUBLICATIONS
+      - V. Singh, A. Deshpande. "Cache-Oblivious SpMM Revisited", Workshop on Parallel Algorithms, IPDPS 2026 (poster)
+
+      ACHIEVEMENTS
+      - University gold medal for 3rd-year academic performance
+    labels:
+      education.has_bachelor: true
+      exam.gate.score: 812
+      exam.gate.air: 312
+      exam.gate.percentile: 99.62
+      exam.gate.year: 2026
+      academics.ug_cgpa: 8.7
+      academics.class12_pct: 93.4
+      academics.class10_pct: 91
+      academics.coursework: [Algorithms, Theory of Computation, Compiler Design, Computer Architecture, Operating Systems, Linear Algebra, Probability]
+      experience.internship_count: 1
+      experience.internship_months: 3
+      research.experience_months: 3
+      research.faculty_guided: true
+      projects.count: 3
+      projects.quantified_count: 2
+      publications.count: 1
+      publications.peer_reviewed_count: 1
+      achievements.awards_count: 1
+      contact.linkedin: true
+      skills.languages: [C++]
+      skills.cs_fundamentals: [Algorithms, Theory of Computation, Compiler Design, Computer Architecture, Operating Systems]
+
+  - id: mt_average_neha
+    tier: average
+    name: Neha Kulkarni
+    inputs: {reservation_category: OBC-NCL}
+    text: |
+      Neha Kulkarni
+      neha.kulkarni@rediffmail.com  |  +91 98220 33445  |  Pune
+
+      Education
+      B.E. (Mechanical Engineering), Savitribai Phule Pune University, 2021 - 2025, CGPA 7.42
+      HSC (Maharashtra Board), 2021, 84.6%
+      SSC (Maharashtra Board), 2019, 89.2%
+
+      Competitive Exams
+      GATE 2025 - Mechanical Engineering (ME): GATE score 598, 94.2 percentile
+
+      Projects
+      Design of a solar-powered cold storage unit (final year, team of 4)
+      - Designed the refrigeration cycle and sized a 5 kW PV array in MATLAB; prototype held 4°C for 18 hours
+      Analysis of a two-wheeler chassis using ANSYS
+      - Static and modal analysis; identified 2 stress hot-spots and proposed rib reinforcement
+
+      Industrial Training
+      Vocational Trainee (4 weeks), Bharat Forge, Pune, Jun 2024
+      - Observed forging line quality checks and prepared a defect Pareto chart
+
+      Skills
+      AutoCAD, SolidWorks, ANSYS, MATLAB, MS Excel
+    labels:
+      education.has_bachelor: true
+      exam.gate.score: 598
+      exam.gate.percentile: 94.2
+      exam.gate.year: 2025
+      academics.ug_cgpa: 7.42
+      academics.class12_pct: 84.6
+      academics.class10_pct: 89.2
+      experience.internship_count: 1
+      experience.internship_months: 1
+      experience.core_company_count: 1
+      projects.count: 2
+      projects.quantified_count: 1
+      skills.languages: [MATLAB]
+
+  - id: mt_weak_suresh
+    tier: weak
+    name: Suresh Kumar
+    inputs: {reservation_category: GEN}
+    text: |
+      SURESH KUMAR
+      sureshk.ece@gmail.com | 9445566778
+
+      OBJECTIVE
+      To pursue M.Tech in VLSI Design from a reputed institute.
+
+      EDUCATION
+      B.E. Electronics and Communication Engineering, Anna University affiliated college, 2020-2024, CGPA 6.4
+      HSC, 2020, 68%
+      SSLC, 2018, 74%
+
+      PROJECTS
+      Traffic light controller using Verilog
+
+      SKILLS
+      Verilog, C, MS Office
+
+      AREAS OF INTEREST
+      VLSI, Embedded Systems
+    labels:
+      education.has_bachelor: true
+      academics.ug_cgpa: 6.4
+      academics.class12_pct: 68
+      academics.class10_pct: 74
+      projects.count: 1
+      skills.languages: [Verilog, C]
+
+  - id: mt_edge_farhan
+    tier: average
+    name: Farhan Qureshi
+    inputs: {reservation_category: GEN}
+    note: Percentage instead of CGPA; two levels on one line; coursework inside education; AIR-first GATE line; DOB with hyphen labels.
+    text: |
+      Farhan Qureshi
+      Email - farhan.q@yahoo.co.in ; Mobile - 98300 44556 ; DOB - 12/03/2002
+
+      ACADEMIC PROFILE
+      - B.Tech (Electrical Engineering), Aligarh Muslim University, 2020-2024: 78.5% aggregate
+      - Relevant courses: Power Systems, Control Systems, Power Electronics, Electrical Machines, Signals and Systems
+      - Class XII (CBSE): 90.2% | Class X (CBSE): CGPA 9.8
+
+      GATE
+      Qualified GATE 2024 in Electrical Engineering (EE) with AIR 1,245 (score 701)
+
+      WORK
+      Graduate Engineer Trainee, NTPC Ltd., Mar 2025 – Present
+      - Commissioning of 2 x 660 MW supercritical units; maintained protection relays for 11 feeders
+      Internship: Power Grid Corporation of India (PGCIL), Jun 2023 – Jul 2023
+
+      PROJECTS
+      - Fault detection in transmission lines using wavelet transform and ANN (MATLAB); 96% classification accuracy
+    labels:
+      education.has_bachelor: true
+      candidate.date_of_birth: "2002-03-12"
+      exam.gate.score: 701
+      exam.gate.air: 1245
+      exam.gate.year: 2024
+      academics.ug_pct: 78.5
+      academics.class12_pct: 90.2
+      academics.class10_pct: 93.1
+      academics.coursework: [Power Systems, Control Systems, Power Electronics, Electrical Machines, Signals and Systems]
+      experience.internship_count: 1
+      experience.internship_months: 2
+      experience.fulltime_months: 19
+      experience.core_company_count: 2
+      projects.count: 1
+      projects.quantified_count: 1
+      skills.languages: [MATLAB]

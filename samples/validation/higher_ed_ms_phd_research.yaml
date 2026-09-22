@@ -1,0 +1,201 @@
+category: higher_ed_ms_phd_research
+cases:
+  - id: rs_strong_aditi
+    tier: strong
+    name: Aditi Rao
+    inputs: {reservation_category: GEN}
+    sop: |
+      I want to work on uncertainty estimation for medical image classifiers, specifically on how
+      calibration degrades when a chest X-ray model is deployed at a hospital whose scanners differ from
+      the training data. During my undergraduate research with Prof. K. Bhat at NITK I built wavelet-domain
+      CNNs for ECG denoising, which taught me to evaluate models under realistic noise. At Microsoft Research
+      India I studied distribution-shift detection for OCR and reduced false alarms by 23 percent, and I now
+      work as a project assistant in the Vision and AI Lab at IISc with Prof. S. Menon, where I built
+      calibration benchmarks across three hospital datasets. That work led to a MICCAI 2026 paper.
+
+      The open problem I keep returning to is this: post-hoc calibration methods such as temperature scaling
+      assume the shift is small, but hospital-to-hospital shift is not. I would like to study calibration
+      methods that use a handful of labelled target-site images, and to ask how many such images are needed
+      before the calibrated confidence becomes trustworthy enough to triage patients.
+
+      The Department of Computational and Data Sciences at IISc is a natural fit. Prof. Menon's group works on
+      trustworthy imaging, and Prof. P. Iyer's work on few-shot domain adaptation addresses exactly the
+      labelled-target setting I described. I also want to take the courses on probabilistic machine learning
+      and statistical learning theory, which I lack as an ECE graduate.
+
+      In the long run I want to build diagnostic models whose confidence clinicians can rely on. A PhD in
+      this group would give me the methods and the clinical collaborators to do that.
+    text: |
+      ADITI RAO
+      aditi.rao@research.iisc.ac.in | +91 80950 66778 | github.com/aditirao | linkedin.com/in/aditi-rao-ml
+
+      RESEARCH INTERESTS
+      Trustworthy machine learning, uncertainty estimation, medical imaging
+
+      EDUCATION
+      B.Tech, Electronics and Communication Engineering, NIT Surathkal | 2021 - 2025 | CGPA 9.21/10
+
+      RESEARCH EXPERIENCE
+      Project Assistant, Vision and AI Lab, IISc Bangalore (advisor: Prof. S. Menon) | Jul 2025 - Present
+      - Built calibration benchmarks for chest X-ray classifiers across 3 hospital datasets
+      Research Intern, Microsoft Research India | May 2024 - Jul 2024
+      - Studied distribution-shift detection for OCR; method reduced false alarms by 23%
+      Undergraduate Researcher, NITK Signal Processing Lab (Prof. K. Bhat) | Jan 2023 - Dec 2023
+      - Denoising ECG signals with wavelet-domain CNNs
+
+      PUBLICATIONS
+      1. A. Rao, S. Menon. "Calibrated Uncertainty for Chest X-ray Triage." MICCAI 2026 (Main Conference).
+      2. A. Rao, K. Bhat. "Wavelet CNNs for ECG Denoising." IEEE SPCOM 2024.
+      3. A. Rao et al. "Shift-Aware OCR Confidence." arXiv preprint 2025.
+
+      GATE
+      GATE 2025 (EC): Score 745, AIR 402
+
+      SKILLS
+      Python, PyTorch, TensorFlow, NumPy, OpenCV, MATLAB, Git, Linux
+
+      AWARDS
+      - KVPY Fellow (2019)
+      - Best Paper Award, IEEE SPCOM 2024 student track
+    labels:
+      education.has_bachelor: true
+      academics.ug_cgpa: 9.21
+      exam.gate.score: 745
+      exam.gate.air: 402
+      exam.gate.year: 2025
+      research.experience_months: 30
+      research.faculty_guided: true
+      experience.internship_count: 1
+      experience.internship_months: 3
+      experience.product_company_count: 1
+      publications.count: 3
+      publications.peer_reviewed_count: 2
+      achievements.awards_count: 2
+      contact.github: true
+      contact.linkedin: true
+      skills.languages: [Python, MATLAB]
+    sop_expect: specific
+
+  - id: rs_average_kiran
+    tier: average
+    name: Kiran Patil
+    inputs: {reservation_category: GEN}
+    sop: |
+      Since my childhood I have always been fascinated by computers and technology. I am a hard-working and
+      passionate student who loves to learn new things. Machine learning is the future and I want to be a
+      part of this exciting field. Your esteemed institute is one of the best in the country and it has always
+      been my dream to study there. I have done an internship and some projects which have given me good
+      exposure. I am confident that I will be an asset to your prestigious university and I will work hard to
+      achieve my goals. Given an opportunity, I will prove myself. I want to do research in artificial
+      intelligence and contribute to society.
+    text: |
+      Kiran Patil
+      kiran.patil@gmail.com | +91 90110 22233 | github.com/kiranpatil
+
+      EDUCATION
+      B.E. Computer Engineering, Pune Institute of Computer Technology | 2022 - 2026 | CGPA 8.1
+
+      RESEARCH EXPERIENCE
+      Research Intern, IIT Madras | May 2025 - Jul 2025
+      - Worked on graph neural networks for traffic forecasting
+
+      PUBLICATIONS
+      - K. Patil. "A Survey of GNNs for Traffic Forecasting." arXiv preprint, 2025.
+
+      PROJECTS
+      - Sentiment analysis of tweets using BERT (Python, Hugging Face)
+      - Movie recommender with collaborative filtering
+
+      GATE
+      GATE 2026 CS: 640 score
+
+      SKILLS
+      Python, PyTorch, scikit-learn, SQL, Git
+    labels:
+      education.has_bachelor: true
+      academics.ug_cgpa: 8.1
+      exam.gate.score: 640
+      exam.gate.year: 2026
+      research.experience_months: 3
+      experience.internship_count: 1
+      experience.internship_months: 3
+      publications.count: 1
+      projects.count: 2
+      contact.github: true
+      skills.languages: [Python, SQL]
+    sop_expect: generic
+
+  - id: rs_weak_deepa
+    tier: weak
+    name: Deepa Menon
+    inputs: {reservation_category: GEN}
+    text: |
+      Deepa Menon
+      deepa.menon@gmail.com, +91 94470 11223
+
+      Education
+      B.Sc. Physics, University of Kerala, 2022-2025, 71%
+      Plus Two (Kerala State Board), 2022, 85%
+      SSLC, 2020, 92%
+
+      Projects
+      Simple pendulum data analysis in Excel
+
+      Skills
+      Python (basic), Excel, LaTeX
+
+      Interests
+      Quantum computing, astrophysics
+    labels:
+      education.has_bachelor: true
+      academics.ug_pct: 71
+      academics.class12_pct: 85
+      academics.class10_pct: 92
+      projects.count: 1
+      skills.languages: [Python]
+
+  - id: rs_edge_sameer
+    tier: strong
+    name: Sameer Joshi
+    inputs: {reservation_category: GEN}
+    note: Master's graduate; PG CPI but UG percentage; thesis section; patent; old GATE; heading "PAPERS & PATENTS".
+    text: |
+      SAMEER JOSHI
+      M.Tech (Structural Engineering) | sameer.joshi@iitb.ac.in | +91 98190 55443
+
+      EDUCATION
+      M.Tech, Structural Engineering, IIT Bombay | 2022 - 2024 | CPI 8.9/10
+      B.E. Civil Engineering, VJTI Mumbai | 2018 - 2022 | 81.2%
+
+      THESIS
+      Seismic fragility of RC frames with infill walls (guide: Prof. R. Kulkarni) | Jul 2023 - Jun 2024
+      - Nonlinear time-history analysis of 40 frames in OpenSees; fragility curves for 3 hazard levels
+
+      WORK EXPERIENCE
+      Structural Engineer, Larsen & Toubro Construction | Jul 2024 - Present
+      - Design of high-rise podium structures using ETABS and STAAD Pro
+
+      PAPERS & PATENTS
+      - S. Joshi, R. Kulkarni. "Infill Effects on Fragility of RC Frames." Journal of Earthquake Engineering, 2025.
+      - S. Joshi et al. "Low-cost base isolator." Indian Patent Application 202421012345, 2024.
+
+      GATE
+      GATE 2022 (CE): Score 689
+
+      SKILLS
+      ETABS, STAAD Pro, OpenSees, Python, AutoCAD
+    labels:
+      education.has_bachelor: true
+      education.has_master: true
+      academics.pg_cgpa: 8.9
+      academics.ug_pct: 81.2
+      exam.gate.score: 689
+      exam.gate.year: 2022
+      research.experience_months: 12
+      research.faculty_guided: true
+      experience.fulltime_months: 27
+      experience.core_company_count: 1
+      publications.count: 2
+      publications.peer_reviewed_count: 1
+      contact.github: false
+      skills.languages: [Python]

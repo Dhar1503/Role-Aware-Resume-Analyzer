@@ -1,0 +1,157 @@
+category: govt_civil_services
+cases:
+  - id: cs_strong_aishwarya
+    tier: strong
+    name: Aishwarya Nair
+    inputs: {reservation_category: GEN, attempts_used: 2}
+    text: |
+      Aishwarya Nair
+      Date of Birth: 14 June 1998 | aishwarya.nair@gmail.com | +91 94950 33221
+
+      EDUCATION
+      B.A. (Hons) Economics, Lady Shri Ram College, University of Delhi, 2016-2019 - 82.4%
+      Class XII (CBSE), 2016 - 95.2%
+      Class X (CBSE), 2014 - CGPA 10
+
+      CIVIL SERVICES EXAMINATION
+      UPSC CSE 2024: Cleared Prelims
+      UPSC CSE 2025: Cleared Mains; appeared for Personality Test (Interview)
+
+      WORK EXPERIENCE
+      Research Associate, Centre for Policy Research, New Delhi | Aug 2019 - Jun 2022
+      - Co-authored 4 policy briefs on urban water governance
+
+      EXTRACURRICULAR ACTIVITIES
+      - NSS volunteer: taught spoken English to 40 children in a municipal school (2017-2019)
+      - NCC 'C' certificate holder, Senior Wing
+      - President, Economics Society, LSR (2018-19)
+      - Organised a district-level blood donation camp with 250+ donors
+
+      AWARDS
+      - Gold medal, B.A. Economics (university topper)
+      - Inspire Scholarship, DST (2016-2019)
+
+      LANGUAGES
+      English, Hindi, Malayalam, Tamil
+    labels:
+      education.has_bachelor: true
+      candidate.date_of_birth: "1998-06-14"
+      academics.ug_pct: 82.4
+      academics.class12_pct: 95.2
+      academics.class10_pct: 95
+      exam.upsc.stage: 3
+      experience.fulltime_months: 35
+      research.experience_months: 35
+      achievements.service_count: 3
+      achievements.leadership_count: 2
+      achievements.awards_count: 2
+      languages.spoken: [English, Hindi, Malayalam, Tamil]
+
+  - id: cs_average_rakesh
+    tier: average
+    name: Rakesh Yadav
+    inputs: {reservation_category: OBC-NCL, attempts_used: 3}
+    text: |
+      Rakesh Yadav
+      rakesh.yadav.upsc@gmail.com | 9935012345 | Lucknow
+      DOB: 05/01/2000
+
+      EDUCATION
+      B.Sc (Mathematics), University of Lucknow, 2018-2021, 68%
+      Intermediate (UP Board), 2018, 79%
+      High School (UP Board), 2016, 81%
+
+      EXAMS
+      UPSC CSE 2024 - Cleared Preliminary Examination
+      UPPSC PCS 2023 - Appeared
+
+      ACTIVITIES
+      - Volunteer with a local NGO teaching slum children (2021-2023)
+      - Captain, college kabaddi team
+
+      LANGUAGES KNOWN
+      Hindi, English
+    labels:
+      education.has_bachelor: true
+      candidate.date_of_birth: "2000-01-05"
+      academics.ug_pct: 68
+      academics.class12_pct: 79
+      academics.class10_pct: 81
+      exam.upsc.stage: 1
+      achievements.service_count: 1
+      achievements.leadership_count: 1
+      languages.spoken: [Hindi, English]
+
+  - id: cs_weak_pooja
+    tier: weak
+    name: Pooja Kumari
+    inputs: {reservation_category: GEN, attempts_used: 6}
+    text: |
+      BIO-DATA
+
+      Name: Pooja Kumari
+      Father's Name: Shri Ramesh Prasad
+      Date of Birth: 10-11-1991
+      Email: pooja.k1991@gmail.com
+      Mobile: 9431122334
+
+      Educational Qualification:
+      Graduation - B.Com, Magadh University, 2013 - 55%
+      Intermediate - BSEB, 2010 - 61%
+      Matric - BSEB, 2008 - 64%
+
+      Declaration:
+      I hereby declare that all the information given above is true.
+    labels:
+      education.has_bachelor: true
+      candidate.date_of_birth: "1991-11-10"
+      academics.ug_pct: 55
+      academics.class12_pct: 61
+      academics.class10_pct: 64
+
+  - id: cs_edge_senthil
+    tier: strong
+    name: M. Senthil Kumar
+    inputs: {reservation_category: OBC-NCL, attempts_used: 1}
+    note: Postgraduate; initial in name; state PSC interview; languages and DOB inside a Personal Details section.
+    text: |
+      M. SENTHIL KUMAR
+      senthilkumar.m@gmail.com | +91 98941 22110 | Madurai, Tamil Nadu
+
+      PROFILE
+      Assistant professor turned civil services aspirant with 3 years of teaching experience.
+
+      EDUCATION
+      M.A. Public Administration, Madurai Kamaraj University, 2017-2019, 76%
+      B.A. History, The American College, Madurai, 2014-2017, 81%
+      HSC, 2014, 88%
+      SSLC, 2012, 90%
+
+      EXPERIENCE
+      Assistant Professor, Department of Public Administration, Sourashtra College, Madurai | Jun 2020 - May 2023
+      - Taught Indian Polity and Public Policy to 180 undergraduate students
+
+      COMPETITIVE EXAMS
+      - TNPSC Group 1 (2022): cleared Prelims and Mains, attended interview
+      - UPSC CSE 2023: Prelims cleared
+
+      ACHIEVEMENTS & ACTIVITIES
+      - NSS Programme Officer (2021-2023)
+      - State-level first prize, Tamil elocution competition (2016)
+
+      PERSONAL DETAILS
+      Date of Birth: 22/07/1996
+      Languages Known: Tamil, English, Hindi
+    labels:
+      education.has_bachelor: true
+      education.has_master: true
+      candidate.date_of_birth: "1996-07-22"
+      academics.ug_pct: 81
+      academics.class12_pct: 88
+      academics.class10_pct: 90
+      exam.upsc.stage: 3
+      experience.fulltime_months: 36
+      achievements.service_count: 1
+      achievements.leadership_count: 1
+      achievements.awards_count: 1
+      languages.spoken: [Tamil, English, Hindi]

@@ -1,0 +1,124 @@
+category: govt_ssc_banking
+cases:
+  - id: sb_strong_ankit
+    tier: strong
+    name: Ankit Mishra
+    inputs: {reservation_category: GEN}
+    text: |
+      Ankit Mishra
+      ankit.mishra.bank@gmail.com | +91 97987 66554 | Jaipur
+      Date of Birth: 03-09-1999
+
+      EDUCATION
+      B.Com (Hons), University of Rajasthan, 2017-2020 - 78%
+      Class 12 (RBSE, Commerce), 2017 - 89%
+      Class 10 (RBSE), 2015 - 91%
+
+      BANKING EXAMS
+      - IBPS PO 2025: Cleared Prelims and Mains; interview awaited
+      - SBI Clerk 2023: Cleared Prelims
+
+      COMPUTER PROFICIENCY
+      MS Office (Word, Excel, PowerPoint), Tally ERP 9, Typing speed 40 wpm (English), CCC certified (NIELIT)
+
+      EXPERIENCE
+      Accounts Assistant, Sharma & Associates (CA firm), Jaipur | Jul 2020 - Mar 2023
+      - Handled GST filing for 60+ clients using Tally
+
+      LANGUAGES
+      Hindi, English, Rajasthani
+    labels:
+      education.has_bachelor: true
+      candidate.date_of_birth: "1999-09-03"
+      academics.ug_pct: 78
+      academics.class12_pct: 89
+      academics.class10_pct: 91
+      exam.ssc_bank.stage: 2
+      experience.fulltime_months: 33
+      languages.spoken: [Hindi, English, Rajasthani]
+
+  - id: sb_average_divya
+    tier: average
+    name: Divya Sharma
+    inputs: {reservation_category: SC}
+    text: |
+      Divya Sharma
+      divyasharma2001@gmail.com, 8708123456
+      DOB: 21/04/2001
+
+      Educational Qualifications
+      Graduation: B.A., Kurukshetra University, 2019-2022 - 63%
+      12th: HBSE, 2019 - 74%
+      10th: HBSE, 2017 - 80%
+
+      Exams Appeared
+      SSC CGL 2024 - Tier 1 qualified
+      SSC CHSL 2023 - appeared
+
+      Computer Skills
+      Basic computer knowledge, MS Word
+
+      Languages
+      Hindi, English
+    labels:
+      education.has_bachelor: true
+      candidate.date_of_birth: "2001-04-21"
+      academics.ug_pct: 63
+      academics.class12_pct: 74
+      academics.class10_pct: 80
+      exam.ssc_bank.stage: 1
+      languages.spoken: [Hindi, English]
+
+  - id: sb_weak_sunil
+    tier: weak
+    name: Sunil Kumar
+    inputs: {reservation_category: GEN, date_of_birth: "1992-10-01"}
+    text: |
+      RESUME
+      Name - Sunil Kumar
+      Mobile - 9812233445
+      Email - sunilk@gmail.com
+
+      Qualification
+      10th pass - 2012
+      12th pass - 2014
+      BA - 2019 (distance)
+
+      Hobbies
+      Playing cricket, listening music
+    labels:
+      education.has_bachelor: true
+
+  - id: sb_edge_pradeep
+    tier: strong
+    name: Pradeep Chauhan
+    inputs: {reservation_category: GEN}
+    note: Class 12 candidate pursuing a degree; Tier-I/II wording; typing speeds; DOB under its own heading.
+    text: |
+      Pradeep Chauhan
+      +91 9458011223 | pradeep.chauhan.ssc@gmail.com | Dehradun, Uttarakhand
+
+      EDUCATION
+      Senior Secondary (Class XII), CBSE, 2023 - 86.4%
+      Secondary (Class X), CBSE, 2021 - CGPA 9.2
+      Pursuing B.Sc. (Mathematics) through IGNOU (2024 - present)
+
+      SSC EXAMS
+      SSC CHSL 2025: Tier-I and Tier-II qualified; skill test scheduled
+      SSC GD Constable 2024: appeared
+
+      SKILLS
+      Typing: Hindi 30 wpm, English 38 wpm | MS Excel | Data Entry | O Level (NIELIT) certified
+
+      LANGUAGES
+      Hindi, English, Garhwali
+
+      DATE OF BIRTH
+      11 February 2005
+    labels:
+      education.has_bachelor: true
+      candidate.date_of_birth: "2005-02-11"
+      academics.class12_pct: 86.4
+      academics.class10_pct: 87.4
+      exam.ssc_bank.stage: 2
+      languages.spoken: [Hindi, English, Garhwali]

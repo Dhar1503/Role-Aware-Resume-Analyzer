@@ -1,0 +1,15 @@
+PhD / MS (Research) - Department of Computational and Data Sciences, 2026 intake
+
+Research areas
+Machine learning, trustworthy AI, medical image analysis, scientific computing.
+
+Eligibility
+- Bachelor's or Master's degree in engineering or science with a strong academic record
+- Valid GATE score or equivalent national fellowship
+
+What makes a strong applicant
+- Research experience, ideally under faculty supervision, with a clear account of your contribution
+- Publications or preprints in machine learning, computer vision or signal processing
+- Strong mathematical background in linear algebra, probability and optimisation
+- Programming in Python with deep-learning frameworks such as PyTorch
+- A statement of purpose that names a concrete research problem and relevant faculty

@@ -1,0 +1,16 @@
+Software Engineering Intern (Summer 2026)
+
+About the internship
+A 10-12 week internship for students graduating in 2027 or 2028. You will ship a real feature with a mentor.
+
+Minimum qualifications
+- Currently pursuing a Bachelor's degree in Computer Science or a related technical field
+- Programming experience in C++, Java or Python
+- Solid understanding of data structures and algorithms
+- Coursework or projects in operating systems, databases or computer networks
+
+Preferred qualifications
+- Personal or academic projects you built end to end and can talk about in depth
+- Experience with web or mobile development (JavaScript, React, Android)
+- Participation in hackathons or competitive programming contests
+- Familiarity with Git and Linux

@@ -1,0 +1,172 @@
+category: tech_internship
+cases:
+  - id: ti_strong_ananya
+    tier: strong
+    name: Ananya Gupta
+    text: |
+      ANANYA GUPTA
+      ananya.gupta@iiitd.ac.in | +91 99100 22334 | github.com/ananyag | linkedin.com/in/ananya-gupta
+
+      EDUCATION
+      B.Tech in Computer Science, IIIT Delhi | 2023 - 2027 | CGPA: 9.14/10
+      Relevant Coursework: Data Structures, Algorithms, Operating Systems, Computer Networks, DBMS, Machine Learning
+
+      EXPERIENCE
+      Google Summer of Code Contributor | OpenMRS | May 2025 - Aug 2025
+      - Added FHIR export to the patient module in Java; merged 9 PRs reviewed by 3 maintainers
+      Research Intern | IIIT Delhi (under Prof. R. Sharma) | Dec 2024 - Jan 2025
+      - Benchmarked 4 graph partitioning heuristics on 2M-edge graphs
+
+      PROJECTS
+      CampusEats | React Native, Firebase | Jan 2025 - Mar 2025
+      - Food pre-ordering app for 4 campus canteens; 1,200+ active users; live on Play Store
+      QueryLens | Python, FastAPI, PostgreSQL
+      - SQL query visualiser; deployed at querylens.vercel.app; cut debugging time 30% in a class of 60
+      Tiny-Git | C++
+      - Implemented a Git clone with content-addressed storage and packfiles
+
+      SKILLS
+      Languages: C++, Python, Java, JavaScript, SQL
+      Tools: React Native, FastAPI, PostgreSQL, Firebase, Git, Linux, Docker
+
+      CODING
+      LeetCode: 380 solved (120 Easy / 220 Medium / 40 Hard) | Codeforces: Specialist (1590)
+
+      ACHIEVEMENTS
+      - 1st place, HackIIITD 2024 (36-hour hackathon)
+      - Participant, Smart India Hackathon 2025 internal round
+      - Department rank 2 in 2nd year; Dean's List 2024
+    labels:
+      education.has_bachelor: true
+      academics.ug_cgpa: 9.14
+      academics.coursework: [Data Structures, Algorithms, Operating Systems, Computer Networks, DBMS, Machine Learning]
+      experience.internship_count: 2
+      experience.internship_months: 6
+      experience.product_company_count: 1
+      research.experience_months: 2
+      research.faculty_guided: true
+      projects.count: 3
+      projects.quantified_count: 2
+      projects.deployed_count: 2
+      contact.github: true
+      contact.linkedin: true
+      coding.leetcode.total: 380
+      coding.leetcode.easy: 120
+      coding.leetcode.medium: 220
+      coding.leetcode.hard: 40
+      coding.codeforces.rating: 1590
+      achievements.hackathon_participations: 2
+      achievements.hackathon_wins: 1
+      achievements.awards_count: 1
+      skills.languages: [C++, Python, Java, JavaScript, SQL]
+      skills.cs_fundamentals: [Data Structures, Algorithms, Operating Systems, Computer Networks, DBMS]
+
+  - id: ti_average_mohit
+    tier: average
+    name: Mohit Sharma
+    text: |
+      Mohit Sharma
+      mohit.sharma.cs@gmail.com | 7011223344 | github.com/mohit-sh
+
+      Education:
+      B.Tech Computer Science, Guru Gobind Singh Indraprastha University (GGSIPU), 2024-2028
+      CGPA: 7.9 (till 3rd semester)
+      Class XII, CBSE: 88.6%
+      Class X, CBSE: 10 CGPA
+
+      Projects:
+      * Snake Game (Python, Pygame) - classic snake game with high-score saving.
+      * Portfolio Website (HTML, CSS, JavaScript) - personal site hosted on GitHub Pages.
+
+      Technical Skills:
+      Python, C++, JavaScript, HTML, CSS, Git
+      Currently learning: DSA, React
+
+      Achievements:
+      * Solved 120 questions on LeetCode
+      * Participated in Hack-O-Holics 2025 hackathon
+      * Volunteer, NSS unit of college (2024-25)
+    labels:
+      education.has_bachelor: true
+      academics.ug_cgpa: 7.9
+      academics.class12_pct: 88.6
+      academics.class10_pct: 95
+      projects.count: 2
+      projects.deployed_count: 1
+      contact.github: true
+      coding.leetcode.total: 120
+      achievements.hackathon_participations: 1
+      achievements.service_count: 1
+      skills.languages: [Python, C++, JavaScript]
+      skills.cs_fundamentals: [Data Structures, Algorithms]
+
+  - id: ti_weak_priyanka
+    tier: weak
+    name: Priyanka Das
+    text: |
+      Priyanka Das
+      priyanka.das@gmail.com, 9123456780
+
+      OBJECTIVE
+      Seeking a software internship to learn new technologies.
+
+      EDUCATION
+      B.Sc Computer Science, St. Xavier's College, Kolkata (2024-2027) - CGPA 6.8
+      Higher Secondary (WBCHSE) 2024 - 71%
+      Madhyamik (WBBSE) 2022 - 76%
+
+      PROJECT
+      Tic Tac Toe game in C
+
+      SKILLS
+      C, HTML, MS Word, MS Excel
+
+      LANGUAGES
+      English, Bengali, Hindi
+    labels:
+      education.has_bachelor: true
+      academics.ug_cgpa: 6.8
+      academics.class12_pct: 71
+      academics.class10_pct: 76
+      projects.count: 1
+      skills.languages: [C]
+      languages.spoken: [English, Bengali, Hindi]
+
+  - id: ti_edge_rohan
+    tier: strong
+    name: Rohan D'Souza
+    note: Title line carries degree; 4-point GPA; ISC/ICSE; LC abbreviation; stars without rating; pipes, no bullets.
+    text: |
+      ROHAN D'SOUZA — BCA, Christ University, Bengaluru
+      rohan.dsouza@christ.in / +91 90080 11223 / linkedin.com/in/rohandsouza / github.com/rohan-ds
+
+      ACADEMICS
+      BCA | Christ University | 2024–2027 | GPA 3.6/4.0
+      ISC (Class XII) | St. Joseph's Boys' High School | 2024 | 92%
+      ICSE (Class X) | St. Joseph's Boys' High School | 2022 | 94%
+
+      COMPETITIVE PROGRAMMING
+      Codeforces rating 1810 (Expert); LC 450+ problems; CodeChef 4★
+      ICPC 2025 Bengaluru Regional – qualified to onsite round
+
+      PROJECTS
+      Chess engine in Rust | alpha-beta search with transposition tables, ~2100 Elo on Lichess bot account
+      Compiler for a toy language | C++, LLVM | lexer, parser and codegen passing all 120 test programs (100% pass rate)
+
+      SKILLS
+      Rust; C++; Python; Linux; Git; Algorithms; Data Structures; Discrete Mathematics
+    labels:
+      education.has_bachelor: true
+      academics.ug_cgpa: 9.0
+      academics.class12_pct: 92
+      academics.class10_pct: 94
+      projects.count: 2
+      projects.quantified_count: 2
+      contact.github: true
+      contact.linkedin: true
+      coding.leetcode.total: 450
+      coding.codeforces.rating: 1810
+      coding.codechef.rating: 1800
+      achievements.awards_count: 1
+      skills.languages: [Rust, C++, Python]
+      skills.cs_fundamentals: [Algorithms, Data Structures, Discrete Mathematics]
