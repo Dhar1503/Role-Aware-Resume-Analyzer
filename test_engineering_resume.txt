@@ -1,0 +1,31 @@
+
+    John Smith
+    Email: john.smith@example.com | Phone: 123-456-7890
+
+    EDUCATION
+    Bachelor of Engineering in Mechanical Engineering - XYZ University - 2022
+    CGPA: 8.5/10
+
+    TECHNICAL SKILLS
+    CAD Software: AutoCAD, SolidWorks, CATIA
+    Analysis Tools: ANSYS, MATLAB, Simulink
+    Programming: Python, C++
+    Project Management: MS Project, Primavera
+
+    PROJECTS
+    Structural Analysis Project
+    Designed and analyzed steel frame structure using ANSYS
+    Optimized design to reduce material usage by 15%
+    Prepared technical documentation and reports
+
+    Manufacturing Process Improvement
+    Developed automated quality control system using PLC programming
+    Reduced production defects by 25%
+    Implemented safety standards compliance
+
+    EXPERIENCE
+    Mechanical Engineering Intern - ABC Manufacturing (June 2022 - Dec 2022)
+    - Assisted in design of mechanical components
+    - Used CAD software for product development
+    - Worked on quality control and testing
+    

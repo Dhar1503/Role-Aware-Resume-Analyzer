@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Analysis Results</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 10px 10px 0 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .metadata {
+            color: #666;
+            font-size: 0.95em;
+        }
+
+        .metadata span {
+            margin-right: 20px;
+        }
+
+        .score-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+
+        .score-display {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .score-circle {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .score-main {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: conic-gradient(#667eea 0deg, #667eea calc(var(--score) * 3.6deg), #e0e0e0 calc(var(--score) * 3.6deg));
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .score-number {
+            font-size: 4em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .score-label {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .strength-badge {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            margin-top: 15px;
+            text-transform: uppercase;
+            font-size: 0.85em;
+            letter-spacing: 1px;
+        }
+
+        .strength-strong {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .strength-moderate {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .strength-weak {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .score-info h3 {
+            color: #333;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+        }
+
+        .score-explanation {
+            color: #555;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        .component-scores {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .component {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            border-left: 4px solid #667eea;
+        }
+
+        .component-label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .component-bar {
+            background: #e0e0e0;
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .component-fill {
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            transition: width 0.5s ease;
+        }
+
+        .component-score {
+            font-size: 0.85em;
+            color: #666;
+            margin-top: 8px;
+        }
+
+        .section {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+
+        .section h2 {
+            color: #667eea;
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .section h2::before {
+            display: inline-block;
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+
+        .strengths h2::before { content: '✓'; color: #28a745; }
+        .gaps h2::before { content: '⚠️'; }
+        .roadmap h2::before { content: '🛣️'; }
+        .parsed-data h2::before { content: '📄'; }
+
+        .list {
+            list-style: none;
+        }
+
+        .list li {
+            padding: 12px;
+            margin-bottom: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            border-left: 4px solid #667eea;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .strengths .list li {
+            border-left-color: #28a745;
+        }
+
+        .gaps .list li {
+            border-left-color: #ffc107;
+        }
+
+        .roadmap .list li {
+            border-left-color: #667eea;
+        }
+
+        .data-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .data-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+        }
+
+        .data-item-label {
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 8px;
+            font-size: 0.95em;
+        }
+
+        .data-item-value {
+            color: #333;
+            font-size: 1.1em;
+        }
+
+        .skills-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .skill-tag {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+        }
+
+        .button-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .button {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .button-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .button-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .button-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .button-secondary:hover {
+            background: #f0f7ff;
+            transform: translateY(-2px);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .score-display {
+                grid-template-columns: 1fr;
+            }
+
+            .component-scores {
+                grid-template-columns: 1fr;
+            }
+
+            .data-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .button-group {
+                grid-template-columns: 1fr;
+            }
+
+            .score-main {
+                width: 150px;
+                height: 150px;
+            }
+
+            .score-number {
+                font-size: 2.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header" id="headerContent"></div>
+
+        <!-- Score Card -->
+        <div class="score-card" id="scoreCard"></div>
+
+        <!-- Parsed Data Section -->
+        <div class="section parsed-data" id="parsedDataSection"></div>
+
+        <!-- Strengths Section -->
+        <div class="section strengths" id="strengthsSection"></div>
+
+        <!-- Gaps Section -->
+        <div class="section gaps" id="gapsSection"></div>
+
+        <!-- Roadmap Section -->
+        <div class="section roadmap" id="roadmapSection"></div>
+
+        <!-- Action Buttons -->
+        <div class="button-group">
+            <button class="button button-primary" onclick="window.print()">🖨️ Print Report</button>
+            <a href="/analyze" class="button button-secondary">← Analyze Another Resume</a>
+        </div>
+    </div>
+
+    <script>
+        // Retrieve and display results
+        function displayResults() {
+            let result = sessionStorage.getItem('analysisResult');
+            
+            if (!result) {
+                // Try to get from server
+                result = window.result;
+            }
+            
+            if (!result) {
+                document.body.innerHTML = '<div class="container"><div class="empty-state"><h2>No analysis results found</h2><p><a href="/analyze" class="button button-secondary">Upload a resume to analyze</a></p></div></div>';
+                return;
+            }
+
+            if (typeof result === 'string') {
+                result = JSON.parse(result);
+            }
+
+            renderHeader(result);
+            renderScoreCard(result);
+            renderParsedData(result);
+            renderStrengths(result);
+            renderGaps(result);
+            renderRoadmap(result);
+
+            // Clear session storage
+            sessionStorage.removeItem('analysisResult');
+        }
+
+        function renderHeader(result) {
+            const metadata = result.metadata || {};
+            const header = document.getElementById('headerContent');
+            
+            header.innerHTML = `
+                <h1>✓ Analysis Complete!</h1>
+                <div class="metadata">
+                    <span>📚 <strong>${metadata.domain || 'General'}</strong></span>
+                    <span>🎯 <strong>${metadata.application_type || 'Unknown'}</strong></span>
+                    <span>⏱️ <strong>${new Date(metadata.analyzed_at).toLocaleDateString()}</strong></span>
+                </div>
+            `;
+        }
+
+        function renderScoreCard(result) {
+            const evaluation = result.evaluation || {};
+            const score = evaluation.score || 0;
+            const strength = evaluation.strength || 'Unknown';
+            const strengthClass = `strength-${strength.toLowerCase()}`;
+            
+            const componentScores = evaluation.component_scores || {};
+            const maxScore = 25;
+            
+            let componentHTML = '';
+            const components = [
+                { label: 'Skills', key: 'skills_score' },
+                { label: 'Projects', key: 'projects_score' },
+                { label: 'Experience', key: 'experience_score' },
+                { label: 'Academics', key: 'academics_score' },
+                { label: 'Certifications', key: 'certifications_score' },
+                { label: 'Quality', key: 'quality_score' }
+            ];
+            
+            components.forEach(comp => {
+                const compScore = componentScores[comp.key] || 0;
+                const percentage = (compScore / maxScore) * 100;
+                componentHTML += `
+                    <div class="component">
+                        <div class="component-label">${comp.label}</div>
+                        <div class="component-bar">
+                            <div class="component-fill" style="width: ${Math.min(100, percentage)}%"></div>
+                        </div>
+                        <div class="component-score">${compScore.toFixed(1)} / ${maxScore}</div>
+                    </div>
+                `;
+            });
+            
+            const scoreCard = document.getElementById('scoreCard');
+            scoreCard.innerHTML = `
+                <div class="score-display">
+                    <div class="score-circle">
+                        <div class="score-main" style="--score: ${score}">
+                            <div class="score-number">${Math.round(score)}</div>
+                            <div class="score-label">out of 100</div>
+                        </div>
+                        <span class="strength-badge ${strengthClass}">${strength}</span>
+                    </div>
+                    <div class="score-info">
+                        <h3>Your Resume Score</h3>
+                        <p class="score-explanation">${evaluation.explanation || 'Resume analysis complete.'}</p>
+                        <div class="component-scores">${componentHTML}</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderParsedData(result) {
+            const parsed = result.parsed_data || {};
+            
+            let skillsHTML = '';
+            if (parsed.skills_list && parsed.skills_list.length > 0) {
+                skillsHTML = parsed.skills_list.map(skill => `<span class="skill-tag">${skill}</span>`).join('');
+            } else {
+                skillsHTML = '<span class="skill-tag">No skills extracted</span>';
+            }
+            
+            const section = document.getElementById('parsedDataSection');
+            section.innerHTML = `
+                <h2>Resume Information Extracted</h2>
+                <div class="data-grid">
+                    <div class="data-item">
+                        <div class="data-item-label">Name</div>
+                        <div class="data-item-value">${parsed.name || 'Not found'}</div>
+                    </div>
+                    <div class="data-item">
+                        <div class="data-item-label">Email</div>
+                        <div class="data-item-value">${parsed.contact?.email || 'Not found'}</div>
+                    </div>
+                    <div class="data-item">
+                        <div class="data-item-label">Education</div>
+                        <div class="data-item-value">${parsed.education?.[0]?.degree || 'Not found'}</div>
+                    </div>
+                    <div class="data-item">
+                        <div class="data-item-label">CGPA</div>
+                        <div class="data-item-value">${parsed.cgpa ? parsed.cgpa.toFixed(2) : 'Not found'}</div>
+                    </div>
+                    <div class="data-item">
+                        <div class="data-item-label">Projects</div>
+                        <div class="data-item-value">${parsed.projects_count || 0} project(s)</div>
+                    </div>
+                    <div class="data-item">
+                        <div class="data-item-label">Skills</div>
+                        <div class="data-item-value">${parsed.skills_count || 0} skill(s)</div>
+                    </div>
+                </div>
+                <div style="margin-top: 20px;">
+                    <div class="data-item-label">Top Skills</div>
+                    <div class="skills-list">${skillsHTML}</div>
+                </div>
+            `;
+        }
+
+        function renderStrengths(result) {
+            const strengths = result.evaluation?.strengths || [];
+            const section = document.getElementById('strengthsSection');
+            
+            const listHTML = strengths.map(s => `<li>${s}</li>`).join('');
+            section.innerHTML = `
+                <h2>Your Strengths</h2>
+                <ul class="list">${listHTML || '<li>Resume shows potential for development</li>'}</ul>
+            `;
+        }
+
+        function renderGaps(result) {
+            const gaps = result.evaluation?.gaps || [];
+            const section = document.getElementById('gapsSection');
+            
+            const listHTML = gaps.map(g => `<li>${g}</li>`).join('');
+            section.innerHTML = `
+                <h2>Areas for Improvement</h2>
+                <ul class="list">${listHTML || '<li>Continue strengthening core competencies</li>'}</ul>
+            `;
+        }
+
+        function renderRoadmap(result) {
+            const roadmap = result.evaluation?.roadmap || [];
+            const section = document.getElementById('roadmapSection');
+            
+            const listHTML = roadmap.map(r => `<li>${r}</li>`).join('');
+            section.innerHTML = `
+                <h2>Your Improvement Roadmap</h2>
+                <ul class="list">${listHTML || '<li>Create a personalized improvement plan</li>'}</ul>
+            `;
+        }
+
+        // Initialize on page load
+        window.addEventListener('load', displayResults);
+    </script>
+</body>
+</html>

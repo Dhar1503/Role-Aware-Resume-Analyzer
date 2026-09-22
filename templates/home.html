@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Resume Analyzer & Creator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}?v=2">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark glass-nav sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/">Resume Intelligence</a>
+        </div>
+    </nav>
+
+    <header class="hero-section">
+        <div class="container">
+            <div class="text-center mb-5">
+                <span class="badge rounded-pill text-bg-info mb-3">AI-Powered Resume Tools for All Domains</span>
+                <h1 class="display-4 fw-bold mb-3">Analyze & Create ATS-Free Resumes</h1>
+                <p class="lead text-light-emphasis">Whether you want to analyze your existing resume or create a new one, we have you covered.</p>
+            </div>
+
+            <div class="row g-4">
+                <!-- Operation 1: Analyzer -->
+                <div class="col-lg-6">
+                    <div class="card border-0 shadow-lg h-100" style="border-top: 4px solid #60a5fa;">
+                        <div class="card-body p-5">
+                            <div style="width: 60px; height: 60px; background: rgba(96, 165, 250, 0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                    <polyline points="14 2 14 8 20 8"></polyline>
+                                    <line x1="12" y1="11" x2="12" y2="17"></line>
+                                    <line x1="9" y1="14" x2="15" y2="14"></line>
+                                </svg>
+                            </div>
+                            <h3 class="fw-bold mb-2">Analyze Your Resume</h3>
+                            <p class="text-secondary mb-4">Upload your existing resume and get instant analysis including:</p>
+                            <ul class="list-unstyled mb-4">
+                                <li class="mb-2">✓ Automatic skill extraction</li>
+                                <li class="mb-2">✓ CGPA & certification detection</li>
+                                <li class="mb-2">✓ Experience gap analysis</li>
+                                <li class="mb-2">✓ Domain-specific scoring</li>
+                                <li class="mb-2">✓ Improvement suggestions</li>
+                            </ul>
+                            <a href="/analyze" class="btn btn-primary btn-lg w-100">Upload & Analyze →</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Operation 2: Creator -->
+                <div class="col-lg-6">
+                    <div class="card border-0 shadow-lg h-100" style="border-top: 4px solid #a78bfa;">
+                        <div class="card-body p-5">
+                            <div style="width: 60px; height: 60px; background: rgba(167, 139, 250, 0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2">
+                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="fw-bold mb-2">Professional Resume Builder</h3>
+                            <p class="text-secondary mb-4">Create beautiful professional resumes with real-time preview:</p>
+                            <ul class="list-unstyled mb-4">
+                                <li class="mb-2">✓ Live resume preview</li>
+                                <li class="mb-2">✓ Internship duration tracking (months)</li>
+                                <li class="mb-2">✓ Professional formatting</li>
+                                <li class="mb-2">✓ PDF export</li>
+                                <li class="mb-2">✓ ATS-optimized layout</li>
+                            </ul>
+                            <a href="/build-resume" class="btn btn-lg w-100" style="background: linear-gradient(135deg, #f472b6, #ec4899); border: none; color: white;">Build Resume →</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4 mt-4">
+                <!-- Operation 3: Creator (Original) -->
+                <div class="col-lg-6">
+                    <div class="card border-0 shadow-lg h-100" style="border-top: 4px solid #f472b6;">
+                        <div class="card-body p-5">
+                            <div style="width: 60px; height: 60px; background: rgba(244, 114, 182, 0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#f472b6" stroke-width="2">
+                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="fw-bold mb-2">Create ATS-Free Resume</h3>
+                            <p class="text-secondary mb-4">Build a beautiful, ATS-optimized resume on our platform:</p>
+                            <ul class="list-unstyled mb-4">
+                                <li class="mb-2">✓ Multi-domain support (CS, Medicine, Law, etc)</li>
+                                <li class="mb-2">✓ Smart form guidance</li>
+                                <li class="mb-2">✓ Live preview</li>
+                                <li class="mb-2">✓ Download as PDF/DOCX</li>
+                                <li class="mb-2">✓ ATS-optimized formatting</li>
+                            </ul>
+                            <a href="/create-resume" class="btn btn-primary btn-lg w-100" style="background: linear-gradient(135deg, #f472b6, #a78bfa); border: none;">Create Resume →</a>
+                        </div>
+                    </div>
+                </div>
+        </div>
+    </header>
+
+    <section class="py-5">
+        <div class="container">
+            <h2 class="text-center fw-bold mb-5">Supported Domains</h2>
+            <div class="row g-3">
+                {% for domain in all_domains %}
+                <div class="col-md-3 col-sm-6">
+                    <div class="card border-0 text-center p-3" style="background: rgba(96, 165, 250, 0.1); border-radius: 12px; border: 1px solid rgba(96, 165, 250, 0.2);">
+                        <div class="card-body">
+                            <h5 class="fw-bold">{{ domain }}</h5>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

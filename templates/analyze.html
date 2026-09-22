@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analyze Resume - Resume Intelligence</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}?v=2">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark glass-nav sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/">Resume Intelligence</a>
+            <a href="/" class="btn btn-outline-light btn-sm">← Back Home</a>
+        </div>
+    </nav>
+
+    <header class="hero-section">
+        <div class="container">
+            <h1 class="fw-bold mb-3">AI Resume Analysis</h1>
+            <p class="lead text-light-emphasis">Upload your resume and let our advanced AI analyze it comprehensively based on your domain and target job type.</p>
+        </div>
+    </header>
+
+    <main class="container py-5">
+        <div class="row g-4">
+            <!-- Upload Section -->
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <h3 class="fw-bold mb-4">📄 Upload Your Resume</h3>
+                        
+                        <form id="uploadForm" enctype="multipart/form-data">
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Select Your Domain</label>
+                                <select class="form-select" id="domainSelect" name="domain" required>
+                                    <option value="">-- Choose Domain --</option>
+                                    {% for domain in all_domains %}
+                                    <option value="{{ domain }}">{{ domain }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Application Type</label>
+                                <select class="form-select" id="applicationTypeSelect" name="application_type" required>
+                                    <option value="">-- Select Application Type --</option>
+                                    <option value="mnc_job">MNC Job</option>
+                                    <option value="mnc_internship">MNC Internship</option>
+                                    <option value="higher_studies">Higher Studies</option>
+                                    <option value="research_internship">Research Internship</option>
+                                    <option value="government_job">Government Job</option>
+                                    <option value="government_internship">Government Internship</option>
+                                    <option value="fellowship">Fellowship</option>
+                                    <option value="campus_placement">Campus Placement</option>
+                                </select>
+                                <small class="text-secondary">
+                                    This determines how your resume will be evaluated (MNC vs Government vs Research priorities)
+                                </small>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Upload Resume</label>
+                                <div class="input-group">
+                                    <input type="file" class="form-control" id="resumeFile" name="resume_file" accept=".pdf,.doc,.docx,.txt" required>
+                                    <span class="input-group-text">PDF, DOCX, TXT</span>
+                                </div>
+                                <small class="text-secondary d-block mt-2">Max size: 16MB</small>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-lg w-100">
+                                🚀 Start AI Analysis
+                            </button>
+                        </form>
+
+                        <div id="loadingSpinner" style="display: none; margin-top: 20px; text-align: center;">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="mt-2 text-secondary">Extracting resume details...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analysis Info Section -->
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <h3 class="fw-bold mb-4">🤖 AI-Powered Analysis</h3>
+
+                        <div class="alert alert-info">
+                            <h6 class="alert-heading">What Our AI Analyzes:</h6>
+                            <ul class="mb-0 small">
+                                <li><strong>Resume Structure:</strong> Organization and completeness</li>
+                                <li><strong>Content Quality:</strong> Achievements, metrics, and impact</li>
+                                <li><strong>Domain Relevance:</strong> Technical skills alignment</li>
+                                <li><strong>Application Fit:</strong> Optimized for your target job type</li>
+                            </ul>
+                        </div>
+
+                        <div class="mt-4">
+                            <h6 class="fw-bold mb-3">Application Type Guide:</h6>
+                            <div class="accordion" id="applicationGuide">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#mnc">
+                                            <strong>MNC Jobs</strong> (Campus/Off-Campus)
+                                        </button>
+                                    </h2>
+                                    <div id="mnc" class="accordion-collapse collapse" data-bs-parent="#applicationGuide">
+                                        <div class="accordion-body small">
+                                            <strong>Focus:</strong> Technical skills, projects, certifications, problem-solving abilities<br>
+                                            <strong>Ideal for:</strong> Software engineers, developers, technical roles at large corporations<br>
+                                            <strong>What we look for:</strong> Strong technical foundation, project impact, relevant experience
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#mnc-intern">
+                                            <strong>MNC Internships</strong>
+                                        </button>
+                                    </h2>
+                                    <div id="mnc-intern" class="accordion-collapse collapse" data-bs-parent="#applicationGuide">
+                                        <div class="accordion-body small">
+                                            <strong>Focus:</strong> Learning ability, technical skills, team collaboration, potential<br>
+                                            <strong>Ideal for:</strong> Students seeking internships at tech companies<br>
+                                            <strong>What we look for:</strong> Strong fundamentals, project work, eagerness to learn
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#govt">
+                                            <strong>Government Jobs</strong>
+                                        </button>
+                                    </h2>
+                                    <div id="govt" class="accordion-collapse collapse" data-bs-parent="#applicationGuide">
+                                        <div class="accordion-body small">
+                                            <strong>Focus:</strong> Academic performance, entrance scores, stability, formal structure<br>
+                                            <strong>Ideal for:</strong> Public sector positions, civil services, government agencies<br>
+                                            <strong>What we look for:</strong> Academic excellence, certifications, formal experience
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#govt-intern">
+                                            <strong>Government Internships</strong>
+                                        </button>
+                                    </h2>
+                                    <div id="govt-intern" class="accordion-collapse collapse" data-bs-parent="#applicationGuide">
+                                        <div class="accordion-body small">
+                                            <strong>Focus:</strong> Learning ability, process adherence, documentation skills<br>
+                                            <strong>Ideal for:</strong> Students seeking public sector internship experience<br>
+                                            <strong>What we look for:</strong> Academic performance, attention to detail, structured approach
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#research">
+                                            <strong>Research Internships</strong>
+                                        </button>
+                                    </h2>
+                                    <div id="research" class="accordion-collapse collapse" data-bs-parent="#applicationGuide">
+                                        <div class="accordion-body small">
+                                            <strong>Focus:</strong> Analytical thinking, projects, academic work, research potential<br>
+                                            <strong>Ideal for:</strong> Research positions in labs, academia, R&D departments<br>
+                                            <strong>What we look for:</strong> Research experience, academic excellence, analytical skills
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#fellowship">
+                                            <strong>Fellowships</strong>
+                                        </button>
+                                    </h2>
+                                    <div id="fellowship" class="accordion-collapse collapse" data-bs-parent="#applicationGuide">
+                                        <div class="accordion-body small">
+                                            <strong>Focus:</strong> Academic excellence, research potential, leadership qualities<br>
+                                            <strong>Ideal for:</strong> Fellowship programs, scholarships, funded research positions<br>
+                                            <strong>What we look for:</strong> Outstanding academics, leadership, research impact
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#higher">
+                                            <strong>Higher Studies</strong> (MS/PhD)
+                                        </button>
+                                    </h2>
+                                    <div id="higher" class="accordion-collapse collapse" data-bs-parent="#applicationGuide">
+                                        <div class="accordion-body small">
+                                            <strong>Focus:</strong> Academic excellence, research experience, publications, analytical skills<br>
+                                            <strong>Ideal for:</strong> Masters, PhD, or postdoc program applications<br>
+                                            <strong>What we look for:</strong> Research publications, academic achievements, strong recommendations
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#campus">
+                                            <strong>Campus Placement</strong>
+                                        </button>
+                                    </h2>
+                                    <div id="campus" class="accordion-collapse collapse" data-bs-parent="#applicationGuide">
+                                        <div class="accordion-body small">
+                                            <strong>Focus:</strong> Technical skills, academic performance, problem-solving abilities<br>
+                                            <strong>Ideal for:</strong> On-campus recruitment and placement drives<br>
+                                            <strong>What we look for:</strong> Balance of academics, projects, and practical skills
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Handle file upload and automatic AI analysis
+        document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            if (!e.target.checkValidity()) {
+                e.target.reportValidity();
+                return;
+            }
+
+            const formData = new FormData();
+            const fileInput = document.getElementById('resumeFile');
+            const domainSelect = document.getElementById('domainSelect');
+            const applicationTypeSelect = document.getElementById('applicationTypeSelect');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+
+            formData.append('resume_file', fileInput.files[0]);
+            formData.append('domain', domainSelect.value);
+            formData.append('application_type', applicationTypeSelect.value);
+            
+            // Show loading state
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>AI Analyzing...';
+            submitBtn.disabled = true;
+            loadingSpinner.style.display = 'block';
+
+            try {
+                const response = await fetch('/api/analyze-resume', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Analysis failed');
+                }
+
+                if (data.success) {
+                    showNotification('Analysis completed successfully.', 'success');
+                    // Redirect to results page
+                    setTimeout(() => {
+                        sessionStorage.setItem('analysisResult', JSON.stringify(data));
+                        window.location.href = '/result';
+                    }, 1500);
+                } else {
+                    showNotification('❌ Error: ' + data.error, 'danger');
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                    loadingSpinner.style.display = 'none';
+                }
+            } catch (error) {
+                showNotification('❌ Error: ' + error.message, 'danger');
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+                loadingSpinner.style.display = 'none';
+            }
+        });
+        
+        function showNotification(message, type = 'info') {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+            alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+            alertDiv.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            document.body.appendChild(alertDiv);
+            
+            setTimeout(() => alertDiv.remove(), 5000);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,45 @@
+A Sachin Kumar
++91 9080496793 # sachinkumar31a@gmail.com LinkedIn GitHub
+
+OBJECTIVE
+Computer Science undergraduate with strong expertise in AI/ML, full-stack development, and drone software systems.
+Seeking internship opportunities to build impactful technology solutions and contribute to real-world engineering challenges.
+
+EDUCATION
+K. Ramakrishnan College of Technology Expected 2027
+Bachelor of Engineering in Computer Science and Engineering Tiruchirappalli, TamilNadu
+CGPA: 8.28/10.0 (3rd Rank in Class)
+
+TECHNICAL SKILLS
+Programming Languages: Java, Python, C++, C
+Domains: AI/ML, Full Stack Development, Image Classification, Drone Software, Computer Vision
+Tools & Frameworks: Git, MAVLink, QGroundControl, MongoDB, Angular, VS Code
+
+PROJECTS
+Medix AI: Emergency Triage & Medical Learning Platform
+Mass-casualty AI Triage: Engineered system to classify fracture severity & pain intensity for 50-60 simultaneous patients, enabling nurses to prioritize critical cases without doctors.
+3-User Ecosystem: Doctors upload real-time anonymized cases; students learn from live rare/emergency data (vs textbooks); patients view non-confidential records.
+Indian govt ethical compliance; secure role-based portals.
+
+AgriScout: Autonomous Dual-Drone Agriculture System
+Software Lead: Built full control stack for scout+spray drone fleet using MAVLink & QGroundControl.
+Scout drone detects unhealthy crops signals spray drone for targeted pesticide application.
+
+MedImage AI: Medical Image Classifier
+Traditional AI classifier for medical images (X-rays/MRIs); accuracy benchmarks across disease categories for educational use.
+
+INTERNSHIPS
+AI/ML Developer Intern Feb 2026 Mar 2026
+Infosys Springboard Remote
+ML model building/deployment; team contribution & real-time AI project management.
+Full Stack Developer Intern (MEAN) Dec 2025 Feb 2026
+Infosys Springboard Remote
+MongoDB + Angular stack; team-based real-time web dev with Git workflow.
+Computer Vision Intern Jul 2025
+NSIC Chennai, TamilNadu
+Image processing algorithms & real-time detection systems.
+
+CERTIFICATIONS
+Microsoft Certified: Azure AI Engineer Associate
+Applied Generative AI Specialization Simplilearn
+Copilot Foundations Simplilearn
