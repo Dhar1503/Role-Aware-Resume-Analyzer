@@ -42,5 +42,7 @@ signals:
   - id: product_company
     missing: exclude
 
+ats: {expected_sections: [education, projects, skills], max_pages: 1, filename_role: SDE_Intern}
+
 generator:
   section_order: [header, education, coding_profiles, projects, skills, experience, achievements, certifications]

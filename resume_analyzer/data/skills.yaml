@@ -1,0 +1,197 @@
+# Skills taxonomy: canonical name -> aliases, grouped by category.
+#
+#   name:      canonical form (also matched)
+#   aliases:   other spellings, matched case-insensitively on word boundaries
+#   case:      aliases (may include the name) matched case-sensitively only,
+#              for acronyms that collide with normal words (AI, ML, OS)
+#   list_only: aliases matched case-sensitively AND only inside a list
+#              ("Languages: C, Go, R"), for single letters / common words
+#
+# Add a skill here and both the ATS keyword matcher and the extractor pick it up.
+
+languages:
+  - {name: Python, aliases: [Python3, Python 3]}
+  - {name: Java, aliases: [Core Java, Java 8, Java 17]}
+  - {name: C++, aliases: [CPP, C plus plus]}
+  - {name: C, list_only: [C]}
+  - {name: C#, aliases: [CSharp, C Sharp]}
+  - {name: JavaScript, aliases: [JS, ECMAScript, ES6], case: [JS]}
+  - {name: TypeScript, aliases: [TS], list_only: [TS]}
+  - {name: Go, aliases: [Golang], list_only: [Go]}
+  - {name: Rust, case: [Rust]}
+  - {name: Kotlin}
+  - {name: Swift, case: [Swift]}
+  - {name: Scala}
+  - {name: Ruby}
+  - {name: PHP}
+  - {name: R, list_only: [R]}
+  - {name: MATLAB, aliases: [Matlab]}
+  - {name: SQL, case: [SQL]}
+  - {name: Bash, aliases: [Shell Scripting, Shell]}
+  - {name: Dart}
+  - {name: Solidity}
+  - {name: Verilog}
+  - {name: VHDL}
+  - {name: Assembly, aliases: [Assembly Language, x86 Assembly]}
+
+web:
+  - {name: HTML, aliases: [HTML5]}
+  - {name: CSS, aliases: [CSS3]}
+  - {name: React, aliases: [React.js, ReactJS, React JS], case: [React]}
+  - {name: Next.js, aliases: [NextJS, Next JS]}
+  - {name: Angular, aliases: [AngularJS, Angular.js]}
+  - {name: Vue.js, aliases: [Vue, VueJS]}
+  - {name: Node.js, aliases: [NodeJS, Node JS, Node], case: [Node]}
+  - {name: Express.js, aliases: [Express, ExpressJS], list_only: [Express]}
+  - {name: Django}
+  - {name: Flask, case: [Flask]}
+  - {name: FastAPI}
+  - {name: Spring Boot, aliases: [SpringBoot]}
+  - {name: Spring, aliases: [Spring Framework], list_only: [Spring]}
+  - {name: ASP.NET, aliases: [ASP.NET Core, .NET Core]}
+  - {name: .NET, aliases: [dotnet]}
+  - {name: Tailwind CSS, aliases: [Tailwind, TailwindCSS]}
+  - {name: Bootstrap, case: [Bootstrap]}
+  - {name: Redux}
+  - {name: REST APIs, aliases: [REST, RESTful, REST API, RESTful APIs], case: [REST]}
+  - {name: GraphQL}
+  - {name: gRPC}
+  - {name: WebSockets, aliases: [WebSocket]}
+  - {name: Microservices, aliases: [Microservice Architecture]}
+
+mobile:
+  - {name: Android, aliases: [Android Development]}
+  - {name: iOS, aliases: [iOS Development], case: [iOS]}
+  - {name: React Native}
+  - {name: Flutter}
+  - {name: Jetpack Compose}
+  - {name: SwiftUI}
+
+databases:
+  - {name: MySQL}
+  - {name: PostgreSQL, aliases: [Postgres]}
+  - {name: MongoDB, aliases: [Mongo], case: [Mongo]}
+  - {name: Redis}
+  - {name: SQLite}
+  - {name: Oracle Database, aliases: [Oracle DB, Oracle]}
+  - {name: SQL Server, aliases: [MS SQL Server, MSSQL]}
+  - {name: Cassandra}
+  - {name: DynamoDB}
+  - {name: Elasticsearch, aliases: [Elastic Search, ElasticSearch]}
+  - {name: Firebase}
+  - {name: NoSQL}
+
+cloud_devops:
+  - {name: AWS, aliases: [Amazon Web Services]}
+  - {name: Azure, aliases: [Microsoft Azure]}
+  - {name: GCP, aliases: [Google Cloud, Google Cloud Platform]}
+  - {name: Docker}
+  - {name: Kubernetes, aliases: [K8s]}
+  - {name: Terraform}
+  - {name: Ansible}
+  - {name: Jenkins}
+  - {name: GitHub Actions}
+  - {name: CI/CD, aliases: [CICD, CI CD, Continuous Integration]}
+  - {name: Linux, aliases: [Ubuntu, Unix]}
+  - {name: Nginx}
+  - {name: Kafka, aliases: [Apache Kafka]}
+  - {name: RabbitMQ}
+  - {name: Serverless, aliases: [AWS Lambda, Lambda], list_only: [Lambda]}
+
+data_ml:
+  - {name: Machine Learning, aliases: [ML], case: [ML]}
+  - {name: Deep Learning, aliases: [DL], case: [DL]}
+  - {name: Artificial Intelligence, aliases: [AI], case: [AI]}
+  - {name: NLP, aliases: [Natural Language Processing]}
+  - {name: Computer Vision, aliases: [CV], list_only: [CV]}
+  - {name: Generative AI, aliases: [GenAI, Gen AI, LLMs, LLM, Large Language Models]}
+  - {name: TensorFlow, aliases: [Tensorflow]}
+  - {name: PyTorch, aliases: [Pytorch, Torch], list_only: [Torch]}
+  - {name: Keras}
+  - {name: scikit-learn, aliases: [sklearn, Scikit Learn, scikit]}
+  - {name: Pandas, case: [Pandas]}
+  - {name: NumPy, aliases: [Numpy]}
+  - {name: OpenCV}
+  - {name: Hugging Face, aliases: [HuggingFace, Transformers], list_only: [Transformers]}
+  - {name: Spark, aliases: [Apache Spark, PySpark], case: [Spark]}
+  - {name: Hadoop}
+  - {name: Data Analysis, aliases: [Data Analytics]}
+  - {name: Statistics, aliases: [Statistical Analysis]}
+  - {name: Tableau}
+  - {name: Power BI, aliases: [PowerBI]}
+  - {name: Data Visualization, aliases: [Data Visualisation]}
+  - {name: Jupyter, aliases: [Jupyter Notebook]}
+
+cs_fundamentals:
+  - {name: Data Structures, aliases: [DSA, Data Structures and Algorithms, Data Structures & Algorithms], case: [DSA]}
+  - {name: Algorithms, aliases: [Algorithm Design, Design and Analysis of Algorithms, DAA], case: [DAA]}
+  - {name: Operating Systems, aliases: [Operating System, OS], case: [OS]}
+  - {name: DBMS, aliases: [Database Management Systems, Database Management System, Database Systems]}
+  - {name: Computer Networks, aliases: [Computer Networking, Networking, CN], case: [CN]}
+  - {name: OOP, aliases: [OOPS, OOPs, Object Oriented Programming, Object-Oriented Programming], case: [OOP, OOPS, OOPs]}
+  - {name: System Design, aliases: [Low Level Design, High Level Design, LLD, HLD], case: [LLD, HLD]}
+  - {name: Design Patterns}
+  - {name: Theory of Computation, aliases: [TOC, Automata Theory], case: [TOC]}
+  - {name: Compiler Design, aliases: [Compilers]}
+  - {name: Computer Architecture, aliases: [Computer Organization, COA], case: [COA]}
+  - {name: Discrete Mathematics, aliases: [Discrete Maths, Discrete Math]}
+
+tools:
+  - {name: Git}
+  - {name: GitHub}
+  - {name: GitLab}
+  - {name: Jira, aliases: [JIRA]}
+  - {name: Postman}
+  - {name: VS Code, aliases: [Visual Studio Code, VSCode]}
+  - {name: Figma}
+  - {name: Agile, aliases: [Scrum, Agile Methodology]}
+
+testing:
+  - {name: Unit Testing}
+  - {name: JUnit}
+  - {name: pytest, aliases: [PyTest]}
+  - {name: Selenium}
+  - {name: Jest}
+
+security:
+  - {name: Cybersecurity, aliases: [Cyber Security, Information Security]}
+  - {name: Penetration Testing, aliases: [Pentesting, Pen Testing]}
+  - {name: Cryptography}
+  - {name: OWASP}
+
+office:
+  - {name: MS Office, aliases: [Microsoft Office, MS-Office]}
+  - {name: Excel, aliases: [MS Excel, Microsoft Excel, Advanced Excel]}
+  - {name: Word, aliases: [MS Word, Microsoft Word], list_only: [Word]}
+  - {name: PowerPoint, aliases: [MS PowerPoint, Microsoft PowerPoint]}
+  - {name: Tally, aliases: [Tally ERP, Tally Prime, Tally ERP 9]}
+  - {name: Typing, aliases: [Typing Speed, Touch Typing]}
+  - {name: Data Entry}
+  - {name: CCC, aliases: [Course on Computer Concepts], case: [CCC]}
+  - {name: Computer Fundamentals, aliases: [Basic Computer Knowledge]}
+
+core_engineering:
+  - {name: AutoCAD, aliases: [Auto CAD]}
+  - {name: SolidWorks, aliases: [Solid Works]}
+  - {name: CATIA}
+  - {name: ANSYS, aliases: [Ansys]}
+  - {name: Creo, aliases: [PTC Creo, Pro/Engineer]}
+  - {name: Fusion 360}
+  - {name: Simulink}
+  - {name: LabVIEW}
+  - {name: PLC, aliases: [PLC Programming]}
+  - {name: SCADA}
+  - {name: Arduino}
+  - {name: Raspberry Pi}
+  - {name: Embedded Systems, aliases: [Embedded C]}
+  - {name: IoT, aliases: [Internet of Things]}
+  - {name: PCB Design, aliases: [Altium, KiCad, Eagle PCB]}
+  - {name: STAAD Pro, aliases: [STAAD.Pro, STAAD]}
+  - {name: ETABS}
+  - {name: Revit}
+  - {name: Finite Element Analysis, aliases: [FEA, FEM], case: [FEA, FEM]}
+  - {name: CFD, aliases: [Computational Fluid Dynamics]}
+  - {name: Power Systems}
+  - {name: Control Systems}
+  - {name: Thermodynamics}
+  - {name: Six Sigma, aliases: [Lean Six Sigma]}

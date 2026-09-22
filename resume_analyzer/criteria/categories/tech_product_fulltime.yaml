@@ -240,6 +240,8 @@ eligibility:
     when_missing: skip
     message: "{value} active backlog(s): most campus drives require none."
 
+ats: {expected_sections: [education, experience, projects, skills], max_pages: 2, filename_role: SDE}
+
 generator:
   section_order: [header, education, coding_profiles, experience, projects, skills, achievements, certifications]
   emphasize: [coding.leetcode.total, coding.codeforces.rating, projects.quantified_count]

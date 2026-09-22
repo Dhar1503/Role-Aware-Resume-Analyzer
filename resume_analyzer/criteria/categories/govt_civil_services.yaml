@@ -150,6 +150,8 @@ eligibility:
     message: "{value} attempts used: no attempts remain for your category."
     note: "UPSC CSE: 6 attempts (GEN/EWS), 9 (OBC-NCL, PwBD), unlimited within the age limit (SC/ST)."
 
+ats: {expected_sections: [education], max_pages: 2, filename_role: UPSC, linkedin_expected: false}
+
 generator:
   section_order: [header, education, exam_progress, service, achievements, languages, skills]
   emphasize: [exam.upsc.stage, achievements.service_count, achievements.leadership_count]

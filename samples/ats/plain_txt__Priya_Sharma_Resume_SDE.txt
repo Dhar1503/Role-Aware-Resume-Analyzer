@@ -1,0 +1,34 @@
+Priya Sharma
+priya.sharma@gmail.com | +91 98765 43210 | linkedin.com/in/priyasharma | github.com/priyasharma
+
+SUMMARY
+Final-year Computer Science student who builds backend services and full-stack apps. Strong in data structures and algorithms with 420 LeetCode problems solved.
+
+EDUCATION
+B.Tech, Computer Science and Engineering, XYZ Institute of Technology | 2022 - 2026 | CGPA: 8.6/10
+Class XII (CBSE), Delhi Public School | 2022 | Percentage: 92.4%
+Class X (CBSE), Delhi Public School | 2020 | Percentage: 95%
+
+EXPERIENCE
+Software Engineering Intern, Acme Labs, Bengaluru | Jun 2025 - Aug 2025
+- Built REST APIs in Java Spring Boot serving 2,000 daily users; cut p95 latency by 35%.
+- Wrote Postgres schema migrations and added unit tests, raising coverage from 52% to 81%.
+- Containerised three services with Docker and set up CI on GitHub Actions.
+
+PROJECTS
+Campus Ride-Share App | React, Node.js, MongoDB | Jan 2025 - Apr 2025
+- Full-stack ride-sharing app used by 600+ students; deployed at rideshare.example.app.
+- Matched riders with a geohash index, reducing lookup time from 1.2 s to 90 ms.
+Distributed Key-Value Store | C++ | Aug 2024 - Nov 2024
+- Raft-based replicated store handling 15k writes/sec on a 3-node cluster.
+- Implemented log compaction and snapshotting; wrote a Linux fault-injection test harness.
+
+TECHNICAL SKILLS
+Languages: Python, Java, C++, JS, SQL
+Frameworks: React, Node.js, Spring Boot
+Databases & Tools: Postgres, MongoDB, Docker, Git, Linux
+Fundamentals: DSA, OOP, DBMS, Operating Systems
+
+ACHIEVEMENTS
+- LeetCode: 420 problems solved (210 Medium, 60 Hard); Codeforces rating 1520.
+- Smart India Hackathon 2024: national finalist (top 5 of 120 teams).

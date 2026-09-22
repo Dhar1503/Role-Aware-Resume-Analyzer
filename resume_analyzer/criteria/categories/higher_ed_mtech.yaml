@@ -140,6 +140,8 @@ eligibility:
     message_missing: No GATE result found on the resume.
     note: No GATE result was found. It is required unless you qualify for an exemption (e.g. IIT graduate with CPI >= 8.0).
 
+ats: {expected_sections: [education, projects], max_pages: 2, filename_role: MTech}
+
 generator:
   section_order: [header, gate_scorecard, education, coursework, projects, research, skills, achievements]
   emphasize: [exam.gate.score, exam.gate.air, exam.gate.percentile, academics.ug_cgpa]

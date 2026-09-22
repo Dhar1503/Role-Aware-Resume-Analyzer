@@ -94,6 +94,8 @@ eligibility:
       No GATE result found. Many research programmes accept UGC-NET/CSIR
       instead, or exempt IIT graduates with CPI >= 8.0.
 
+ats: {expected_sections: [education, research], max_pages: 3, filename_role: Research_CV}
+
 generator:
   section_order: [header, research_interests, publications, research, education, gate_scorecard, projects, skills, achievements]
   emphasize: [publications.count, research.experience_months, exam.gate.score]

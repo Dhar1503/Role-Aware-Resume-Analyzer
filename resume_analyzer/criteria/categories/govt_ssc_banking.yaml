@@ -128,6 +128,8 @@ eligibility:
     message: Age {value} exceeds the typical {limit}-year limit for your category; check your specific post.
     note: "Common relaxations: OBC-NCL +3, SC/ST +5, PwBD +10 years."
 
+ats: {expected_sections: [education, skills], max_pages: 2, filename_role: SSC_Bank, linkedin_expected: false}
+
 generator:
   section_order: [header, education, exam_progress, skills, languages, achievements]
   emphasize: [academics.class10_pct, academics.class12_pct, academics.ug_pct_est, exam.ssc_bank.stage]

@@ -11,6 +11,7 @@ from typing import Annotated, Any, Dict, List, Literal, Optional, Tuple, Union
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
+from ..extraction.sections import SECTION_KEYS
 from ..features import FEATURES, all_feature_names, spec
 
 
@@ -249,6 +250,29 @@ class GeneratorHints(_Strict):
     emphasize: List[str] = []
 
 
+class AtsHints(_Strict):
+    """Category-specific expectations used by the ATS simulation."""
+    expected_sections: List[str] = ["education", "skills"]
+    max_pages: int = Field(2, ge=1)
+    filename_role: str = Field("", description="Role tag in the suggested file name, e.g. SDE")
+    linkedin_expected: bool = True
+
+    @field_validator("expected_sections")
+    @classmethod
+    def _known_sections(cls, v):
+        unknown = [s for s in v if s not in SECTION_KEYS]
+        if unknown:
+            raise ValueError(f"unknown section(s) {unknown}; valid: {', '.join(SECTION_KEYS)}")
+        return v
+
+    @field_validator("filename_role")
+    @classmethod
+    def _safe_role(cls, v):
+        if not all(c.isalnum() or c == "_" for c in v):
+            raise ValueError("filename_role may only contain letters, digits and underscores")
+        return v
+
+
 class Category(_Strict):
     id: str
     label: str
@@ -260,6 +284,7 @@ class Category(_Strict):
     eligibility: List[Gate] = []
     inputs: List[InputSpec] = []
     generator: Optional[GeneratorHints] = None
+    ats: AtsHints = AtsHints()
     notes: List[str] = []
     sources: List[str] = []
     last_reviewed: Optional[str] = None

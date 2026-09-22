@@ -138,6 +138,8 @@ eligibility:
     message: Age {value} exceeds the typical {limit}-year limit for your category.
     note: Varies by PSU (commonly 26-30 for GEN) with standard relaxations.
 
+ats: {expected_sections: [education, projects], max_pages: 2, filename_role: PSU_GET, linkedin_expected: false}
+
 generator:
   section_order: [header, gate_scorecard, education, experience, projects, skills, achievements]
   emphasize: [exam.gate.score, exam.gate.air, academics.ug_pct_est]
