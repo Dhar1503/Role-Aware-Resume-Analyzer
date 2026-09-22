@@ -1,0 +1,145 @@
+id: higher_ed_mtech
+label: M.Tech Admission (IITs / NITs via GATE)
+description: >
+  Taught M.Tech programmes at IITs, NITs and IIITs. Offers are made largely on
+  GATE score (through COAP/CCMT); some IIT departments add a written test or
+  interview. UG academics act as an eligibility floor.
+examples: [IIT Madras, IIT Bombay, IIT Delhi, NIT Trichy, IIIT Hyderabad]
+score_label: Admission readiness
+last_reviewed: "2026-09"
+notes:
+  - >
+    GATE cutoffs differ widely by institute, department, paper and year; the
+    bands below describe a competitive profile for top-5 IITs in popular
+    departments and are indicative only.
+  - >
+    Graduates of IITs with CPI >= 8.0 are exempt from GATE at many IITs; the
+    missing-GATE check is therefore a warning, not a hard fail.
+sources:
+  - COAP / CCMT admission brochures (eligibility and GATE validity)
+  - Individual IIT M.Tech admission pages
+
+inputs:
+  - {id: reservation_category, label: Reservation category, type: choice, options: [GEN, EWS, OBC-NCL, SC, ST]}
+  - {id: pwbd, label: Person with Benchmark Disability (PwBD), type: bool}
+
+subscores:
+  gate_exam:   {label: GATE Performance,           weight: 0.60}
+  academics:   {label: UG Academics,               weight: 0.20}
+  preparation: {label: Coursework & Projects,      weight: 0.10}
+  research:    {label: Research Exposure,          weight: 0.10}
+
+signals:
+  - id: gate_result
+    label: GATE score / percentile / AIR
+    subscore: gate_exam
+    any_of:
+      - feature: exam.gate.score
+        rule: {type: bands, points: [[350, 0], [500, 0.3], [600, 0.55], [700, 0.8], [800, 0.95], [900, 1]]}
+      - feature: exam.gate.percentile
+        rule: {type: bands, points: [[80, 0], [90, 0.35], [95, 0.6], [98, 0.85], [99.5, 1]]}
+      - feature: exam.gate.air
+        rule: {type: bands, points: [[1, 1], [200, 0.95], [1000, 0.8], [3000, 0.55], [8000, 0.25], [15000, 0]]}
+    suggest:
+      below: 0.8
+      text: >
+        Your GATE result ({value}) is below what top-IIT departments usually
+        admit (roughly 700+ score / 98+ percentile in popular papers). Check
+        each institute's previous-year COAP cutoffs, or retake GATE; scores
+        stay valid for 3 years.
+      text_missing: >
+        No GATE result found. State it prominently near the top, e.g. "GATE
+        CS 2026: Score 712 | AIR 1,240 | 98.1 percentile". It is the main
+        admission criterion.
+
+  - id: ug_cgpa
+    label: UG CGPA
+    subscore: academics
+    feature: academics.ug_cgpa
+    rule: {type: bands, points: [[6, 0], [6.5, 0.2], [7.5, 0.55], [8.5, 0.85], [9.3, 1]]}
+    suggest:
+      below: 0.4
+      text: >
+        CGPA {value} is close to the eligibility floor. Some IIT departments
+        shortlist for tests/interviews with higher CGPA cutoffs, so rely on a
+        strong GATE score.
+      text_missing: 'State your UG CGPA (e.g. "CGPA: 8.1/10"); eligibility is checked against it.'
+
+  - id: coursework
+    label: Relevant coursework listed
+    subscore: preparation
+    weight: 0.5
+    feature: academics.coursework_count
+    rule: {type: bands, points: [[0, 0], [3, 0.5], [6, 1]]}
+    missing: exclude
+    suggest:
+      text: Only {value} relevant course(s) listed. Name the core courses for your target specialisation.
+      text_missing: >
+        Add a "Relevant Coursework" line listing core courses for your target
+        specialisation (e.g. Algorithms, Machine Learning, Computer Architecture).
+
+  - id: projects
+    label: Technical projects
+    subscore: preparation
+    weight: 0.5
+    feature: projects.count
+    rule: {type: bands, points: [[0, 0], [1, 0.5], [2, 0.8], [3, 1]]}
+    suggest:
+      text: >
+        {value} project(s) listed. Include 2-3 projects in your intended
+        specialisation; interviewing departments ask about them.
+
+  - id: publications
+    label: Publications
+    subscore: research
+    weight: 0.5
+    feature: publications.count
+    rule: {type: bands, points: [[0, 0], [1, 0.8], [2, 1]]}
+    suggest:
+      below: 0.5
+      text: >
+        No publications yet. They are not required for M.Tech, but a
+        workshop paper or preprint from a final-year project helps with
+        departments that interview.
+
+  - id: research_experience
+    label: Research internship / RA experience
+    subscore: research
+    weight: 0.5
+    feature: research.experience_months
+    rule: {type: bands, points: [[0, 0], [2, 0.5], [6, 1]]}
+    missing: exclude
+
+eligibility:
+  - id: min_cgpa
+    label: Minimum UG CGPA
+    feature: academics.ug_cgpa
+    min: 6.5
+    adjust:
+      - {input: reservation_category, in: [SC, ST], delta: -0.5}
+      - {input: pwbd, equals: true, delta: -0.5}
+    adjust_mode: largest
+    message: UG CGPA {value} is below the {limit} minimum for your category.
+    note: Commonly 6.5 CGPA / 60% (GEN, EWS, OBC-NCL) and 6.0 / 55% (SC, ST, PwBD). Verify with the institute.
+  - id: min_pct
+    label: Minimum UG percentage
+    feature: academics.ug_pct
+    min: 60
+    adjust:
+      - {input: reservation_category, in: [SC, ST], delta: -5}
+      - {input: pwbd, equals: true, delta: -5}
+    adjust_mode: largest
+    when_missing: skip
+    message: UG percentage {value}% is below the {limit}% minimum for your category.
+  - id: gate_present
+    label: Valid GATE score
+    feature: exam.gate.years_since
+    max: 3
+    when_missing: warn
+    message: "GATE taken {value} year(s) ago; scores are valid for 3 years."
+    message_missing: No GATE result found on the resume.
+    note: No GATE result was found. It is required unless you qualify for an exemption (e.g. IIT graduate with CPI >= 8.0).
+
+generator:
+  section_order: [header, gate_scorecard, education, coursework, projects, research, skills, achievements]
+  emphasize: [exam.gate.score, exam.gate.air, exam.gate.percentile, academics.ug_cgpa]

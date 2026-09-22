@@ -1,0 +1,133 @@
+id: govt_ssc_banking
+label: SSC & Banking Exams (SSC CGL/CHSL, IBPS/SBI PO & Clerk)
+description: >
+  Staff Selection Commission and public-sector bank recruitment. Selection is
+  exam-rank based; the resume matters for eligibility, document verification
+  and (for PO roles) the interview. Class 10/12 and graduation marks, computer
+  proficiency and the local language carry more weight than in UPSC.
+examples: [SSC CGL, SSC CHSL, IBPS PO, SBI PO, IBPS Clerk, RRB PO]
+score_label: Profile readiness
+last_reviewed: "2026-09"
+notes:
+  - >
+    Age limits differ by post (e.g. IBPS/SBI PO 20-30, SSC CGL 18-27/30/32),
+    so age checks are warnings against a common 30-year limit. Verify the
+    notification for your post.
+  - For IBPS Clerk/RRB posts, proficiency in the official language of the state applied for is mandatory.
+sources:
+  - SSC and IBPS/SBI recruitment notifications
+
+inputs:
+  - {id: date_of_birth, label: Date of birth, type: date, feature: candidate.date_of_birth}
+  - {id: reservation_category, label: Reservation category, type: choice, options: [GEN, EWS, OBC-NCL, SC, ST]}
+  - {id: pwbd, label: Person with Benchmark Disability (PwBD), type: bool}
+
+subscores:
+  exam_progress:   {label: Exam Progress,               weight: 0.35}
+  academics:       {label: Academics (10th/12th/UG),    weight: 0.30}
+  computer_skills: {label: Computer Proficiency,        weight: 0.20}
+  languages:       {label: Languages,                   weight: 0.15}
+
+signals:
+  - id: exam_stage
+    label: Furthest stage cleared
+    subscore: exam_progress
+    feature: exam.ssc_bank.stage
+    rule: {type: step, tiers: [[1, 0.5], [2, 0.85], [3, 1]]}
+    suggest:
+      below: 0.5
+      text: >
+        State any stage you have cleared with exam and year (e.g. "IBPS PO
+        2025: cleared Mains"); it shows competitiveness to interview panels.
+      text_missing: >
+        No exam progress stated. If you've cleared Prelims/Tier-1 or Mains in
+        any SSC/banking exam, state it with the year.
+
+  - id: class10
+    label: Class 10 marks
+    subscore: academics
+    weight: 0.25
+    feature: academics.class10_pct
+    rule: {type: bands, points: [[40, 0], [60, 0.5], [75, 0.8], [90, 1]]}
+    suggest:
+      text_missing: >
+        State your Class 10 marks (percentage or CGPA). Government recruitment
+        asks for them during document verification.
+      text: Class 10 marks ({value}%) are on the lower side; highlight exam progress and skills instead.
+      below: 0.5
+
+  - id: class12
+    label: Class 12 marks
+    subscore: academics
+    weight: 0.25
+    feature: academics.class12_pct
+    rule: {type: bands, points: [[40, 0], [60, 0.5], [75, 0.8], [90, 1]]}
+    suggest:
+      text_missing: State your Class 12 marks; they are checked for eligibility and document verification.
+      text: Class 12 marks ({value}%) are on the lower side; highlight exam progress and skills instead.
+      below: 0.5
+
+  - id: ug_marks
+    label: Graduation marks
+    subscore: academics
+    weight: 0.5
+    feature: academics.ug_pct_est
+    rule: {type: bands, points: [[40, 0], [55, 0.4], [65, 0.7], [75, 0.9], [85, 1]]}
+    suggest:
+      text_missing: State your graduation percentage or CGPA.
+      text: Graduation marks (~{value}%) are modest; some specialist posts require 60%+.
+      below: 0.5
+
+  - id: computer_skills
+    label: Computer / office proficiency
+    subscore: computer_skills
+    feature: skills.list
+    rule:
+      type: match_count
+      values: [MS Office, Microsoft Office, Excel, MS Excel, Word, PowerPoint, Tally, Typing, Data Entry, Computer Fundamentals, CCC, O Level]
+      points: [[0, 0], [1, 0.5], [3, 1]]
+    suggest:
+      text: >
+        List computer proficiency explicitly: MS Office/Excel, typing speed
+        (SSC skill tests need it for some posts), CCC/O-Level certificates.
+
+  - id: languages
+    label: Languages known (incl. regional)
+    subscore: languages
+    feature: languages.spoken_count
+    rule: {type: bands, points: [[0, 0], [1, 0.4], [2, 0.8], [3, 1]]}
+    suggest:
+      text: >
+        List the languages you read, write and speak, including your state's
+        official language; it's mandatory for many clerk/RRB posts.
+
+eligibility:
+  - id: degree
+    label: Graduate degree
+    feature: education.has_bachelor
+    equals: true
+    level: warn
+    when_missing: warn
+    message: Most CGL/PO posts require a bachelor's degree (CHSL needs Class 12).
+  - id: min_age
+    label: Minimum age
+    feature: candidate.age
+    min: 18
+    message: Age {value} is below the minimum of {limit}.
+    note: Enter your date of birth to check age eligibility.
+  - id: max_age
+    label: Upper age limit (typical)
+    feature: candidate.age
+    max: 30
+    adjust:
+      - {input: reservation_category, equals: OBC-NCL, delta: 3}
+      - {input: reservation_category, in: [SC, ST], delta: 5}
+      - {input: pwbd, equals: true, delta: 10}
+    adjust_mode: sum
+    level: warn
+    message: Age {value} exceeds the typical {limit}-year limit for your category; check your specific post.
+    note: "Common relaxations: OBC-NCL +3, SC/ST +5, PwBD +10 years."
+
+generator:
+  section_order: [header, education, exam_progress, skills, languages, achievements]
+  emphasize: [academics.class10_pct, academics.class12_pct, academics.ug_pct_est, exam.ssc_bank.stage]

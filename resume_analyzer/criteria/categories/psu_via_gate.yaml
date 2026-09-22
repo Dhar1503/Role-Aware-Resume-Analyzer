@@ -1,0 +1,143 @@
+id: psu_via_gate
+label: PSU Recruitment through GATE (Engineer / Management Trainee)
+description: >
+  Public-sector undertakings that shortlist engineering graduates on GATE
+  score for Graduate/Executive Engineer Trainee posts, followed by group
+  discussion and interview. GATE dominates shortlisting; UG marks are an
+  eligibility filter; core internships help at interview.
+examples: [IOCL, NTPC, ONGC, PGCIL, BHEL, GAIL, BPCL, HPCL]
+score_label: Shortlisting readiness
+last_reviewed: "2026-09"
+notes:
+  - >
+    Final selection typically blends GATE score with GD/interview (often
+    around 15-35% weight). This score covers the shortlisting stage.
+  - >
+    UG percentage is estimated as CGPA x 9.5 when not stated. Many PSUs use
+    their own or the university's conversion formula.
+  - Most PSUs accept only the GATE score of the notified year.
+sources:
+  - Individual PSU recruitment notifications through GATE
+
+inputs:
+  - {id: date_of_birth, label: Date of birth, type: date, feature: candidate.date_of_birth}
+  - {id: reservation_category, label: Reservation category, type: choice, options: [GEN, EWS, OBC-NCL, SC, ST]}
+  - {id: pwbd, label: Person with Benchmark Disability (PwBD), type: bool}
+
+subscores:
+  gate_exam: {label: GATE Performance,               weight: 0.70}
+  academics: {label: Academics,                      weight: 0.15}
+  profile:   {label: Core Internships & Projects,    weight: 0.15}
+
+signals:
+  - id: gate_result
+    label: GATE score / percentile / AIR
+    subscore: gate_exam
+    any_of:
+      - feature: exam.gate.score
+        rule: {type: bands, points: [[500, 0], [650, 0.4], [750, 0.7], [850, 0.9], [925, 1]]}
+      - feature: exam.gate.percentile
+        rule: {type: bands, points: [[90, 0], [97, 0.5], [99, 0.8], [99.7, 1]]}
+      - feature: exam.gate.air
+        rule: {type: bands, points: [[1, 1], [100, 0.9], [500, 0.65], [1500, 0.3], [4000, 0]]}
+    suggest:
+      below: 0.7
+      text: >
+        GATE result ({value}) is below typical PSU shortlisting ranges for
+        popular papers (often AIR < 500-1000 for GEN). Check each PSU's
+        previous-year cutoffs for your discipline.
+      text_missing: >
+        No GATE result found. PSU shortlisting is based on it; state your
+        paper, year, score and AIR at the top of the resume.
+
+  - id: ug_marks
+    label: UG percentage
+    subscore: academics
+    weight: 0.6
+    feature: academics.ug_pct_est
+    rule: {type: bands, points: [[55, 0], [65, 0.5], [75, 0.8], [85, 1]]}
+    suggest:
+      below: 0.5
+      text: UG marks (~{value}%) are near common PSU minimums (60-65%).
+      text_missing: State your UG percentage or CGPA; PSUs apply a minimum (typically 60-65%).
+
+  - id: class10
+    label: Class 10 marks
+    subscore: academics
+    weight: 0.2
+    feature: academics.class10_pct
+    rule: {type: bands, points: [[50, 0], [70, 0.6], [85, 0.9], [95, 1]]}
+    missing: exclude
+
+  - id: class12
+    label: Class 12 marks
+    subscore: academics
+    weight: 0.2
+    feature: academics.class12_pct
+    rule: {type: bands, points: [[50, 0], [70, 0.6], [85, 0.9], [95, 1]]}
+    missing: exclude
+
+  - id: core_company
+    label: Core-sector internship / training
+    subscore: profile
+    weight: 0.4
+    feature: experience.core_company_count
+    rule: {type: bands, points: [[0, 0], [1, 1]]}
+    suggest:
+      text: >
+        Add a core-sector internship or industrial training (a PSU, power
+        plant, refinery, manufacturing firm). Interview panels ask about it.
+
+  - id: internships
+    label: Internships / industrial training
+    subscore: profile
+    weight: 0.3
+    feature: experience.internship_count
+    rule: {type: bands, points: [[0, 0], [1, 0.7], [2, 1]]}
+
+  - id: projects
+    label: Core engineering projects
+    subscore: profile
+    weight: 0.3
+    feature: projects.count
+    rule: {type: bands, points: [[0, 0], [1, 0.6], [2, 1]]}
+    suggest:
+      text: Describe your final-year / core engineering project(s) with the problem, method and result.
+
+eligibility:
+  - id: gate_present
+    label: GATE score of the notified year
+    feature: exam.gate.years_since
+    max: 1
+    when_missing: fail
+    level: warn
+    message: "GATE taken {value} year(s) ago; most PSUs accept only the notified year's GATE."
+    message_missing: No GATE result found. PSU recruitment through GATE requires one.
+    note: A GATE score in the relevant paper is required for PSU recruitment through GATE.
+  - id: min_ug_pct
+    label: Minimum UG marks
+    feature: academics.ug_pct_est
+    min: 65
+    adjust:
+      - {input: reservation_category, in: [SC, ST], delta: -10}
+      - {input: pwbd, equals: true, delta: -10}
+    adjust_mode: largest
+    level: warn
+    message: UG marks ~{value}% are below the {limit}% minimum used by many PSUs for your category.
+    note: Varies by PSU (commonly 60-65% GEN/OBC/EWS, 55% or pass for SC/ST/PwBD).
+  - id: max_age
+    label: Upper age limit (typical)
+    feature: candidate.age
+    max: 26
+    adjust:
+      - {input: reservation_category, equals: OBC-NCL, delta: 3}
+      - {input: reservation_category, in: [SC, ST], delta: 5}
+      - {input: pwbd, equals: true, delta: 10}
+    adjust_mode: sum
+    level: warn
+    message: Age {value} exceeds the typical {limit}-year limit for your category.
+    note: Varies by PSU (commonly 26-30 for GEN) with standard relaxations.
+
+generator:
+  section_order: [header, gate_scorecard, education, experience, projects, skills, achievements]
+  emphasize: [exam.gate.score, exam.gate.air, academics.ug_pct_est]

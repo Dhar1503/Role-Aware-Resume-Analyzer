@@ -1,0 +1,245 @@
+id: tech_product_fulltime
+label: Software Engineer - Product Company (Full-time)
+description: >
+  Full-time SDE roles at product companies. Shortlisting typically weights an
+  online DSA assessment, then projects and prior internships; academics act
+  mostly as an eligibility filter.
+examples: [Microsoft, Amazon, Google, Atlassian, Flipkart, Uber]
+score_label: Resume strength
+last_reviewed: "2026-09"
+notes:
+  - >
+    Companies do not publish their resume rubrics. Weights reflect widely
+    observed campus/off-campus screening patterns (OA-first, DSA-heavy), not
+    any single company's internal process.
+  - Thresholds are indicative and meant to be tuned; edit this file, not code.
+
+subscores:
+  coding:       {label: DSA & Competitive Coding,     weight: 0.30}
+  projects:     {label: Projects,                     weight: 0.22}
+  experience:   {label: Internships & Experience,     weight: 0.20}
+  academics:    {label: Academics,                    weight: 0.10}
+  skills:       {label: Languages & CS Fundamentals,  weight: 0.10}
+  achievements: {label: Hackathons & Certifications,  weight: 0.08}
+
+signals:
+  # --- coding ---------------------------------------------------------------
+  - id: dsa_volume
+    label: Problem-solving volume (LeetCode / Codeforces / CodeChef)
+    subscore: coding
+    weight: 0.65
+    any_of:
+      - feature: coding.leetcode.total
+        rule: {type: bands, points: [[0, 0], [50, 0.15], [150, 0.45], [300, 0.75], [500, 0.95], [700, 1]]}
+      - feature: coding.codeforces.rating
+        rule: {type: bands, points: [[800, 0], [1200, 0.5], [1400, 0.75], [1600, 0.9], [1900, 1]]}
+      - feature: coding.codechef.rating
+        rule: {type: bands, points: [[1200, 0], [1600, 0.5], [1800, 0.75], [2000, 0.9], [2200, 1]]}
+    suggest:
+      below: 0.75
+      text: >
+        Strengthen visible DSA practice (current: {value}). Product-company
+        shortlists commonly expect 300+ LeetCode solves or a 1400+ Codeforces
+        rating; state the number on your resume.
+      text_missing: >
+        Add a coding-profiles line, e.g. "LeetCode: 350 solved (180 Medium, 40
+        Hard) | Codeforces: 1450". DSA evidence is the single largest factor
+        for product-company screening.
+
+  - id: dsa_difficulty
+    label: Share of Medium/Hard problems
+    subscore: coding
+    weight: 0.35
+    feature: coding.leetcode.medium_hard_share
+    rule: {type: bands, points: [[0, 0], [0.3, 0.4], [0.5, 0.75], [0.65, 1]]}
+    missing: exclude
+    suggest:
+      below: 0.75
+      text: >
+        Only {value_pct} of your LeetCode solves are Medium/Hard. Aim for at
+        least half: online assessments are mostly Medium-level.
+      only_if: coding.leetcode.total
+      text_missing: >
+        Break your LeetCode count down by difficulty (Easy/Medium/Hard);
+        a strong Medium/Hard share signals interview readiness.
+
+  # --- projects -------------------------------------------------------------
+  - id: project_count
+    label: Number of projects
+    subscore: projects
+    weight: 0.30
+    feature: projects.count
+    rule: {type: bands, points: [[0, 0], [1, 0.35], [2, 0.7], [3, 0.9], [4, 1]]}
+    suggest:
+      text: >
+        You list {value} project(s). Show 2-3 substantial projects; one
+        end-to-end, deployed project beats several tutorials.
+
+  - id: project_impact
+    label: Projects with measurable results
+    subscore: projects
+    weight: 0.35
+    feature: projects.quantified_count
+    rule: {type: bands, points: [[0, 0], [1, 0.55], [2, 0.85], [3, 1]]}
+    suggest:
+      text: >
+        {value} of your projects state a measurable result. Add numbers:
+        latency cut, users served, accuracy, dataset size (e.g. "reduced API
+        latency 40% for 2k daily users").
+
+  - id: project_deployed
+    label: Deployed / live projects
+    subscore: projects
+    weight: 0.25
+    feature: projects.deployed_count
+    rule: {type: bands, points: [[0, 0], [1, 0.7], [2, 1]]}
+    suggest:
+      text: >
+        Deploy at least one project and link it (live URL or app store).
+        Shipped work is far more convincing than a repository alone.
+
+  - id: github
+    label: GitHub profile linked
+    subscore: projects
+    weight: 0.10
+    feature: contact.github
+    rule: {type: boolean}
+    suggest:
+      below: 1
+      text: Add your GitHub profile link to the header so reviewers can inspect your code.
+
+  # --- experience -----------------------------------------------------------
+  - id: internships
+    label: Internships
+    subscore: experience
+    weight: 0.45
+    feature: experience.internship_count
+    rule: {type: bands, points: [[0, 0], [1, 0.6], [2, 0.9], [3, 1]]}
+    suggest:
+      text: >
+        {value} internship(s) listed. Prior SDE internships are a strong
+        shortlisting signal; target at least one before graduating.
+
+  - id: experience_months
+    label: Total industry experience
+    subscore: experience
+    weight: 0.30
+    feature: experience.total_months
+    rule: {type: bands, points: [[0, 0], [2, 0.4], [6, 0.8], [12, 1]]}
+    suggest:
+      text: >
+        {value} month(s) of industry experience stated. Include exact dates
+        (e.g. "May 2025 - Jul 2025") so duration is clear.
+
+  - id: product_company
+    label: Roles at product/tech companies
+    subscore: experience
+    weight: 0.25
+    feature: experience.product_company_count
+    rule: {type: bands, points: [[0, 0], [1, 0.8], [2, 1]]}
+    suggest:
+      text: >
+        No role at a recognised product/tech company yet. Well-known
+        internships, open-source programmes (GSoC, LFX) or startups with
+        shipped products count.
+
+  # --- academics ------------------------------------------------------------
+  - id: ug_cgpa
+    label: UG CGPA
+    subscore: academics
+    feature: academics.ug_cgpa
+    rule: {type: bands, points: [[5, 0], [6, 0.3], [7, 0.6], [8, 0.85], [9, 1]]}
+    suggest:
+      below: 0.6
+      text: >
+        CGPA {value} may fall below some campus-drive cutoffs (commonly
+        7.0-7.5). Offset it with strong DSA numbers and shipped projects.
+      text_missing: 'State your CGPA (e.g. "CGPA: 8.2/10"). Recruiters filter on it and omitting it reads as a red flag.'
+
+  # --- skills ---------------------------------------------------------------
+  - id: core_languages
+    label: Industry programming languages
+    subscore: skills
+    weight: 0.40
+    feature: skills.languages
+    rule:
+      type: match_count
+      values: [C++, Java, Python, Go, C#, JavaScript, TypeScript, Kotlin, Rust, Scala, Swift]
+      points: [[0, 0], [1, 0.6], [2, 0.9], [3, 1]]
+    suggest:
+      text: >
+        List the languages you can interview in. Most product-company OAs
+        allow C++, Java or Python; show depth in at least one.
+
+  - id: cs_fundamentals
+    label: CS fundamentals
+    subscore: skills
+    weight: 0.35
+    feature: skills.cs_fundamentals
+    rule:
+      type: match_count
+      values: [Data Structures, Algorithms, Operating Systems, DBMS, Computer Networks, OOP, System Design]
+      points: [[0, 0], [2, 0.5], [4, 0.85], [5, 1]]
+    suggest:
+      text: >
+        Name your CS fundamentals (DSA, OS, DBMS, Computer Networks, OOP) in
+        the skills or coursework section; interviews probe these directly.
+
+  - id: skill_breadth
+    label: Technical skill breadth
+    subscore: skills
+    weight: 0.25
+    feature: skills.count
+    rule: {type: bands, points: [[0, 0], [5, 0.5], [10, 0.9], [15, 1]]}
+
+  # --- achievements -----------------------------------------------------------
+  - id: hackathons
+    label: Hackathon participation
+    subscore: achievements
+    weight: 0.35
+    feature: achievements.hackathon_participations
+    rule: {type: bands, points: [[0, 0], [1, 0.5], [3, 1]]}
+    suggest:
+      text: >
+        Take part in hackathons (Smart India Hackathon, MLH, company-run
+        events); they show you can build under time pressure in a team.
+
+  - id: hackathon_wins
+    label: Hackathon wins / finalist
+    subscore: achievements
+    weight: 0.35
+    feature: achievements.hackathon_wins
+    rule: {type: bands, points: [[0, 0], [1, 0.8], [2, 1]]}
+    missing: exclude
+
+  - id: certifications
+    label: Recognised certifications
+    subscore: achievements
+    weight: 0.30
+    feature: certifications.recognized_count
+    rule: {type: bands, points: [[0, 0], [1, 0.6], [2, 1]]}
+    suggest:
+      below: 0.6
+      text: >
+        A recognised certification (AWS, Azure, GCP, Kubernetes) helps a
+        little; it will not substitute for projects or DSA.
+
+eligibility:
+  - id: cgpa_cutoff
+    label: Typical CGPA cutoff
+    feature: academics.ug_cgpa
+    min: 7.0
+    level: warn
+    message: CGPA {value} is below the {limit} cutoff many campus drives use.
+    note: Cutoffs vary by company and drive (often 6.0-8.0).
+  - id: backlogs
+    label: No active backlogs
+    feature: academics.active_backlogs
+    max: 0
+    level: warn
+    when_missing: skip
+    message: "{value} active backlog(s): most campus drives require none."
+
+generator:
+  section_order: [header, education, coding_profiles, experience, projects, skills, achievements, certifications]
+  emphasize: [coding.leetcode.total, coding.codeforces.rating, projects.quantified_count]

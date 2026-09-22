@@ -1,0 +1,46 @@
+id: tech_internship
+extends: tech_product_fulltime
+label: Software Engineering Internship - Product Company
+description: >
+  SDE internships (typically 2nd/3rd-year students). Same DSA-first screening
+  as full-time roles, with lower bars for volume and no expectation of prior
+  industry experience; projects and academics carry more weight instead.
+examples: [Microsoft, Amazon, Google STEP, Goldman Sachs, Flipkart]
+
+subscores:
+  coding:       {weight: 0.32}
+  projects:     {weight: 0.28}
+  experience:   {weight: 0.08}
+  academics:    {weight: 0.15}
+  skills:       {weight: 0.12}
+  achievements: {weight: 0.05}
+
+signals:
+  - id: dsa_volume
+    any_of:
+      - feature: coding.leetcode.total
+        rule: {type: bands, points: [[0, 0], [50, 0.25], [100, 0.5], [200, 0.8], [350, 1]]}
+      - feature: coding.codeforces.rating
+        rule: {type: bands, points: [[800, 0], [1100, 0.5], [1300, 0.75], [1500, 0.9], [1700, 1]]}
+      - feature: coding.codechef.rating
+        rule: {type: bands, points: [[1200, 0], [1500, 0.5], [1700, 0.75], [1900, 0.9], [2100, 1]]}
+    suggest:
+      text: >
+        Strengthen visible DSA practice (current: {value}). For internships,
+        150-250 LeetCode solves or a 1300+ Codeforces rating is a solid bar.
+
+  - id: internships
+    rule: {type: bands, points: [[0, 0.2], [1, 0.9], [2, 1]]}
+    suggest:
+      text: >
+        No prior internship is expected at this stage. If you have one
+        (including research or startup internships), list it with dates.
+
+  - id: experience_months
+    missing: exclude
+
+  - id: product_company
+    missing: exclude
+
+generator:
+  section_order: [header, education, coding_profiles, projects, skills, experience, achievements, certifications]

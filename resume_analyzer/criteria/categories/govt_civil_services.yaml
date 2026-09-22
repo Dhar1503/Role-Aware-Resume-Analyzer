@@ -1,0 +1,155 @@
+id: govt_civil_services
+label: Civil Services (UPSC CSE / State PSC)
+description: >
+  UPSC Civil Services and State PSC services. Selection is decided entirely
+  by the exam (Prelims, Mains, Personality Test); there is no resume
+  shortlisting. This category therefore reports eligibility first, and a
+  "profile readiness" score reflecting exam progress plus the service,
+  leadership and achievement record the interview board reads in your DAF.
+examples: [UPSC CSE (IAS/IPS/IFS), TNPSC Group 1, MPSC Rajyaseva, UPPSC PCS]
+score_label: Profile readiness
+last_reviewed: "2026-09"
+notes:
+  - >
+    10th/12th/UG marks are NOT an eligibility or selection criterion for
+    UPSC CSE. They carry a small weight here only as a general profile signal.
+  - >
+    Age is computed as of the date of analysis; UPSC counts it as of
+    1 August of the exam year. State PSC limits and attempt rules differ.
+    Always verify against the current notification.
+sources:
+  - UPSC Civil Services Examination notification (eligibility, age, attempts)
+
+inputs:
+  - {id: date_of_birth, label: Date of birth, type: date, feature: candidate.date_of_birth}
+  - {id: reservation_category, label: Reservation category, type: choice, options: [GEN, EWS, OBC-NCL, SC, ST]}
+  - {id: pwbd, label: Person with Benchmark Disability (PwBD), type: bool}
+  - {id: attempts_used, label: UPSC CSE attempts already used, type: number, feature: exam.upsc.attempts}
+
+subscores:
+  exam_progress: {label: Exam Progress,              weight: 0.40}
+  service:       {label: Service & Leadership,       weight: 0.20}
+  achievements:  {label: Awards & Achievements,      weight: 0.15}
+  academics:     {label: Academics,                  weight: 0.15}
+  languages:     {label: Languages,                  weight: 0.10}
+
+signals:
+  - id: exam_stage
+    label: Furthest stage cleared (Prelims / Mains / Interview)
+    subscore: exam_progress
+    feature: exam.upsc.stage
+    rule: {type: step, tiers: [[1, 0.5], [2, 0.85], [3, 1]]}
+    suggest:
+      below: 0.5
+      text: >
+        Selection depends entirely on the exam. If you have cleared any
+        stage, state it with the year (e.g. "UPSC CSE 2025: cleared Mains").
+      text_missing: >
+        No exam progress stated. If you have cleared Prelims or Mains in any
+        year, state it with the year; it is the strongest readiness signal.
+
+  - id: service
+    label: NSS / NCC / volunteering
+    subscore: service
+    weight: 0.5
+    feature: achievements.service_count
+    rule: {type: bands, points: [[0, 0], [1, 0.5], [3, 1]]}
+    suggest:
+      text: >
+        Document sustained public-service activity (NSS, NCC, NGO work,
+        teaching). The interview board draws questions from it.
+
+  - id: leadership
+    label: Leadership roles
+    subscore: service
+    weight: 0.5
+    feature: achievements.leadership_count
+    rule: {type: bands, points: [[0, 0], [1, 0.5], [3, 1]]}
+    suggest:
+      text: >
+        List positions of responsibility with concrete outcomes (e.g.
+        "Coordinated blood-donation drive, 300+ donors").
+
+  - id: awards
+    label: Awards, ranks and scholarships
+    subscore: achievements
+    feature: achievements.awards_count
+    rule: {type: bands, points: [[0, 0], [1, 0.5], [3, 1]]}
+    suggest:
+      text: >
+        Include awards, scholarships and competition ranks (state, national,
+        university); they add depth to your DAF.
+
+  - id: ug_cgpa
+    label: UG CGPA
+    subscore: academics
+    weight: 0.6
+    feature: academics.ug_cgpa
+    rule: {type: bands, points: [[5, 0.2], [6, 0.5], [7, 0.75], [8, 0.9], [9, 1]]}
+    missing: exclude
+
+  - id: class10
+    label: Class 10 marks
+    subscore: academics
+    weight: 0.2
+    feature: academics.class10_pct
+    rule: {type: bands, points: [[40, 0.2], [60, 0.6], [80, 0.9], [90, 1]]}
+    missing: exclude
+
+  - id: class12
+    label: Class 12 marks
+    subscore: academics
+    weight: 0.2
+    feature: academics.class12_pct
+    rule: {type: bands, points: [[40, 0.2], [60, 0.6], [80, 0.9], [90, 1]]}
+    missing: exclude
+
+  - id: languages
+    label: Languages known
+    subscore: languages
+    feature: languages.spoken_count
+    rule: {type: bands, points: [[0, 0], [1, 0.4], [2, 0.8], [3, 1]]}
+    suggest:
+      text: >
+        List the languages you read, write and speak. State PSCs often test
+        the state language, and UPSC Mains has a compulsory Indian-language paper.
+
+eligibility:
+  - id: degree
+    label: Graduate degree
+    feature: education.has_bachelor
+    equals: true
+    when_missing: warn
+    message: A bachelor's degree (final-year students may apply) is mandatory.
+  - id: min_age
+    label: Minimum age
+    feature: candidate.age
+    min: 21
+    message: Age {value} is below the minimum of {limit}.
+    note: Enter your date of birth to check age eligibility.
+  - id: max_age
+    label: Upper age limit
+    feature: candidate.age
+    max: 32
+    adjust:
+      - {input: reservation_category, equals: OBC-NCL, delta: 3}
+      - {input: reservation_category, in: [SC, ST], delta: 5}
+      - {input: pwbd, equals: true, delta: 10}
+    adjust_mode: sum
+    message: Age {value} exceeds the upper limit of {limit} for your category.
+    note: "UPSC CSE: 32 (GEN/EWS), 35 (OBC-NCL), 37 (SC/ST), +10 for PwBD."
+  - id: attempts
+    label: Attempts remaining
+    feature: exam.upsc.attempts
+    max: 5
+    adjust:
+      - {input: reservation_category, equals: OBC-NCL, delta: 3}
+      - {input: pwbd, equals: true, delta: 3}
+      - {input: reservation_category, in: [SC, ST], delta: 1000}
+    adjust_mode: largest
+    message: "{value} attempts used: no attempts remain for your category."
+    note: "UPSC CSE: 6 attempts (GEN/EWS), 9 (OBC-NCL, PwBD), unlimited within the age limit (SC/ST)."
+
+generator:
+  section_order: [header, education, exam_progress, service, achievements, languages, skills]
+  emphasize: [exam.upsc.stage, achievements.service_count, achievements.leadership_count]

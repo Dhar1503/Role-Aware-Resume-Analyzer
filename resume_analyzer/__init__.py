@@ -1,0 +1,1 @@
+"""AI Resume Strength Analyzer."""

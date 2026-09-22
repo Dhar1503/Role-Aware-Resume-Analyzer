@@ -1,0 +1,99 @@
+id: higher_ed_ms_phd_research
+extends: higher_ed_mtech
+label: MS (Research) / PhD Admission
+description: >
+  Research programmes (MS by Research, direct PhD, PhD) at IITs/IISc and
+  similar institutes. GATE (or UGC-NET/CSIR) shortlists for a written test and
+  interview, where research experience, publications and faculty
+  recommendations dominate. An optional pasted SOP is scored for specificity.
+examples: [IIT Madras MS/PhD, IISc Bangalore, IIT Bombay PhD, IIIT Hyderabad MS by Research]
+score_label: Admission readiness
+notes:
+  - >
+    LORs are not part of a resume. "Faculty-guided research" is used as the
+    closest visible proxy for a strong recommendation.
+  - Direct-PhD after a bachelor's often needs a higher CGPA (commonly 8.0+) than M.Tech admission.
+
+subscores:
+  research:    {label: Research Output & Experience, weight: 0.40}
+  gate_exam:   {label: GATE / Qualifying Exam,       weight: 0.25}
+  academics:   {label: Academics,                    weight: 0.20}
+  preparation: {label: Coursework & Projects,        weight: 0.05}
+  sop:         {label: Statement of Purpose,         weight: 0.10, description: Only scored when an SOP is pasted.}
+
+signals:
+  - id: publications
+    weight: 0.30
+    rule: {type: bands, points: [[0, 0], [1, 0.6], [2, 0.85], [3, 1]]}
+    suggest:
+      below: 0.7
+      text: >
+        {value} publication(s) listed. For research admissions even one
+        workshop paper, preprint or patent is a strong signal; turn a
+        project into a write-up.
+
+  - id: peer_reviewed
+    label: Peer-reviewed papers
+    subscore: research
+    weight: 0.25
+    feature: publications.peer_reviewed_count
+    rule: {type: bands, points: [[0, 0], [1, 0.8], [2, 1]]}
+    suggest:
+      text: >
+        No peer-reviewed paper yet. Target a workshop or student track at a
+        recognised venue; cite it in full (authors, venue, year).
+
+  - id: research_experience
+    weight: 0.25
+    rule: {type: bands, points: [[0, 0], [3, 0.4], [6, 0.7], [12, 1]]}
+    missing: zero
+    suggest:
+      text: >
+        {value} month(s) of research experience listed. A research
+        internship (SRFP, IAS summer fellowship, or with a professor) is
+        what interview panels look for most.
+
+  - id: faculty_guided
+    label: Research under a named professor (LOR proxy)
+    subscore: research
+    weight: 0.20
+    feature: research.faculty_guided
+    rule: {type: boolean}
+    suggest:
+      below: 1
+      text: >
+        Name your research supervisor (e.g. "under Prof. A. Kumar, IIT Madras").
+        It signals who can write you a strong recommendation letter.
+
+  - id: sop_specificity
+    label: SOP specificity (research area, problems, faculty)
+    subscore: sop
+    weight: 0.7
+    feature: sop.specificity
+    rule: {type: bands, points: [[0, 0], [0.3, 0.3], [0.6, 0.75], [0.8, 1]]}
+    missing: exclude
+    suggest:
+      text: >
+        Your SOP is generic. Name the specific research problem you want to
+        work on, relevant prior work you did, and 2-3 faculty or labs whose
+        work matches it.
+
+  - id: sop_length
+    label: SOP length
+    subscore: sop
+    weight: 0.3
+    feature: sop.word_count
+    rule: {type: bands, points: [[0, 0], [400, 0.4], [700, 1], [1200, 1], [2000, 0.4]]}
+    missing: exclude
+    suggest:
+      text: Your SOP is {value} words. Most programmes expect roughly 700-1200 words; check each portal's limit.
+
+eligibility:
+  - id: gate_present
+    note: >
+      No GATE result found. Many research programmes accept UGC-NET/CSIR
+      instead, or exempt IIT graduates with CPI >= 8.0.
+
+generator:
+  section_order: [header, research_interests, publications, research, education, gate_scorecard, projects, skills, achievements]
+  emphasize: [publications.count, research.experience_months, exam.gate.score]
