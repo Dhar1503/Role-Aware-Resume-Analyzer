@@ -1,3 +1,15 @@
+---
+title: Resume Strength Analyzer
+emoji: 📝
+colorFrom: indigo
+colorTo: blue
+sdk: docker
+app_port: 7860
+pinned: false
+license: mit
+short_description: Role-aware resume analysis with ATS simulation and JD fit
+---
+
 # Resume Strength Analyzer
 
 **Is your resume strong _for the specific thing you are applying to_?**
@@ -275,6 +287,30 @@ docker run --rm -p 7860:7860 -e SECRET_KEY=$(openssl rand -hex 32) resume-analyz
 ```
 
 Both models are baked into the image at build time, so no visitor waits for a download.
+
+### Deploying the Space
+
+The YAML front-matter at the top of this file *is* the Space configuration — Hugging Face
+reads `sdk` and `app_port` from the repo-root README, so it has to live here rather than in a
+separate file, or a push would overwrite the Space's own README and break the build.
+
+```bash
+pip install -U "huggingface_hub[cli]"
+
+# --add-to-git-credential is what lets `git push` authenticate to the Space over HTTPS
+hf auth login --add-to-git-credential
+
+hf repos create resume-strength-analyzer --type space --sdk docker
+
+git remote add space https://huggingface.co/spaces/<user>/resume-strength-analyzer
+git push space main --force        # the Space is created with its own initial commit
+```
+
+Then add `SECRET_KEY` under *Settings → Variables and secrets* as a **secret** (not a
+variable): `openssl rand -hex 32`. Everything else the image sets itself.
+
+The first build takes roughly 8–12 minutes: it installs CPU-only torch and downloads both
+models into the image.
 
 > **Run one worker.** Analysis results are held in the worker's own memory, so a second worker
 > would tell visitors at random that their report expired. The image sets
