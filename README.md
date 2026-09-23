@@ -18,7 +18,7 @@ Upload a resume, pick a target, and get three separate scores — how strong the
 for that target, whether screening software can actually read the file, and how well it
 matches a pasted job description. Every number shows the line of the resume it came from.
 
-> **Live demo:** _(add your Hugging Face Space URL here)_
+> **Live demo:** https://huggingface.co/spaces/Dhar1503/resume-strength-analyzer
 > **Source:** https://github.com/Dhar1503/Role-Aware-Resume-Analyzer
 
 ![The dashboard](docs/screenshots/dashboard.png)
