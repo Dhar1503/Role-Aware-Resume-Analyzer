@@ -13,6 +13,34 @@ matches a pasted job description. Every number shows the line of the resume it c
 
 ---
 
+## Before / after
+
+The first version worked but looked like a form with a title on top of it, so I rebuilt the
+interface around a documented design system rather than patching it: a dark canvas under a
+gradient mesh, glass panels, one signature gradient, a fixed hue per score dimension and a
+separate five-step scale for score bands. The rules live in
+[docs/design-system.md](docs/design-system.md).
+
+**Landing page**
+
+![Landing page, before and after](docs/screenshots/before-after/landing-before-after.png)
+
+**Dashboard**
+
+![Dashboard, before and after](docs/screenshots/before-after/dashboard-before-after.png)
+
+Also redesigned: the [builder](docs/screenshots/before-after/builder-before-after.png) and the
+[phone layout](docs/screenshots/before-after/mobile-before-after.png), where four full-height
+score cards became a horizontal card that fits four scores on one screen.
+
+Reviewing it as screenshots rather than trusting the test suite is what found the real
+defects — status pills stretched by `align-self: stretch`, a hero card whose transform was
+cancelled by a competing animation, bar fills with no height because `<i>` is inline, and
+`auto-fit` grids whose fixed column floor overflowed any viewport under 390px. Pages are now
+checked for overflow at 320 / 390 / 480 / 768 / 1024 / 1280 / 1600.
+
+---
+
 ## The problem
 
 Most resume scorers give one number out of 100 from a fixed checklist, which means they

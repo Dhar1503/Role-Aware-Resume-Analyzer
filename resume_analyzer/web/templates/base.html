@@ -8,10 +8,19 @@
   <title>{% block title %}Resume Strength Analyzer{% endblock %}</title>
   <meta name="description" content="Role-aware resume analysis: content strength, ATS compatibility and job-description fit, with the evidence behind every number.">
 
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+
+  {#
+    Web fonts are an enhancement, never a dependency. Our own stylesheet loads
+    first, and the Google sheet is fetched non-render-blocking (media="print",
+    promoted on load) so a slow or blocked fonts.googleapis.com delays the
+    typeface, not the page. Every --font-* token carries a real fallback stack.
+  #}
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=JetBrains+Mono:wght@400&family=Public+Sans:wght@400;500;600&display=swap">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+  {% set google_fonts = "https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=JetBrains+Mono:wght@400&family=Public+Sans:wght@400;500;600&display=swap" %}
+  <link rel="stylesheet" href="{{ google_fonts }}" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="{{ google_fonts }}"></noscript>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%23A78BFA'/><path d='M50 22l8 20 20 8-20 8-8 20-8-20-20-8 20-8z' fill='%23150A22'/></svg>">
 </head>
 <body>

@@ -86,8 +86,20 @@ palette: pass → strong, warn → fair, fail → poor, na → `--ink-3`.
 
 ## 3. Typography
 
-Loaded from Google Fonts with `display=swap` and a real fallback stack, so a failed font
-request degrades to a system sans rather than to invisible text.
+Loaded from Google Fonts, but treated as an **enhancement, never a dependency**:
+
+- `app.css` is linked first, so our own styles never wait on a third party;
+- the Google stylesheet is fetched non-render-blocking (`media="print"`, promoted to `all`
+  on load, with a `<noscript>` fallback), so a slow or blocked `fonts.googleapis.com`
+  costs the typeface, not the page;
+- `display=swap` means text paints immediately in the fallback;
+- every `--font-*` token carries a full fallback chain, and no rule anywhere names a
+  Google font without one.
+
+Verified by blocking `fonts.googleapis.com` and `fonts.gstatic.com` with a cold cache: the
+page still loads (faster, in fact — 0.20s to `load` against 0.66s), renders completely, and
+the display stack resolves to Segoe UI. The fallback render is near-indistinguishable from
+the webfont one at headline size.
 
 | Role | Family | Weights | Notes |
 |---|---|---|---|
