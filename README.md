@@ -18,7 +18,7 @@ Upload a resume, pick a target, and get three separate scores — how strong the
 for that target, whether screening software can actually read the file, and how well it
 matches a pasted job description. Every number shows the line of the resume it came from.
 
-> **Live demo:** https://huggingface.co/spaces/Dhar1503/resume-strength-analyzer
+> **Live demo:** https://huggingface.co/spaces/dharanidv/resume-strength-analyzer
 > **Source:** https://github.com/Dhar1503/Role-Aware-Resume-Analyzer
 
 ![The dashboard](docs/screenshots/dashboard.png)
@@ -302,7 +302,7 @@ hf auth login --add-to-git-credential
 
 hf repos create resume-strength-analyzer --type space --sdk docker
 
-git remote add space https://huggingface.co/spaces/<user>/resume-strength-analyzer
+git remote add space https://huggingface.co/spaces/dharanidv/resume-strength-analyzer
 git push space main --force        # the Space is created with its own initial commit
 ```
 
