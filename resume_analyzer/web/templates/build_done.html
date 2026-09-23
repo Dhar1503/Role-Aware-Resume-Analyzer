@@ -1,24 +1,36 @@
 {% extends "base.html" %}
+{% from "_icons.html" import icon %}
 {% block title %}Your resume is ready{% endblock %}
 {% block content %}
-<section class="card narrow">
-  <h1>Your resume is ready</h1>
-  <p class="muted">Laid out for <strong>{{ category.label }}</strong> &middot;
-     about {{ generated.estimated_pages }} page{{ '' if generated.estimated_pages == 1 else 's' }} &middot;
-     file name <code>{{ generated.filename }}</code></p>
+<section class="panel narrow rise">
+  <div class="panel-head">
+    <span class="itile dim-jd">{{ icon('check') }}</span>
+    <div>
+      <span class="eyebrow">Built</span>
+      <h1 style="margin:0">Your resume is ready</h1>
+    </div>
+  </div>
 
-  <div class="form-actions">
-    <a class="button primary" href="{{ url_for('main.build_download', key=key, file_format='pdf') }}">Download PDF</a>
-    <a class="button" href="{{ url_for('main.build_download', key=key, file_format='docx') }}">Download DOCX</a>
+  <div class="report-meta">
+    <span>{{ icon('target') }} Laid out for <strong>{{ category.label }}</strong></span>
+    <span>about {{ generated.estimated_pages }} page{{ '' if generated.estimated_pages == 1 else 's' }}</span>
+    <span class="file">{{ icon('doc') }} {{ generated.filename }}</span>
+  </div>
+
+  <div class="downloads">
+    <a class="btn btn-primary btn-lg" href="{{ url_for('main.build_download', key=key, file_format='pdf') }}">
+      {{ icon('download') }} Download PDF</a>
+    <a class="btn btn-lg" href="{{ url_for('main.build_download', key=key, file_format='docx') }}">
+      {{ icon('download') }} Download DOCX</a>
   </div>
 
   {% if generated.warnings %}
-    <h2>Before you send it</h2>
+    <h2>{{ icon('warn') }} Before you send it</h2>
     <ul class="warnings">
       {% for warning in generated.warnings %}<li>{{ warning }}</li>{% endfor %}
     </ul>
   {% else %}
-    <p class="pill pass">No structural problems found.</p>
+    <p><span class="pill pass">{{ icon('check') }} No structural problems found.</span></p>
   {% endif %}
 
   <h2>Sections, in order</h2>
@@ -27,6 +39,6 @@
   </ol>
 
   <p class="hint">Download the PDF, then run it through <a href="{{ url_for('main.home') }}">the analyser</a>
-     with the job description you are targeting - that is the same round trip the test suite performs.</p>
+     with the job description you are targeting &mdash; that is the same round trip the test suite performs.</p>
 </section>
 {% endblock %}

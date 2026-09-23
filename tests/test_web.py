@@ -91,7 +91,7 @@ def test_dashboard_shows_the_scores_and_evidence(client):
                    "Delete this report now"):
         assert needle in html, needle
     assert "Arjun Mehta" in html
-    assert re.search(r"class=\"ring-number\"[^>]*>\s*9\d\s*<", html)      # a high score ring
+    assert re.search(r"class=\"arc-number\"[^>]*>\s*9\d\s*<", html)       # a high score arc
 
 
 def test_overall_match_only_appears_with_a_job_description(client):

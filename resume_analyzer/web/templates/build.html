@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% from "_icons.html" import icon %}
 {% block title %}Build a resume{% endblock %}
 
 {% macro row_fields(prefix, index, fields) -%}
@@ -16,39 +17,49 @@
   {% endfor %}
 {%- endmacro %}
 
-{% macro repeat(prefix, title, fields, rows=2, hint='') -%}
+{% macro repeat(prefix, title, glyph, fields, rows=2, hint='') -%}
   <fieldset class="repeat" data-repeat="{{ prefix }}" data-next="{{ rows }}">
-    <legend>{{ title }}</legend>
+    <legend><span class="legend-inner">{{ icon(glyph) }} {{ title }}</span></legend>
     {% if hint %}<p class="hint">{{ hint }}</p>{% endif %}
     <div class="rows">
       {% for index in range(rows) %}
         <div class="row-group" data-row>{{ row_fields(prefix, index, fields) }}</div>
       {% endfor %}
     </div>
-    <button type="button" class="button ghost small" data-add-row>+ Add another</button>
+    <button type="button" class="btn btn-ghost btn-sm" data-add-row>{{ icon('list') }} Add another</button>
   </fieldset>
 {%- endmacro %}
 
 {% block content %}
-<section class="hero narrow">
-  <h1>Build an ATS-safe resume</h1>
-  <p class="lede">Fill in what you have. The layout, section order and emphasis come from the criteria for
-     the target you pick, and the file is built to pass the same ATS checks this tool applies.
-     Nothing is invented: if a bullet has no measurable result, you get told, not given a made-up number.</p>
+<section class="hero hero-single rise">
+  <div class="hero-copy">
+    <span class="eyebrow">Resume builder</span>
+    <h1>Build an <span class="grad">ATS-safe</span> resume</h1>
+    <p class="lede">Fill in what you have. The layout, section order and emphasis come from the criteria
+       for the target you pick, and the file is built to pass the same ATS checks this tool applies.
+       Nothing is invented: if a bullet has no measurable result, you get told, not given a made-up number.</p>
+  </div>
 </section>
 
-<form class="card build-form" method="post" action="{{ url_for('main.build_submit') }}">
-  <label class="field-label" for="category">Target</label>
+<form class="panel build-form rise" style="--delay: 80ms" method="post" action="{{ url_for('main.build_submit') }}">
+  <p class="field-label"><span class="step-no">1</span> Target</p>
   <select id="category" name="category" onchange="location.href='?category=' + this.value">
     {% for c in categories %}
       <option value="{{ c.id }}" {% if c.id == category.id %}selected{% endif %}>{{ c.label }}</option>
     {% endfor %}
   </select>
-  <p class="hint">Order for this target:
-    {{ emphasis | map('replace', '_', ' ') | map('title') | join(' &rarr; ') | safe }}</p>
+  <p class="hint">Sections will be ordered for this target:</p>
+  <div class="order-flow">
+    {% for section in emphasis %}
+      <span class="step">{{ section | replace('_', ' ') | title }}</span>
+      {% if not loop.last %}<span class="arrow">{{ icon('arrow') }}</span>{% endif %}
+    {% endfor %}
+  </div>
+
+  <hr class="rule">
 
   <fieldset>
-    <legend>Contact</legend>
+    <legend><span class="legend-inner">{{ icon('user') }} Contact</span></legend>
     <div class="grid-3">
       <label class="stack"><span>Full name *</span><input type="text" name="contact__name" required></label>
       <label class="stack"><span>Email</span><input type="email" name="contact__email"></label>
@@ -57,37 +68,38 @@
       <label class="stack"><span>LinkedIn</span><input type="text" name="contact__linkedin" placeholder="linkedin.com/in/you"></label>
       <label class="stack"><span>GitHub</span><input type="text" name="contact__github" placeholder="github.com/you"></label>
     </div>
-    <label class="stack"><span>Summary <span class="muted">(optional, two lines at most)</span></span>
+    <label class="stack" style="margin-top: var(--s-3)">
+      <span>Summary <span class="muted">(optional, two lines at most)</span></span>
       <textarea name="summary" rows="2"></textarea></label>
   </fieldset>
 
-  {{ repeat('education', 'Education', [
+  {{ repeat('education', 'Education', 'cap', [
       ('qualification', 'Qualification', 'text'), ('institution', 'Institution', 'text'),
       ('start', 'From', 'month'), ('end', 'To', 'month'), ('score', 'Score (CGPA or %)', 'text')], 2) }}
 
-  {{ repeat('internships', 'Internships', [
+  {{ repeat('internships', 'Internships', 'briefcase', [
       ('title', 'Role', 'text'), ('organisation', 'Organisation', 'text'),
       ('start', 'From', 'month'), ('end', 'To', 'month'), ('bullets', 'What you did', 'area')], 1,
       'Use dates like "May 2025" - they are normalised so the file passes the consistent-dates check.') }}
 
-  {{ repeat('experience', 'Full-time experience', [
+  {{ repeat('experience', 'Full-time experience', 'briefcase', [
       ('title', 'Role', 'text'), ('organisation', 'Organisation', 'text'),
       ('start', 'From', 'month'), ('end', 'To', 'month'), ('bullets', 'What you did', 'area')], 1) }}
 
-  {{ repeat('research', 'Research experience', [
+  {{ repeat('research', 'Research experience', 'flask', [
       ('title', 'Role', 'text'), ('organisation', 'Lab / institute (name your supervisor)', 'text'),
       ('start', 'From', 'month'), ('end', 'To', 'month'), ('bullets', 'What you did', 'area')], 1,
       'Naming your supervisor ("under Prof. A. Sharma") is what signals a strong recommendation letter.') }}
 
-  {{ repeat('projects', 'Projects', [
+  {{ repeat('projects', 'Projects', 'layers', [
       ('title', 'Title', 'text'), ('stack', 'Tech stack', 'text'), ('start', 'From', 'month'),
       ('end', 'To', 'month'), ('link', 'Live link', 'text'), ('bullets', 'What it does and the result', 'area')], 2) }}
 
-  {{ repeat('skills', 'Skills', [
+  {{ repeat('skills', 'Skills', 'terminal', [
       ('label', 'Group (e.g. Languages)', 'text'), ('items', 'Items, comma separated', 'area')], 2) }}
 
   <fieldset>
-    <legend>One per line</legend>
+    <legend><span class="legend-inner">{{ icon('list') }} One per line</span></legend>
     <div class="grid-2">
       <label class="stack"><span>Coding profiles</span>
         <textarea name="coding_profiles" rows="2" placeholder="LeetCode: 420 solved (210 Medium, 60 Hard)"></textarea></label>
@@ -103,12 +115,14 @@
       <label class="stack"><span>Languages known <span class="muted">(comma separated)</span></span>
         <textarea name="languages" rows="2"></textarea></label>
     </div>
-    <label class="stack narrow-field"><span>Date of birth <span class="muted">(government applications)</span></span>
+    <label class="stack narrow-field" style="margin-top: var(--s-3)">
+      <span>Date of birth <span class="muted">(government applications)</span></span>
       <input type="text" name="date_of_birth" placeholder="14 June 1998"></label>
   </fieldset>
 
   <div class="form-actions">
-    <button type="submit" class="button primary">Build my resume</button>
+    <button type="submit" class="btn btn-primary btn-lg">{{ icon('wand') }} Build my resume</button>
+    <span class="hint" style="margin:0">You get a PDF and a DOCX, both ATS-checked.</span>
   </div>
 </form>
 {% endblock %}

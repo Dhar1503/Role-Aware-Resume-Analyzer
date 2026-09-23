@@ -1,110 +1,172 @@
 {% extends "base.html" %}
+{% from "_icons.html" import icon %}
+
 {% block content %}
 <section class="hero">
-  <h1>Is your resume strong <em>for the thing you are applying to</em>?</h1>
-  <p class="lede">Upload a resume, pick what you are applying for, and get three separate scores:
-     how strong the content is for that target, whether screening software can actually read it,
-     and how well it matches a specific job description. Every number shows the line it came from.</p>
+  <div class="hero-copy rise">
+    <span class="eyebrow">Role-aware resume analysis</span>
+    <h1>Score your resume against <span class="grad">the thing you are actually applying to</span>.</h1>
+    <p class="lede">A software role, an M.Tech seat and a civil services post reward completely
+       different resumes. This scores yours against the criteria for the one you pick — then checks
+       whether screening software can even read the file.</p>
+    <div class="hero-cta">
+      <a class="btn btn-primary btn-lg" href="#analyse">{{ icon('upload') }} Analyse my resume</a>
+      <a class="btn btn-lg" href="{{ url_for('main.sample', name='clean') }}">{{ icon('bolt') }} See a live report</a>
+    </div>
+    <div class="hero-proof">
+      <div><b>7</b><span>Application types</span></div>
+      <div><b>18</b><span>ATS checks</span></div>
+      <div><b>0</b><span>Files stored</span></div>
+    </div>
+  </div>
+
+  {# An illustrative preview of the report, not a real analysis. #}
+  <div class="preview" aria-hidden="true">
+    <div class="preview-head">
+      <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+      <span class="name">Priya Sharma</span>
+      <span class="pill band-strong" style="margin-left:auto">Strong</span>
+    </div>
+    <div class="preview-scores">
+      <div class="preview-score band-strong"><b>80</b><span>Overall</span></div>
+      <div class="preview-score band-strong"><b>78</b><span>Strength</span></div>
+      <div class="preview-score band-excellent"><b>90</b><span>ATS</span></div>
+    </div>
+    <div class="preview-bars">
+      <div class="preview-bar band-excellent">
+        <span>DSA &amp; Competitive Coding <b>91</b></span>
+        <div class="preview-track"><i class="preview-fill" style="--w: 91%; --delay: 280ms"></i></div>
+      </div>
+      <div class="preview-bar band-excellent">
+        <span>Projects <b>87</b></span>
+        <div class="preview-track"><i class="preview-fill" style="--w: 87%; --delay: 400ms"></i></div>
+      </div>
+      <div class="preview-bar band-weak">
+        <span>Internships &amp; Experience <b>42</b></span>
+        <div class="preview-track"><i class="preview-fill" style="--w: 42%; --delay: 520ms"></i></div>
+      </div>
+      <div class="preview-bar band-excellent">
+        <span>Languages &amp; CS Fundamentals <b>100</b></span>
+        <div class="preview-track"><i class="preview-fill" style="--w: 100%; --delay: 640ms"></i></div>
+      </div>
+    </div>
+  </div>
 </section>
 
-<form class="card analyse-form" method="post" action="{{ url_for('main.analyse') }}" enctype="multipart/form-data">
+<form class="panel analyse-form rise" id="analyse" style="--delay: 80ms" method="post"
+      action="{{ url_for('main.analyse') }}" enctype="multipart/form-data">
   <div class="grid-2">
     <div>
-      <label class="field-label" for="resume">1. Your resume</label>
-      <label class="dropzone" for="resume">
+      <p class="field-label"><span class="step-no">1</span> Your resume</p>
+      <label class="dropzone" for="resume" data-dropzone>
         <input type="file" id="resume" name="resume" accept=".pdf,.docx,.txt" required>
-        <span class="dropzone-text">Choose a PDF, DOCX or TXT file</span>
-        <span class="dropzone-file" data-file-name>No file chosen</span>
+        <span class="dropzone-icon">{{ icon('upload') }}</span>
+        <span class="dropzone-text">Drop a file here, or click to choose</span>
+        <span class="dropzone-file" data-file-name>PDF, DOCX or TXT &middot; up to 8 MB</span>
       </label>
 
-      <label class="field-label" for="category">2. What are you applying for?</label>
-      <select id="category" name="category" required>
+      <p class="field-label" style="margin-top: var(--s-5)"><span class="step-no">2</span> What are you applying for?</p>
+      <select id="category" name="category" required aria-describedby="category-examples">
         {% for c in categories %}
           <option value="{{ c.id }}" {% if c.id == 'tech_product_fulltime' %}selected{% endif %}
                   data-examples="{{ c.examples | join(', ') }}">{{ c.label }}</option>
         {% endfor %}
       </select>
-      <p class="hint" data-category-examples></p>
+      <p class="hint" id="category-examples" data-category-examples></p>
 
       {% for c in categories %}
         {% if c.inputs %}
         <div class="category-inputs" data-for="{{ c.id }}" hidden>
-          <p class="field-label">Details this category needs (not usually on a resume)</p>
-          {% for i in c.inputs %}
-            <div class="inline-field">
-              <label for="input__{{ c.id }}__{{ i.id }}">{{ i.label }}</label>
-              {% if i.type == 'choice' %}
-                <select id="input__{{ c.id }}__{{ i.id }}" name="input__{{ i.id }}" disabled>
-                  <option value="">Prefer not to say</option>
-                  {% for option in i.options %}<option value="{{ option }}">{{ option }}</option>{% endfor %}
-                </select>
-              {% elif i.type == 'bool' %}
-                <input type="checkbox" id="input__{{ c.id }}__{{ i.id }}" name="input__{{ i.id }}" value="true" disabled>
-              {% elif i.type == 'date' %}
-                <input type="date" id="input__{{ c.id }}__{{ i.id }}" name="input__{{ i.id }}" disabled>
-              {% else %}
-                <input type="number" step="1" min="0" id="input__{{ c.id }}__{{ i.id }}" name="input__{{ i.id }}" disabled>
-              {% endif %}
-            </div>
-          {% endfor %}
+          <fieldset>
+            <legend>Details this category needs</legend>
+            <p class="hint">Not usually on a resume, and never stored.</p>
+            {% for i in c.inputs %}
+              <div class="inline-field">
+                <label for="input__{{ c.id }}__{{ i.id }}">{{ i.label }}</label>
+                {% if i.type == 'choice' %}
+                  <select id="input__{{ c.id }}__{{ i.id }}" name="input__{{ i.id }}" disabled>
+                    <option value="">Prefer not to say</option>
+                    {% for option in i.options %}<option value="{{ option }}">{{ option }}</option>{% endfor %}
+                  </select>
+                {% elif i.type == 'bool' %}
+                  <input type="checkbox" id="input__{{ c.id }}__{{ i.id }}" name="input__{{ i.id }}" value="true" disabled>
+                {% elif i.type == 'date' %}
+                  <input type="date" id="input__{{ c.id }}__{{ i.id }}" name="input__{{ i.id }}" disabled>
+                {% else %}
+                  <input type="number" step="1" min="0" id="input__{{ c.id }}__{{ i.id }}" name="input__{{ i.id }}" disabled>
+                {% endif %}
+              </div>
+            {% endfor %}
+          </fieldset>
         </div>
         {% endif %}
       {% endfor %}
     </div>
 
     <div>
-      <label class="field-label" for="jd">3. Job description <span class="muted">(optional)</span></label>
-      <textarea id="jd" name="jd" rows="9" placeholder="Paste the job posting here to get a JD-fit score, a keyword check and an overall match."></textarea>
+      <p class="field-label"><span class="step-no">3</span> Job description <span class="muted" style="font-weight:400">optional</span></p>
+      <textarea id="jd" name="jd" rows="11"
+                placeholder="Paste the job posting here to get a JD-fit score, a keyword check and an overall match."></textarea>
       <details class="sop-block">
-        <summary>Applying for MS/PhD? Paste your statement of purpose</summary>
-        <textarea id="sop" name="sop" rows="6" placeholder="Optional. Scored for specificity: does it name a research problem, your own prior work, and relevant faculty?"></textarea>
+        <summary>{{ icon('chevron') }} Applying for MS or PhD? Paste your statement of purpose</summary>
+        <textarea id="sop" name="sop" rows="6"
+                  placeholder="Optional. Scored for specificity: does it name a research problem, your own prior work, and relevant faculty?"></textarea>
       </details>
     </div>
   </div>
 
   <div class="form-actions">
-    <button type="submit" class="button primary" data-submit-label>Analyse my resume</button>
+    <button type="submit" class="btn btn-primary btn-lg" data-submit-label>
+      {{ icon('spark') }} <span>Analyse my resume</span>
+    </button>
+    <span class="hint" style="margin:0">Takes a few seconds. Nothing is saved.</span>
     {% if not model_ready %}
-      <span class="pill warn">Semantic model unavailable - JD fit will be skipped</span>
+      <span class="pill warn">{{ icon('warn') }} Semantic model unavailable &mdash; JD fit will be skipped</span>
     {% endif %}
   </div>
 </form>
 
-<section class="samples">
-  <h2>No resume to hand? Try one of these</h2>
+<section class="section">
+  <span class="eyebrow">No resume to hand?</span>
+  <h2 class="section-intro">Run one of these through it instead</h2>
   <div class="sample-grid">
     {% for name, (path, description) in samples.items() %}
-      <a class="card sample" href="{{ url_for('main.sample', name=name) }}">
+      <a class="panel panel-hover sample" href="{{ url_for('main.sample', name=name) }}">
+        <span class="itile sm dim-ats">{{ icon('doc') }}</span>
         <strong>{{ name.replace('_', ' ') | title }}</strong>
         <span class="muted">{{ description }}</span>
-        <span class="link-arrow">Analyse this &rarr;</span>
+        <span class="link-arrow">Analyse this {{ icon('arrow') }}</span>
       </a>
     {% endfor %}
   </div>
 </section>
 
-<section class="explainer">
-  <h2>What the three scores mean</h2>
+<section class="section">
+  <span class="eyebrow">What you get</span>
+  <h2 class="section-intro">Three separate scores, because they fail for different reasons</h2>
   <div class="grid-3">
-    <div class="card">
+    <article class="panel panel-hover feature">
+      <span class="itile dim-strength">{{ icon('bolt') }}</span>
       <h3>Strength</h3>
       <p>Measured against criteria for the exact thing you are applying to. A software role weights
          DSA practice and shipped projects; an M.Tech application weights GATE; civil services weights
-         exam progress and public service. Eligibility rules (age limits, attempts, minimum marks with
-         category relaxations) are reported separately and never folded into the score.</p>
-    </div>
-    <div class="card">
+         exam progress and public service. Eligibility rules — age limits, attempts, minimum marks with
+         category relaxations — are reported separately and never folded into the score.</p>
+    </article>
+    <article class="panel panel-hover feature">
+      <span class="itile dim-ats">{{ icon('scan') }}</span>
       <h3>ATS compatibility</h3>
       <p>Can software read the file? Eighteen checks for multi-column layouts, tables, text boxes,
          contact details hidden in page headers, scanned pages, unusual section headings, mixed date
          formats and generic file names. You can see the text exactly as a parser reads it.</p>
-    </div>
-    <div class="card">
+    </article>
+    <article class="panel panel-hover feature">
+      <span class="itile dim-jd">{{ icon('link') }}</span>
       <h3>Job-description fit</h3>
       <p>Each requirement in the posting is matched against your resume by meaning, not just keywords,
          and the matching line is shown as evidence. Requirements that name specific skills are also
          checked literally, because embeddings alone rate unrelated resumes surprisingly well.</p>
-    </div>
+    </article>
   </div>
 </section>
 {% endblock %}

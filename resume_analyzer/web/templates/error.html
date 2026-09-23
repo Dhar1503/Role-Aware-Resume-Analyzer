@@ -1,9 +1,13 @@
 {% extends "base.html" %}
+{% from "_icons.html" import icon %}
 {% block title %}{{ title }}{% endblock %}
 {% block content %}
-<section class="card narrow">
+<section class="panel narrow error-page rise">
+  <span class="itile dim-strength">{{ icon('warn') }}</span>
   <h1>{{ title }}</h1>
-  <p>{{ message }}</p>
-  <a class="button primary" href="{{ url_for('main.home') }}">Start again</a>
+  <p class="lede" style="margin-inline: auto">{{ message }}</p>
+  <div class="form-actions" style="justify-content: center">
+    <a class="btn btn-primary" href="{{ url_for('main.home') }}">{{ icon('arrow') }} Start again</a>
+  </div>
 </section>
 {% endblock %}

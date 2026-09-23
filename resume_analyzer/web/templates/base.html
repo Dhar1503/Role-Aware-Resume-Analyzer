@@ -1,34 +1,43 @@
+{% from "_icons.html" import icon %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080B16">
   <title>{% block title %}Resume Strength Analyzer{% endblock %}</title>
   <meta name="description" content="Role-aware resume analysis: content strength, ATS compatibility and job-description fit, with the evidence behind every number.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=JetBrains+Mono:wght@400&family=Public+Sans:wght@400;500;600&display=swap">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#128221;</text></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%23A78BFA'/><path d='M50 22l8 20 20 8-20 8-8 20-8-20-20-8 20-8z' fill='%23150A22'/></svg>">
 </head>
 <body>
+<a class="skip-link" href="#main">Skip to content</a>
+
 <header class="site-header">
   <a class="brand" href="{{ url_for('main.home') }}">
-    <span class="brand-mark">RS</span>
+    <span class="brand-mark">{{ icon('spark') }}</span>
     <span>Resume Strength Analyzer</span>
   </a>
-  <nav>
-    <a href="{{ url_for('main.home') }}">Analyse</a>
-    <a href="{{ url_for('main.build_form') }}">Build</a>
-    <a href="https://github.com/Dhar1503/Role-Aware-Resume-Analyzer" rel="noopener" class="muted">Source</a>
+  <nav class="site-nav">
+    <a href="{{ url_for('main.home') }}" {% if request.endpoint == 'main.home' %}class="is-active"{% endif %}>Analyse</a>
+    <a href="{{ url_for('main.build_form') }}" {% if request.endpoint in ('main.build_form', 'main.build_submit') %}class="is-active"{% endif %}>Build</a>
+    <a href="https://github.com/Dhar1503/Role-Aware-Resume-Analyzer" rel="noopener">Source</a>
   </nav>
 </header>
 
-<main>{% block content %}{% endblock %}</main>
+<main id="main">{% block content %}{% endblock %}</main>
 
 <footer class="site-footer">
-  <p>Uploads are analysed in memory and never written to disk. Results are stored under an unguessable
-     link for one hour, then deleted.</p>
-  <p class="muted">Scoring criteria live in editable YAML files; thresholds are indicative and meant to be
-     tuned. ATS behaviour is simulated from well-documented failure modes, not from any vendor's parser.</p>
+  <p>{{ icon('lock') }} Uploads are analysed in memory and never written to disk. Results are stored
+     under an unguessable link for one hour, then deleted.</p>
+  <p>Scoring criteria live in editable YAML files; thresholds are indicative and meant to be tuned.
+     ATS behaviour is simulated from well-documented failure modes, not from any vendor's parser.</p>
 </footer>
+
 <script src="{{ url_for('static', filename='js/app.js') }}" defer></script>
 </body>
 </html>

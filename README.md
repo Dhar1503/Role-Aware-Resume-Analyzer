@@ -104,6 +104,11 @@ does not become a Class X percentage.
 
 ## Screenshots
 
+The interface is a single dark theme: glass panels over a gradient mesh, one signature
+gradient, a fixed hue per score dimension and a separate five-step colour scale for score
+bands. The tokens, type pairing, motion rules and the no-JavaScript contract are written
+down in [docs/design-system.md](docs/design-system.md).
+
 | ATS report | Job-description fit |
 |---|---|
 | ![ATS report](docs/screenshots/ats-report.png) | ![JD fit](docs/screenshots/jd-fit.png) |
@@ -294,12 +299,14 @@ resume_analyzer/
   semantic/          embeddings, JD fit, SOP signals
   generator/         draft model, category-aware layout, PDF + DOCX renderers
   web/               Flask app, dashboard, builder, expiring result store
+                     (templates/_icons.html holds the inline icon set)
 samples/
   validation/        28 labelled resumes + job descriptions
   ats/               8 layout variants of one resume
   real/              drop anonymised real resumes here
-tests/               445 tests
+tests/               453 tests
 scripts/             demos, validation, calibration, score snapshot
+docs/                design system, screenshots
 ```
 
 ## License

@@ -1,99 +1,140 @@
 {% extends "base.html" %}
+{% from "_icons.html" import icon %}
 {% block title %}Resume report - {{ name or filename }}{% endblock %}
 
-{% macro ring(value, label) -%}
+{#
+  The arc carries its true value in --dash, so with animation disabled or
+  JavaScript off the ring is already drawn correctly - the animation only
+  sweeps it from empty to that value.
+#}
+{% macro arc(value, label, delay) -%}
   {% set shown = value if value is not none else 0 %}
-  <svg class="ring" viewBox="0 0 120 120" role="img" aria-label="{{ label }}: {{ shown }} out of 100">
-    <circle class="ring-track" cx="60" cy="60" r="52"></circle>
-    <circle class="ring-value band-{{ shown | band_class }}" cx="60" cy="60" r="52"
-            style="stroke-dasharray: {{ (shown / 100 * 326.7) | round(1) }} 326.7"></circle>
-    <text class="ring-number" x="60" y="66">{{ value | round | int if value is not none else '--' }}</text>
-  </svg>
+  <div class="arc-wrap">
+    <svg class="arc" viewBox="0 0 120 120" role="img"
+         aria-label="{{ label }}: {{ shown | round | int }} out of 100">
+      <circle class="arc-track" cx="60" cy="60" r="52"></circle>
+      <circle class="arc-value" cx="60" cy="60" r="52"
+              style="--dash: {{ (shown / 100 * 326.726) | round(1) }}; --delay: {{ delay }}ms"></circle>
+    </svg>
+    <div class="arc-number" data-count>{{ value | round | int if value is not none else '--' }}</div>
+  </div>
 {%- endmacro %}
 
 {% block content %}
-<section class="report-head">
+<section class="report-head rise">
   <div>
+    <span class="eyebrow">Report</span>
     <h1>{{ name or 'Your resume' }}</h1>
-    <p class="muted">{{ filename }} &middot; {{ word_count }} words &middot;
-       {{ pages }} page{{ '' if pages == 1 else 's' }} &middot; analysed for
-       <strong>{{ category.label }}</strong></p>
+    <div class="report-meta">
+      <span class="file">{{ icon('doc') }} {{ filename }}</span>
+      <span>{{ word_count }} words</span>
+      <span>{{ pages }} page{{ '' if pages == 1 else 's' }}</span>
+      <span>{{ icon('target') }} analysed for <strong>{{ category.label }}</strong></span>
+    </div>
   </div>
   <form method="post" action="{{ url_for('main.delete_result', key=key) }}" class="delete-form">
-    {% if expires_in_minutes %}<span class="muted">Link expires in {{ expires_in_minutes }} min</span>{% endif %}
-    <button class="button ghost" type="submit">Delete this report now</button>
+    {% if expires_in_minutes %}
+      <span class="pill">{{ icon('clock') }} Expires in {{ expires_in_minutes }} min</span>
+    {% endif %}
+    <button class="btn btn-ghost btn-sm" type="submit">{{ icon('trash') }} Delete this report now</button>
   </form>
 </section>
 
 {% if not eligible %}
 <div class="banner fail">
-  <strong>Eligibility problem.</strong> One or more hard requirements for {{ category.label }} are not met.
-  See the eligibility section below; these are separate from the scores.
+  {{ icon('warn') }}
+  <div>
+    <strong>Eligibility problem.</strong>
+    <p>One or more hard requirements for {{ category.label }} are not met. See the eligibility
+       section below; these are separate from the scores.</p>
+  </div>
 </div>
 {% endif %}
 {% if low_confidence %}
 <div class="banner warn">
-  <strong>Not enough information to score this reliably.</strong>
-  Only {{ (confidence * 100) | round | int }}% of the things this category looks for were found in the file.
-  Treat the scores as a lower bound and check the extracted facts at the bottom of the page.
+  {{ icon('info') }}
+  <div>
+    <strong>Not enough information to score this reliably.</strong>
+    <p>Only {{ (confidence * 100) | round | int }}% of the things this category looks for were found in
+       the file. Treat the scores as a lower bound and check the extracted facts at the bottom of the page.</p>
+  </div>
 </div>
 {% endif %}
 
 <section class="scores">
   {% for card in cards %}
-    <article class="card score-card">
-      {{ ring(card.value, card.label) }}
-      <h2>{{ card.label }}</h2>
-      {% if card.band %}<span class="pill band-{{ card.value | band_class }}">{{ card.band }}</span>{% endif %}
-      <p class="question">{{ card.question }}</p>
-      {% if card.note %}<p class="hint">{{ card.note }}</p>{% endif %}
+    <article class="panel panel-hover score-card rise band-{{ card.value | band_class }} dim-{{ card.key }}"
+             style="--delay: {{ loop.index0 * 90 }}ms">
+      <span class="itile">{{ icon(card.icon) }}</span>
+      {{ arc(card.value, card.label, loop.index0 * 90 + 120) }}
+      <div class="score-body">
+        <h2>{{ card.label }}</h2>
+        {% if card.band %}<span class="pill band-{{ card.value | band_class }}">{{ card.band }}</span>{% endif %}
+        <p class="question">{{ card.question }}</p>
+        {% if card.note %}<p class="hint">{{ card.note }}</p>{% endif %}
+      </div>
     </article>
   {% endfor %}
 </section>
 
-<section class="grid-2 top">
-  <div class="card">
-    <h2>Do these next</h2>
-    <p class="hint">Ranked by how many points each would add{{ ' to the overall match' if cards[0].key == 'overall' else '' }}.</p>
+<section class="grid-2">
+  <div class="panel">
+    <div class="panel-head">
+      <span class="itile dim-overall">{{ icon('wand') }}</span>
+      <div>
+        <h2>Do these next</h2>
+        <p class="hint" style="margin:0">Ranked by how many points each would add{{ ' to the overall match' if cards[0].key == 'overall' else '' }}.</p>
+      </div>
+    </div>
     <ol class="fixes">
       {% for fix in fixes %}
-        <li>
-          <span class="points">+{{ fix.points }}</span>
-          <span class="source source-{{ fix.source }}">{{ fix.source }}</span>
-          <p>{{ fix.text }}</p>
+        <li class="fix dim-{{ fix.source }}">
+          <span class="fix-rank">{{ loop.index }}</span>
+          <span class="fix-meta">
+            <span class="fix-points">+{{ fix.points }}</span>
+            <span class="fix-source">{{ fix.source }}</span>
+          </span>
+          <p class="fix-text">{{ fix.text }}</p>
         </li>
       {% else %}
-        <li><p>Nothing significant to fix. Well done.</p></li>
+        <li class="fix-empty">{{ icon('check') }} Nothing significant to fix. Well done.</li>
       {% endfor %}
     </ol>
   </div>
 
-  <div class="card">
-    <h2>{{ category.score_label }} breakdown</h2>
+  <div class="panel">
+    <div class="panel-head">
+      <span class="itile dim-strength">{{ icon('list') }}</span>
+      <h2>{{ category.score_label }} breakdown</h2>
+    </div>
     <ul class="bars">
       {% for sub in subscores %}
-        <li>
+        <li class="band-{{ (sub.score or 0) | band_class }}">
           <div class="bar-head">
-            <span>{{ sub.label }}</span>
-            <span class="muted">{{ '--' if sub.score is none else sub.score | round | int }}
-              <em>&times;{{ (sub.weight * 100) | round | int }}%</em></span>
+            <span class="bar-label">{{ icon(sub.icon) }} {{ sub.label }}</span>
+            <span class="bar-num">{{ '--' if sub.score is none else sub.score | round | int }}<em>&times;{{ (sub.weight * 100) | round | int }}%</em></span>
           </div>
           <div class="bar-track">
-            <div class="bar-fill band-{{ (sub.score or 0) | band_class }}" style="width: {{ sub.score or 0 }}%"></div>
+            <div class="bar-fill" style="--w: {{ sub.score or 0 }}%; --delay: {{ loop.index0 * 80 + 200 }}ms"></div>
           </div>
-          {% if sub.score is none %}<p class="hint">Not scored: nothing found for this group.</p>{% endif %}
+          {% if sub.score is none %}<p class="hint" style="margin:var(--s-1) 0 0">Not scored: nothing found for this group.</p>{% endif %}
         </li>
       {% endfor %}
     </ul>
-    <p class="hint">Confidence {{ (confidence * 100) | round | int }}% - the share of this category's
-       signals actually found on the resume.</p>
+    <p class="hint" style="margin-top: var(--s-5)">Confidence {{ (confidence * 100) | round | int }}% &mdash; the
+       share of this category's signals actually found on the resume.</p>
   </div>
 </section>
 
 {% if eligibility_all %}
-<section class="card">
-  <h2>Eligibility</h2>
-  <p class="hint">Hard rules for {{ category.label }}. These are reported separately and never change the scores.</p>
+<section class="panel">
+  <div class="panel-head">
+    <span class="itile dim-strength">{{ icon('shield') }}</span>
+    <div>
+      <h2>Eligibility</h2>
+      <p class="hint" style="margin:0">Hard rules for {{ category.label }}. Reported separately; they never change the scores.</p>
+    </div>
+  </div>
   <ul class="checks">
     {% for gate in eligibility_all %}
       <li class="check status-{{ gate.status }}">
@@ -101,7 +142,7 @@
         <div>
           <strong>{{ gate.label }}</strong>
           <p>{{ gate.message }}</p>
-          {% if gate.note %}<p class="hint">{{ gate.note }}</p>{% endif %}
+          {% if gate.note %}<p class="hint" style="margin:var(--s-1) 0 0">{{ gate.note }}</p>{% endif %}
         </div>
       </li>
     {% endfor %}
@@ -109,40 +150,62 @@
 </section>
 {% endif %}
 
-<section class="card">
-  <h2>ATS report <span class="pill band-{{ ats.score | band_class }}">{{ ats.score | round | int }}/100</span></h2>
+<section class="panel dim-ats">
+  <div class="panel-head">
+    <span class="itile">{{ icon('scan') }}</span>
+    <h2>ATS report</h2>
+    <span class="spacer"></span>
+    <span class="pill score band-{{ ats.score | band_class }}">{{ ats.score | round | int }}/100</span>
+  </div>
   {% if ats.fatal %}
-    <div class="banner fail"><strong>An ATS would read nothing from this file.</strong>
-      Fix that first; the other checks cannot run until then.</div>
+    <div class="banner fail">
+      {{ icon('x') }}
+      <div>
+        <strong>An ATS would read nothing from this file.</strong>
+        <p>Fix that first; the other checks cannot run until then.</p>
+      </div>
+    </div>
   {% endif %}
   <div class="ats-groups">
     {% for group in ats.groups %}
-      <details class="group" {% if group.score is not none and group.score < 100 %}open{% endif %}>
+      <details class="group band-{{ group.score | band_class }}"
+               {% if group.score is not none and group.score < 100 %}open{% endif %}>
         <summary>
-          <span>{{ group.label }}</span>
-          <span class="muted">{{ '--' if group.score is none else group.score | round | int }}
-            <em>&times;{{ (group.weight * 100) | round | int }}%</em></span>
+          <span class="itile sm">{{ icon(ats_icons.get(group.id, 'dot')) }}</span>
+          <span class="group-title">{{ group.label }}</span>
+          <span class="group-score">
+            {{ '--' if group.score is none else group.score | round | int }}<em>&times;{{ (group.weight * 100) | round | int }}%</em>
+            <span class="chevron">{{ icon('chevron') }}</span>
+          </span>
         </summary>
-        <ul class="checks">
-          {% for check in group.checks %}
-            <li class="check status-{{ check.status }}">
-              <span class="status-pill status-{{ check.status }}">{{ check.status }}</span>
-              <div>
-                <strong>{{ check.label }}</strong>
-                <p>{{ check.message }}</p>
-                {% if check.fix %}<p class="fix">Fix: {{ check.fix }}</p>{% endif %}
-              </div>
-            </li>
-          {% endfor %}
-        </ul>
+        <div class="group-bar"><i style="--w: {{ group.score or 0 }}%"></i></div>
+        <div class="reveal">
+          <ul class="checks">
+            {% for check in group.checks %}
+              <li class="check status-{{ check.status }}">
+                <span class="status-pill status-{{ check.status }}">{{ check.status }}</span>
+                <div>
+                  <strong>{{ check.label }}</strong>
+                  <p>{{ check.message }}</p>
+                  {% if check.fix %}<p class="fix-note"><b>Fix:</b> {{ check.fix }}</p>{% endif %}
+                </div>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
       </details>
     {% endfor %}
   </div>
 </section>
 
 {% if jd_fit %}
-<section class="card">
-  <h2>Job-description fit <span class="pill band-{{ jd_fit.score | band_class }}">{{ jd_fit.score | round | int }}/100</span></h2>
+<section class="panel dim-jd">
+  <div class="panel-head">
+    <span class="itile">{{ icon('link') }}</span>
+    <h2>Job-description fit</h2>
+    <span class="spacer"></span>
+    <span class="pill score band-{{ jd_fit.score | band_class }}">{{ jd_fit.score | round | int }}/100</span>
+  </div>
   {% if jd_fit.note %}
     <p class="hint">{{ jd_fit.note }}</p>
   {% else %}
@@ -153,14 +216,14 @@
       <li class="req status-{{ match.status }}">
         <div class="req-head">
           <span class="status-pill status-{{ match.status }}">{{ match.status }}</span>
-          <span class="muted">{{ match.importance }}</span>
-          <p>{{ match.requirement }}</p>
+          <span class="muted" style="font-size: var(--t-xs)">{{ match.importance }}</span>
+          <p class="req-text">{{ match.requirement }}</p>
         </div>
         {% if match.evidence %}
-          <p class="evidence"><span class="muted">your resume:</span> {{ match.evidence }}</p>
+          <p class="evidence"><b>your resume</b> <span>{{ match.evidence }}</span></p>
         {% endif %}
         {% if match.skills_missing %}
-          <p class="missing">Not shown anywhere: {{ match.skills_missing | join(', ') }}</p>
+          <p class="missing">{{ icon('x') }} Not shown anywhere: {{ match.skills_missing | join(', ') }}</p>
         {% endif %}
       </li>
     {% endfor %}
@@ -170,63 +233,85 @@
 {% endif %}
 
 {% if ats.keywords %}
-<section class="card">
-  <h2>Keyword match</h2>
+<section class="panel dim-ats">
+  <div class="panel-head">
+    <span class="itile">{{ icon('tag') }}</span>
+    <h2>Keyword match</h2>
+  </div>
   <p class="hint">Literal matching, the way most ATS keyword filters work. A "variant" means you used a
      different word for the same thing than the posting did.</p>
-  <table class="keywords">
-    <thead><tr><th>Keyword</th><th>Importance</th><th>Status</th><th>On your resume</th></tr></thead>
-    <tbody>
-      {% for hit in ats.keywords.hits %}
-        <tr class="status-{{ 'pass' if hit.status == 'exact' else ('warn' if hit.status == 'variant' else 'fail') }}">
-          <td>{{ hit.jd_terms[0] }}</td>
-          <td class="muted">{{ hit.importance }}</td>
-          <td>{{ hit.status }}{% if hit.status == 'exact' and not hit.in_context %} <span class="muted">(skills list only)</span>{% endif %}</td>
-          <td>{{ hit.resume_terms | join(', ') or '--' }}</td>
-        </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-</section>
-{% endif %}
-
-{% if sop %}
-<section class="card">
-  <h2>Statement of purpose</h2>
-  <p>{{ sop.word_count }} words, specificity {{ (sop.specificity * 100) | round | int }}%.</p>
-  <p><strong>Present:</strong> {{ sop.present | join(', ') | replace('_', ' ') or 'nothing specific' }}</p>
-  {% if sop.missing %}<p><strong>Missing:</strong> {{ sop.missing | join(', ') | replace('_', ' ') }}</p>{% endif %}
-  {% if sop.cliches %}<p class="fix">Clichés to cut: {{ sop.cliches | join('; ') }}</p>{% endif %}
-</section>
-{% endif %}
-
-<section class="grid-2">
-  <details class="card">
-    <summary><h2>What a parser reads</h2></summary>
-    <p class="hint">Your file as simple screening software sees it. If sentences here look scrambled or
-       details are missing, that is what a recruiter's system receives.</p>
-    <pre class="ats-view">{{ ats_view }}</pre>
-  </details>
-
-  <details class="card">
-    <summary><h2>Everything we extracted</h2></summary>
-    <p class="hint">Sections found: {{ sections_found | join(', ') or 'none' }}.
-      {% if nonstandard_sections %} Non-standard headings: {{ nonstandard_sections | join(', ') }}.{% endif %}</p>
-    <table class="facts">
-      <thead><tr><th>Value</th><th>Meaning</th><th>Found in</th></tr></thead>
+  <div class="table-wrap">
+    <table class="keywords">
+      <thead><tr><th>Keyword</th><th>Importance</th><th>Status</th><th>On your resume</th></tr></thead>
       <tbody>
-        {% for fact in facts %}
-          <tr>
-            <td><strong>{{ fact.value }}</strong> {{ fact.unit }}</td>
-            <td>{{ fact.label }}</td>
-            <td class="muted">{{ fact.evidence or '--' }}</td>
+        {% for hit in ats.keywords.hits %}
+          <tr class="status-{{ 'pass' if hit.status == 'exact' else ('warn' if hit.status == 'variant' else 'fail') }}">
+            <td>{{ hit.jd_terms[0] }}</td>
+            <td class="muted">{{ hit.importance }}</td>
+            <td>{{ hit.status }}{% if hit.status == 'exact' and not hit.in_context %} <span class="muted">(skills list only)</span>{% endif %}</td>
+            <td>{{ hit.resume_terms | join(', ') or '--' }}</td>
           </tr>
         {% endfor %}
       </tbody>
     </table>
+  </div>
+</section>
+{% endif %}
+
+{% if sop %}
+<section class="panel dim-overall">
+  <div class="panel-head">
+    <span class="itile">{{ icon('pen') }}</span>
+    <h2>Statement of purpose</h2>
+  </div>
+  <p>{{ sop.word_count }} words, specificity {{ (sop.specificity * 100) | round | int }}%.</p>
+  <p><strong>Present:</strong> {{ sop.present | join(', ') | replace('_', ' ') or 'nothing specific' }}</p>
+  {% if sop.missing %}<p><strong>Missing:</strong> {{ sop.missing | join(', ') | replace('_', ' ') }}</p>{% endif %}
+  {% if sop.cliches %}<p class="missing">Clich&eacute;s to cut: {{ sop.cliches | join('; ') }}</p>{% endif %}
+</section>
+{% endif %}
+
+<section class="grid-2">
+  <details class="panel dim-ats">
+    <summary>
+      <span class="itile sm">{{ icon('terminal') }}</span>
+      <h2>What a parser reads</h2>
+      <span class="chevron">{{ icon('chevron') }}</span>
+    </summary>
+    <div class="reveal">
+      <p class="hint">Your file as simple screening software sees it. If sentences here look scrambled or
+         details are missing, that is what a recruiter's system receives.</p>
+      <pre class="ats-view">{{ ats_view }}</pre>
+    </div>
+  </details>
+
+  <details class="panel dim-strength">
+    <summary>
+      <span class="itile sm">{{ icon('search') }}</span>
+      <h2>Everything we extracted</h2>
+      <span class="chevron">{{ icon('chevron') }}</span>
+    </summary>
+    <div class="reveal">
+      <p class="hint">Sections found: {{ sections_found | join(', ') or 'none' }}.
+        {% if nonstandard_sections %} Non-standard headings: {{ nonstandard_sections | join(', ') }}.{% endif %}</p>
+      <div class="table-wrap">
+        <table class="facts">
+          <thead><tr><th>Value</th><th>Meaning</th><th>Found in</th></tr></thead>
+          <tbody>
+            {% for fact in facts %}
+              <tr>
+                <td><strong>{{ fact.value }}</strong> {{ fact.unit }}</td>
+                <td>{{ fact.label }}</td>
+                <td class="muted">{{ fact.evidence or '--' }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
   </details>
 </section>
 
-<p class="muted timings">Analysed in {{ timings.values() | sum | round | int }} ms
+<p class="timings">Analysed in {{ timings.values() | sum | round | int }} ms
   ({% for stage, ms in timings.items() %}{{ stage }} {{ ms | round | int }}ms{{ ', ' if not loop.last }}{% endfor %}).</p>
 {% endblock %}

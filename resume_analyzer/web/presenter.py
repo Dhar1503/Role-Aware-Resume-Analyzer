@@ -18,6 +18,19 @@ from ..pipeline import OVERALL_WEIGHTS, AnalysisResult
 LOW_CONFIDENCE = 0.25
 BAND_LABELS = [(85, "Excellent"), (70, "Strong"), (55, "Fair"), (35, "Weak"), (0, "Very weak")]
 
+# Each score dimension and each group owns an icon, so the same idea is drawn the
+# same way wherever it appears. Names come from templates/_icons.html.
+DIMENSION_ICONS = {"overall": "target", "strength": "bolt", "ats": "scan", "jd_fit": "link"}
+SUBSCORE_ICONS = {
+    "academics": "cap", "achievements": "trophy", "coding": "braces",
+    "computer_skills": "monitor", "exam_progress": "flag", "experience": "briefcase",
+    "gate_exam": "gauge", "languages": "globe", "preparation": "book", "profile": "user",
+    "projects": "layers", "research": "flask", "service": "users", "skills": "terminal",
+    "sop": "pen",
+}
+ATS_GROUP_ICONS = {"parseability": "scan", "sections": "layout", "contact": "at",
+                   "keywords": "tag", "hygiene": "sparkles"}
+
 
 @dataclass
 class Fix:
@@ -35,6 +48,7 @@ class ScoreCard:
     question: str
     band: str = ""
     note: str = ""
+    icon: str = "dot"
 
 
 def band(score: Optional[float]) -> str:
@@ -63,6 +77,8 @@ def _score_cards(result: AnalysisResult) -> List[ScoreCard]:
                                                               f"validated formula."))
     if result.ats.fatal:
         cards[-1].note = "The file has no readable text, so only the ATS check could run."
+    for card in cards:
+        card.icon = DIMENSION_ICONS.get(card.key, "dot")
     return cards
 
 
@@ -108,7 +124,8 @@ def _facts(result: AnalysisResult) -> List[Dict[str, Any]]:
 
 def present(result: AnalysisResult, key: str = "", expires_in: Optional[int] = None) -> Dict[str, Any]:
     strength = result.strength
-    subscores = [{"label": s.label, "score": s.score, "weight": s.weight,
+    subscores = [{"id": s.id, "label": s.label, "score": s.score, "weight": s.weight,
+                  "icon": SUBSCORE_ICONS.get(s.id, "dot"),
                   "signals": [{"label": sig.label, "found": sig.found, "value": sig.value,
                                "score": None if sig.score is None else round(sig.score * 100)}
                               for sig in s.signals]}
@@ -130,6 +147,7 @@ def present(result: AnalysisResult, key: str = "", expires_in: Optional[int] = N
         "eligible": strength.eligible,
         "fixes": _top_fixes(result),
         "ats": result.ats,
+        "ats_icons": ATS_GROUP_ICONS,
         "jd_fit": result.jd_fit,
         "sop": result.sop,
         "facts": _facts(result),
