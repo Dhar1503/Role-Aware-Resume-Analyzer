@@ -59,7 +59,7 @@ def test_tiers_are_separated(scores):
 
 def test_each_category_orders_its_own_resumes(scores):
     by_category = defaultdict(dict)
-    for case_id, values in scores.items():
+    for values in scores.values():
         by_category[values["category"]].setdefault(values["tier"], []).append(values["strength"])
     for category, tiers in by_category.items():
         assert min(tiers["strong"]) > max(tiers["average"]) > max(tiers["weak"]), category

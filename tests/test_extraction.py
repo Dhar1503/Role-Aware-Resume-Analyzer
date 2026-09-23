@@ -1,6 +1,5 @@
 """Feature extraction: the labelled validation set, plus unit tests for the rules."""
 
-from datetime import date
 
 import pytest
 
@@ -8,7 +7,6 @@ from resume_analyzer.extraction.dates import duration_months, parse_date_of_birt
 from resume_analyzer.extraction.document import Line, load_document
 from resume_analyzer.extraction.entries import split_entries
 from resume_analyzer.extraction.extractor import extract
-from resume_analyzer.extraction.sections import detect_sections
 from resume_analyzer.validation import TODAY, accuracy, check_case, load_cases
 
 TEXT_CASES = load_cases(include_real=False)

@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import statistics
-from pathlib import Path
 
 import numpy as np
 

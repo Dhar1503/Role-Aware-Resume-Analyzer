@@ -15,7 +15,7 @@ from __future__ import annotations
 import os
 import threading
 from functools import lru_cache
-from typing import List, Optional, Sequence
+from typing import List, Sequence
 
 MODEL_NAME = os.environ.get("RESUME_EMBEDDING_MODEL", "BAAI/bge-small-en-v1.5")
 QUERY_PREFIX = "Represent this sentence for searching relevant passages: "

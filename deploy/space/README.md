@@ -22,4 +22,4 @@ Upload a resume, pick what you are applying for, and get three separate scores:
 Every number shows the line of the resume it came from. Uploads are analysed in memory,
 never written to disk, and results are deleted after an hour.
 
-Source and full documentation: see the repository linked from the Space settings.
+Source and full documentation: https://github.com/Dhar1503/Role-Aware-Resume-Analyzer

@@ -201,7 +201,7 @@ def detect_sections(lines: Sequence[Line]) -> SectionMap:
     # style) or a bold "Leadership" skill line is not mistaken for a heading.
     styled = [m for m in matched if _emphasised(m[2])]
     counts: Dict[Tuple, int] = {}
-    for i, key, style, exact in styled:
+    for _, _, style, exact in styled:
         if exact:
             counts[style] = counts.get(style, 0) + 1
     heading_styles = {style for style, n in counts.items() if n >= 2}

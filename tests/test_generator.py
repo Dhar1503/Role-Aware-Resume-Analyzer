@@ -4,8 +4,7 @@ import pytest
 from pydantic import ValidationError
 
 from resume_analyzer.criteria import get_category
-from resume_analyzer.extraction.document import load_document
-from resume_analyzer.generator import Contact, Education, Project, ResumeDraft, Role, SkillGroup, generate
+from resume_analyzer.generator import Contact, Education, Project, ResumeDraft, Role, generate
 from resume_analyzer.generator.draft import normalise_month, period
 from resume_analyzer.generator.layout import build_layout
 from resume_analyzer.pipeline import analyze

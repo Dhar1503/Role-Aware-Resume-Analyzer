@@ -12,7 +12,7 @@ analyzer and comparing the extracted facts with what went in.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional
+from typing import List
 
 from ..criteria import Category, get_category
 from .draft import Contact, Education, Project, ResumeDraft, Role, SkillGroup

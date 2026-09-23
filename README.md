@@ -7,7 +7,7 @@ for that target, whether screening software can actually read the file, and how 
 matches a pasted job description. Every number shows the line of the resume it came from.
 
 > **Live demo:** _(add your Hugging Face Space URL here)_
-> **Source:** _(add your GitHub URL here)_
+> **Source:** https://github.com/Dhar1503/Role-Aware-Resume-Analyzer
 
 ![The dashboard](docs/screenshots/dashboard.png)
 

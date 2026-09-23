@@ -8,7 +8,7 @@ its own scale, into one ordered list of what to do next.
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Any, Dict, List, Optional
 
 from ..extraction.sections import SECTIONS

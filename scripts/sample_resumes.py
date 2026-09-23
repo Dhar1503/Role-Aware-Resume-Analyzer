@@ -127,7 +127,7 @@ def _single_column_story(width: float, creative: bool = False, mixed_dates: bool
     for degree, year, score in EDUCATION:
         story += [_entry_row(degree, year, width, st), Paragraph(score, st["body"])]
     story.append(Paragraph(h["experience"], st["h"]))
-    for i, (title, dates, bullets) in enumerate(EXPERIENCE):
+    for title, dates, bullets in EXPERIENCE:
         dates = "06/2025 - 08/2025" if mixed_dates else dates
         story.append(_entry_row(title, dates, width, st))
         story += [Paragraph(b, st["bullet"], bulletText="•") for b in bullets]
@@ -168,7 +168,7 @@ def two_column_pdf() -> Tuple[str, bytes]:
     for degree, year, score in EDUCATION:
         sidebar += [Paragraph(f"<b>{degree}</b>", st["body"]), Paragraph(f"{year} | {score}", st["body"])]
     main = [Paragraph(h["summary"], st["h"]), Paragraph(SUMMARY, st["body"]), Paragraph(h["experience"], st["h"])]
-    for title, dates, bullets in EXPERIENCE:
+    for title, _dates, bullets in EXPERIENCE:
         main += [Paragraph(f"<b>{title}</b>", st["body"]), Paragraph("06/2025 - 08/2025", st["body"])]
         main += [Paragraph(b, st["bullet"], bulletText="•") for b in bullets]
     main.append(Paragraph(h["projects"], st["h"]))
@@ -341,7 +341,6 @@ def render_text_pdf(text: str) -> bytes:
 
     Used to check that extraction survives the PDF path, where long lines wrap.
     """
-    from reportlab.lib.pagesizes import A4
     from reportlab.platypus import Paragraph
     from xml.sax.saxutils import escape
     st = _styles()

@@ -15,7 +15,7 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass, field
-from typing import List, Optional, Sequence
+from typing import List, Optional
 
 from ..extraction.document import Document
 from ..extraction.sections import SectionMap, detect_sections

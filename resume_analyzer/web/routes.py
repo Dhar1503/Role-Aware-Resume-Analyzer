@@ -11,7 +11,7 @@ from __future__ import annotations
 import io
 from dataclasses import asdict
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
 from flask import (Blueprint, abort, current_app, jsonify, redirect, render_template,
                    request, send_file, url_for)
