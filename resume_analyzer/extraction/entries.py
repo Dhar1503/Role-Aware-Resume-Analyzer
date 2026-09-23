@@ -38,6 +38,11 @@ def is_bullet(text: str) -> bool:
     return bool(BULLET.match(text))
 
 
+def _is_bullet_line(line: Line) -> bool:
+    """A DOCX list paragraph carries no bullet character: the style is the bullet."""
+    return is_bullet(line.text) or line.style.lower().startswith(("list bullet", "list number", "list paragraph"))
+
+
 def strip_bullet(text: str) -> str:
     return NUMBERED.sub("", BULLET.sub("", text)).strip()
 
@@ -46,14 +51,14 @@ def split_entries(lines: Sequence[Line], today: Optional[date] = None) -> List[E
     lines = [l for l in lines if l.text.strip()]
     if not lines:
         return []
-    bullets = [l for l in lines if is_bullet(l.text)]
+    bullets = [l for l in lines if _is_bullet_line(l)]
     bold_ratio = sum(1 for l in lines if l.bold) / len(lines)
 
     entries: List[Entry] = []
     previous_was_bullet = False
     for line in lines:
         text = line.text.strip()
-        bullet = is_bullet(text)
+        bullet = _is_bullet_line(line)
         clean = strip_bullet(text)
         if not clean:
             continue
