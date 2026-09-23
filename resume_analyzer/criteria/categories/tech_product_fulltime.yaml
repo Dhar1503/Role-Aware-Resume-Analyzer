@@ -147,8 +147,11 @@ signals:
   - id: ug_cgpa
     label: UG CGPA
     subscore: academics
-    feature: academics.ug_cgpa
-    rule: {type: bands, points: [[5, 0], [6, 0.3], [7, 0.6], [8, 0.85], [9, 1]]}
+    any_of:
+      - feature: academics.ug_cgpa
+        rule: {type: bands, points: [[5, 0], [6, 0.3], [7, 0.6], [8, 0.85], [9, 1]]}
+      - feature: academics.ug_pct_est      # resumes that state a percentage instead
+        rule: {type: bands, points: [[50, 0], [57, 0.3], [66, 0.6], [76, 0.85], [85, 1]]}
     suggest:
       below: 0.6
       text: >

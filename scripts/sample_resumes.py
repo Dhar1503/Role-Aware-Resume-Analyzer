@@ -10,6 +10,7 @@ formatting changes, so differences in ATS score come from layout alone.
 from __future__ import annotations
 
 import io
+import re
 from pathlib import Path
 from typing import Callable, Dict, List, Tuple
 
@@ -83,9 +84,9 @@ def _styles():
         "contact": ParagraphStyle("contact", parent=base["Normal"], fontSize=9, leading=12, spaceAfter=8),
         "h": ParagraphStyle("h", parent=base["Heading2"], fontName="Helvetica-Bold", fontSize=12, leading=15,
                             spaceBefore=8, spaceAfter=3),
-        "body": ParagraphStyle("body", parent=base["Normal"], fontSize=10, leading=13),
+        "body": ParagraphStyle("body", parent=base["Normal"], fontSize=10, leading=13, spaceAfter=3),
         "bullet": ParagraphStyle("bullet", parent=base["Normal"], fontSize=10, leading=13, leftIndent=12,
-                                 bulletIndent=2),
+                                 bulletIndent=2, spaceAfter=3),
         "entry": ParagraphStyle("entry", parent=base["Normal"], fontName="Helvetica-Bold", fontSize=10, leading=13),
     }
 
@@ -333,3 +334,35 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
+
+def render_text_pdf(text: str) -> bytes:
+    """Render a plain-text resume as a single-column PDF (headings bold, bullets as bullets).
+
+    Used to check that extraction survives the PDF path, where long lines wrap.
+    """
+    from reportlab.lib.pagesizes import A4
+    from reportlab.platypus import Paragraph
+    from xml.sax.saxutils import escape
+    st = _styles()
+    story = []
+    # Helvetica has no glyph for these; the renderer is a test fixture, not the product.
+    for src, dst in (("★", "*"), ("–", "-"), ("—", "-"), ("’", "'"), ("•", "-")):
+        text = text.replace(src, dst)
+    for raw in text.splitlines():
+        line = raw.strip()
+        if not line:
+            continue
+        stripped = line.rstrip(":")
+        is_heading = (len(stripped.split()) <= 4 and not any(c.isdigit() for c in stripped)
+                      and (stripped.isupper() or (stripped.istitle() and line.endswith(":")))
+                      and "|" not in line and "," not in line)
+        if is_heading:
+            story.append(Paragraph(escape(stripped.title() if stripped.isupper() else stripped), st["h"]))
+        elif line[:1] in "-*\u2022":
+            story.append(Paragraph(escape(line[1:].strip()), st["bullet"], bulletText="\u2022"))
+        elif re.match(r"^\d{1,2}[.)]\s", line):
+            story.append(Paragraph(escape(line), st["body"]))
+        else:
+            story.append(Paragraph(escape(line), st["body"]))
+    return _pdf(story)

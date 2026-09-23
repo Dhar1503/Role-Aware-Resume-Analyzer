@@ -28,12 +28,14 @@ SECTIONS: Dict[str, Tuple[str, List[str]]] = {
                             "objective", "career summary", "about me", "professional profile"]),
     "education": ("Education", ["education", "academic background", "academic qualifications",
                                 "educational qualifications", "educational qualification", "qualifications",
-                                "academic details", "education and training", "academics", "academic profile"]),
+                                "academic details", "education and training", "academics", "academic profile",
+                                "qualification", "educational qualification"]),
     "experience": ("Experience", ["experience", "work experience", "professional experience", "employment history",
-                                  "work history", "employment", "industry experience", "relevant experience"]),
+                                  "work history", "employment", "industry experience", "relevant experience",
+                                  "work"]),
     "internships": ("Internships", ["internships", "internship", "internship experience", "industrial training",
                                     "internships and training"]),
-    "projects": ("Projects", ["projects", "academic projects", "personal projects", "key projects", "project work",
+    "projects": ("Projects", ["projects", "project", "academic projects", "personal projects", "key projects", "project work",
                               "technical projects", "projects undertaken", "major projects", "selected projects"]),
     "skills": ("Skills", ["skills", "technical skills", "key skills", "core competencies", "technical proficiency",
                           "skills and tools", "technologies", "tools and technologies", "it skills",
@@ -51,11 +53,12 @@ SECTIONS: Dict[str, Tuple[str, List[str]]] = {
     "publications": ("Publications", ["publications", "research papers", "papers", "conference papers", "patents",
                                       "publications and patents"]),
     "research": ("Research", ["research experience", "research", "research projects", "research work",
-                              "research interests"]),
+                              "research interests", "thesis", "thesis work", "dissertation"]),
     "coding_profiles": ("Coding Profiles", ["coding profiles", "competitive programming", "online profiles",
                                             "coding achievements"]),
     "exams": ("Competitive Exams", ["competitive exams", "examinations", "exam scores", "gate score", "test scores",
-                                    "entrance examinations", "competitive examinations", "gate"]),
+                                    "entrance examinations", "competitive examinations", "gate", "exams",
+                                    "examination", "exams appeared", "banking exams", "ssc exams"]),
     "languages": ("Languages", ["languages", "languages known", "language proficiency", "linguistic proficiency"]),
     "coursework": ("Relevant Coursework", ["relevant coursework", "coursework", "courses taken", "key courses",
                                            "relevant courses"]),
@@ -170,6 +173,14 @@ def _emphasised(style: Tuple) -> bool:
     return bold or caps or colon or larger or bool(style_name)
 
 
+def _unstyled_heading(text: str) -> bool:
+    stripped = text.strip().rstrip(":")
+    words = stripped.split()
+    return (1 <= len(words) <= 4 and not any(c.isdigit() for c in stripped)
+            and not re.search(r"[|,;.]", stripped)
+            and (stripped.isupper() or stripped.istitle()))
+
+
 def detect_sections(lines: Sequence[Line]) -> SectionMap:
     body = body_font_size(list(lines))
     candidates = [(i, l) for i, l in enumerate(lines) if _looks_like_heading(l.text)]
@@ -211,6 +222,10 @@ def detect_sections(lines: Sequence[Line]) -> SectionMap:
                 unknown[i] = None
         elif _emphasised(style) and (style[2] or style[4]) and i > 1:
             unknown[i] = None   # no standard headings at all: fall back to caps / larger-font lines
+        elif len(known) >= 2 and i > 1 and _unstyled_heading(line.text):
+            # Plain text with no bold, caps or font sizes: a short Title Case line
+            # among recognised headings is a heading too ("Exams Appeared").
+            unknown[i] = None
 
     starts = sorted(set(known) | set(unknown))
     sections: List[Section] = [Section("preamble", "", list(lines[: starts[0] if starts else len(lines)]))]

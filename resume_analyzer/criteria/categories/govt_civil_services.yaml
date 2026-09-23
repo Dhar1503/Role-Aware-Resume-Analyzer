@@ -84,8 +84,11 @@ signals:
     label: UG CGPA
     subscore: academics
     weight: 0.6
-    feature: academics.ug_cgpa
-    rule: {type: bands, points: [[5, 0.2], [6, 0.5], [7, 0.75], [8, 0.9], [9, 1]]}
+    any_of:
+      - feature: academics.ug_cgpa
+        rule: {type: bands, points: [[5, 0.2], [6, 0.5], [7, 0.75], [8, 0.9], [9, 1]]}
+      - feature: academics.ug_pct_est
+        rule: {type: bands, points: [[47, 0.2], [57, 0.5], [66, 0.75], [76, 0.9], [85, 1]]}
     missing: exclude
 
   - id: class10

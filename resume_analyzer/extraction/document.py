@@ -149,7 +149,9 @@ def _load_pdf(data: bytes, filename: str) -> Document:
 
     lines: List[Line] = []
     for page_no, page in enumerate(mu, start=1):
+        blocks: List[List[tuple]] = []
         for block in page.get_text("dict")["blocks"]:
+            raw: List[tuple] = []       # (Line, bbox)
             for ln in block.get("lines", []):
                 spans = [s for s in ln["spans"] if s["text"].strip()]
                 if not spans:
@@ -157,7 +159,12 @@ def _load_pdf(data: bytes, filename: str) -> Document:
                 text = " ".join("".join(s["text"] for s in ln["spans"]).split())
                 size = max(s["size"] for s in spans)
                 bold = all((s["flags"] & 16) or _BOLD_FONT.search(s["font"]) for s in spans)
-                lines.append(Line(text, page_no, "body", round(size, 1), bool(bold)))
+                raw.append((Line(text, page_no, "body", round(size, 1), bool(bold)), ln["bbox"]))
+            if raw:
+                blocks.append(raw)
+        leading = _page_leading(blocks)
+        for raw in blocks:
+            lines.extend(_join_wrapped(raw, leading))
     mu.close()
 
     pages: List[PageLayout] = []
@@ -238,6 +245,53 @@ def detect_column_gutters(words: List[dict], page_width: float) -> List[float]:
                     best = (clear, x)
         x += 2.0
     return [round(best[1] / page_width, 3)] if best else []
+
+
+_WRAP_TOLERANCE = 12.0      # pt: how close to the block's right edge counts as "full line"
+_HAS_DATE_HINT = re.compile(r"(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?\s*['’]?\s*(?:19|20)?\d{2}|\b(?:19|20)\d{2}\s*(?:-|–|—|to)\s*(?:(?:19|20)\d{2}|present|current)", re.IGNORECASE)
+_STARTS_ITEM = re.compile(r"^\s*(?:[-*•‣▪●◦⁃·]|\(cid:\d+\)|"
+                          r"[-]|\d{1,2}[.)]\s)")
+
+
+def _page_leading(blocks: List[List[tuple]]) -> float:
+    """The page's tightest line spacing, i.e. the gap inside a wrapped paragraph."""
+    gaps = sorted(round(cur[1] - prev[3], 1)
+                  for raw in blocks for (_, prev), (_, cur) in zip(raw, raw[1:])
+                  if -2 <= cur[1] - prev[3] <= 40)
+    if not gaps:
+        return 0.0
+    return gaps[max(0, int(len(gaps) * 0.1) - 1)]      # 10th percentile
+
+
+def _join_wrapped(raw: List[tuple], leading: float = 0.0) -> List[Line]:
+    """Rejoin lines that are only line-wrapped continuations of the one above.
+
+    A continuation follows a line that filled the block's width, breaks
+    mid-sentence, is indented at least as far as its parent, and never starts a
+    new item or carries a date of its own. Without this, one long bullet looks
+    like two entries and every count built on entries (projects, publications,
+    certifications) is wrong; with a rule any looser, the next entry's header
+    gets swallowed by the bullet above it.
+    """
+    if not raw:
+        return []
+    right_edge = max(bbox[2] for _, bbox in raw)
+    out: List[Line] = []
+    previous: Optional[tuple] = None        # (x0, filled_to_edge, bottom)
+    for line, (x0, top, x1, bottom) in raw:
+        tight = previous is not None and (top - previous[2]) <= leading * 1.4 + 0.6
+        merge = (out and previous and previous[1] and tight
+                 and x0 >= previous[0] - 1
+                 and not _STARTS_ITEM.match(line.text)
+                 and not _HAS_DATE_HINT.search(line.text)
+                 and out[-1].size == line.size and out[-1].bold == line.bold
+                 and not out[-1].text.rstrip().endswith((".", ":", ";", "!", "?")))
+        if merge:
+            out[-1].text = f"{out[-1].text} {line.text}".strip()
+        else:
+            out.append(line)
+        previous = (x0, x1 >= right_edge - _WRAP_TOLERANCE, bottom)
+    return out
 
 
 def _vertical_coverage(words: List[dict]) -> float:

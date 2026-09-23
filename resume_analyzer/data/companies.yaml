@@ -1,0 +1,184 @@
+# Employer classification for experience entries.
+#
+#   product: product / tech companies and recognised open-source programmes
+#   core:    core-engineering firms, PSUs and manufacturing (used by psu_via_gate)
+#   service: IT services firms - listed so they are NOT counted as product
+#
+# Matching is case-insensitive on word boundaries against the entry header.
+
+product:
+  - Microsoft
+  - Amazon
+  - Google
+  - Google Summer of Code
+  - GSoC
+  - LFX Mentorship
+  - Meta
+  - Facebook
+  - Apple
+  - Netflix
+  - Adobe
+  - Atlassian
+  - Salesforce
+  - Oracle
+  - SAP Labs
+  - VMware
+  - Nvidia
+  - Intel
+  - Qualcomm
+  - Texas Instruments
+  - Cisco
+  - IBM Research
+  - ServiceNow
+  - Intuit
+  - LinkedIn
+  - Uber
+  - Airbnb
+  - Flipkart
+  - Myntra
+  - Meesho
+  - Swiggy
+  - Zomato
+  - Ola
+  - Paytm
+  - PhonePe
+  - Razorpay
+  - CRED
+  - Zerodha
+  - Groww
+  - Juspay
+  - Postman
+  - BrowserStack
+  - Freshworks
+  - Zoho
+  - Zoho Corporation
+  - Sprinklr
+  - InMobi
+  - Dream11
+  - PharmEasy
+  - Rubrik
+  - Nutanix
+  - Samsung R&D
+  - Sony
+  - Walmart Global Tech
+  - Goldman Sachs
+  - Morgan Stanley
+  - JP Morgan
+  - JPMorgan
+  - American Express
+  - Visa
+  - Mastercard
+  - D. E. Shaw
+  - Tower Research
+  - Arcesium
+  - Optiver
+  - Jane Street
+
+core:
+  - ONGC
+  - Oil and Natural Gas Corporation
+  - Indian Oil
+  - IOCL
+  - NTPC
+  - BHEL
+  - GAIL
+  - BPCL
+  - Bharat Petroleum
+  - HPCL
+  - Hindustan Petroleum
+  - Power Grid
+  - PGCIL
+  - Power Grid Corporation of India
+  - SAIL
+  - Steel Authority of India
+  - Coal India
+  - NHPC
+  - NLC India
+  - DRDO
+  - ISRO
+  - BEL
+  - Bharat Electronics
+  - HAL
+  - Hindustan Aeronautics
+  - BARC
+  - NPCIL
+  - Haldia Petrochemicals
+  - Indian Railways
+  - RITES
+  - Larsen & Toubro
+  - L&T
+  - Tata Steel
+  - Tata Motors
+  - Tata Power
+  - Mahindra
+  - Maruti Suzuki
+  - Bajaj Auto
+  - Hero MotoCorp
+  - Ashok Leyland
+  - TVS Motor
+  - Bharat Forge
+  - Thermax
+  - Cummins
+  - Kirloskar
+  - Siemens
+  - ABB
+  - Schneider Electric
+  - Honeywell
+  - Bosch
+  - Reliance Industries
+  - JSW Steel
+  - Hindalco
+  - Vedanta
+  - Adani
+  - KSEB
+  - MSEDCL
+  - TANGEDCO
+  - UPPCL
+  - state electricity board
+
+service:
+  - Tata Consultancy Services
+  - TCS
+  - Infosys
+  - Wipro
+  - HCL
+  - Cognizant
+  - Accenture
+  - Capgemini
+  - Tech Mahindra
+  - LTIMindtree
+  - Mphasis
+  - Mindtree
+  - Hexaware
+  - Persistent Systems
+
+# Certification issuers treated as industry-recognised.
+cert_issuers:
+  - AWS
+  - Amazon Web Services
+  - Microsoft
+  - Azure
+  - Google
+  - GCP
+  - Google Cloud
+  - Oracle
+  - Cisco
+  - CCNA
+  - CompTIA
+  - Red Hat
+  - RHCSA
+  - CKA
+  - CKAD
+  - CNCF
+  - Kubernetes
+  - Salesforce
+  - NPTEL
+  - IBM
+  - Meta
+  - HashiCorp
+  - Databricks
+  - NVIDIA
+  - SAS
+  - PMP
+  - Six Sigma
+  - NIELIT

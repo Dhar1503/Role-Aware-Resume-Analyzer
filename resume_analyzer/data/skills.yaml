@@ -32,7 +32,7 @@ languages:
   - {name: Solidity}
   - {name: Verilog}
   - {name: VHDL}
-  - {name: Assembly, aliases: [Assembly Language, x86 Assembly]}
+  - {name: Assembly, aliases: [Assembly Language, x86 Assembly], list_only: [Assembly]}
 
 web:
   - {name: HTML, aliases: [HTML5]}

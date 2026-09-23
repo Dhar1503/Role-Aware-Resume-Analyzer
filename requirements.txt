@@ -1,9 +1,22 @@
+# Web
 Flask==3.1.0
-PyPDF2==4.0.1
-python-docx>=1.1
-reportlab>=4.0
+Werkzeug==3.0.1
+
+# Documents
 pdfplumber>=0.11
 pymupdf>=1.24
-Werkzeug==3.0.1
+python-docx>=1.1
+reportlab>=4.0
+
+# Knowledge base
 PyYAML>=6.0
 pydantic>=2.6
+
+# NLP: names/organisations
+spacy>=3.8,<3.9
+en_core_web_sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl
+
+# Semantic JD fit. Install torch from the CPU index first to avoid the ~2.5 GB CUDA build:
+#   pip install torch --index-url https://download.pytorch.org/whl/cpu
+torch>=2.2
+sentence-transformers>=3.0

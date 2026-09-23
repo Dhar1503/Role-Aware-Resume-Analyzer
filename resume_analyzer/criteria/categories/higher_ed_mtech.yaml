@@ -55,8 +55,11 @@ signals:
   - id: ug_cgpa
     label: UG CGPA
     subscore: academics
-    feature: academics.ug_cgpa
-    rule: {type: bands, points: [[6, 0], [6.5, 0.2], [7.5, 0.55], [8.5, 0.85], [9.3, 1]]}
+    any_of:
+      - feature: academics.ug_cgpa
+        rule: {type: bands, points: [[6, 0], [6.5, 0.2], [7.5, 0.55], [8.5, 0.85], [9.3, 1]]}
+      - feature: academics.ug_pct_est      # resumes that state a percentage instead
+        rule: {type: bands, points: [[57, 0], [62, 0.2], [71, 0.55], [81, 0.85], [88, 1]]}
     suggest:
       below: 0.4
       text: >

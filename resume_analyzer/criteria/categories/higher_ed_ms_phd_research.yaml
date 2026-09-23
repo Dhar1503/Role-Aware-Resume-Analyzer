@@ -90,6 +90,7 @@ signals:
 
 eligibility:
   - id: gate_present
+    level: warn
     note: >
       No GATE result found. Many research programmes accept UGC-NET/CSIR
       instead, or exempt IIT graduates with CPI >= 8.0.
