@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% block title %}Build a resume{% endblock %}
+
+{% macro row_fields(prefix, index, fields) -%}
+  {% for field, label, kind in fields %}
+    <label class="stack">
+      <span>{{ label }}</span>
+      {% if kind == 'area' %}
+        <textarea name="{{ prefix }}__{{ index }}__{{ field }}" rows="3"
+                  placeholder="One bullet per line. Include a number you can defend."></textarea>
+      {% else %}
+        <input type="text" name="{{ prefix }}__{{ index }}__{{ field }}"
+               {% if kind == 'month' %}placeholder="May 2025"{% endif %}>
+      {% endif %}
+    </label>
+  {% endfor %}
+{%- endmacro %}
+
+{% macro repeat(prefix, title, fields, rows=2, hint='') -%}
+  <fieldset class="repeat" data-repeat="{{ prefix }}" data-next="{{ rows }}">
+    <legend>{{ title }}</legend>
+    {% if hint %}<p class="hint">{{ hint }}</p>{% endif %}
+    <div class="rows">
+      {% for index in range(rows) %}
+        <div class="row-group" data-row>{{ row_fields(prefix, index, fields) }}</div>
+      {% endfor %}
+    </div>
+    <button type="button" class="button ghost small" data-add-row>+ Add another</button>
+  </fieldset>
+{%- endmacro %}
+
+{% block content %}
+<section class="hero narrow">
+  <h1>Build an ATS-safe resume</h1>
+  <p class="lede">Fill in what you have. The layout, section order and emphasis come from the criteria for
+     the target you pick, and the file is built to pass the same ATS checks this tool applies.
+     Nothing is invented: if a bullet has no measurable result, you get told, not given a made-up number.</p>
+</section>
+
+<form class="card build-form" method="post" action="{{ url_for('main.build_submit') }}">
+  <label class="field-label" for="category">Target</label>
+  <select id="category" name="category" onchange="location.href='?category=' + this.value">
+    {% for c in categories %}
+      <option value="{{ c.id }}" {% if c.id == category.id %}selected{% endif %}>{{ c.label }}</option>
+    {% endfor %}
+  </select>
+  <p class="hint">Order for this target:
+    {{ emphasis | map('replace', '_', ' ') | map('title') | join(' &rarr; ') | safe }}</p>
+
+  <fieldset>
+    <legend>Contact</legend>
+    <div class="grid-3">
+      <label class="stack"><span>Full name *</span><input type="text" name="contact__name" required></label>
+      <label class="stack"><span>Email</span><input type="email" name="contact__email"></label>
+      <label class="stack"><span>Phone</span><input type="text" name="contact__phone" placeholder="+91 98765 43210"></label>
+      <label class="stack"><span>City</span><input type="text" name="contact__location"></label>
+      <label class="stack"><span>LinkedIn</span><input type="text" name="contact__linkedin" placeholder="linkedin.com/in/you"></label>
+      <label class="stack"><span>GitHub</span><input type="text" name="contact__github" placeholder="github.com/you"></label>
+    </div>
+    <label class="stack"><span>Summary <span class="muted">(optional, two lines at most)</span></span>
+      <textarea name="summary" rows="2"></textarea></label>
+  </fieldset>
+
+  {{ repeat('education', 'Education', [
+      ('qualification', 'Qualification', 'text'), ('institution', 'Institution', 'text'),
+      ('start', 'From', 'month'), ('end', 'To', 'month'), ('score', 'Score (CGPA or %)', 'text')], 2) }}
+
+  {{ repeat('internships', 'Internships', [
+      ('title', 'Role', 'text'), ('organisation', 'Organisation', 'text'),
+      ('start', 'From', 'month'), ('end', 'To', 'month'), ('bullets', 'What you did', 'area')], 1,
+      'Use dates like "May 2025" - they are normalised so the file passes the consistent-dates check.') }}
+
+  {{ repeat('experience', 'Full-time experience', [
+      ('title', 'Role', 'text'), ('organisation', 'Organisation', 'text'),
+      ('start', 'From', 'month'), ('end', 'To', 'month'), ('bullets', 'What you did', 'area')], 1) }}
+
+  {{ repeat('research', 'Research experience', [
+      ('title', 'Role', 'text'), ('organisation', 'Lab / institute (name your supervisor)', 'text'),
+      ('start', 'From', 'month'), ('end', 'To', 'month'), ('bullets', 'What you did', 'area')], 1,
+      'Naming your supervisor ("under Prof. A. Sharma") is what signals a strong recommendation letter.') }}
+
+  {{ repeat('projects', 'Projects', [
+      ('title', 'Title', 'text'), ('stack', 'Tech stack', 'text'), ('start', 'From', 'month'),
+      ('end', 'To', 'month'), ('link', 'Live link', 'text'), ('bullets', 'What it does and the result', 'area')], 2) }}
+
+  {{ repeat('skills', 'Skills', [
+      ('label', 'Group (e.g. Languages)', 'text'), ('items', 'Items, comma separated', 'area')], 2) }}
+
+  <fieldset>
+    <legend>One per line</legend>
+    <div class="grid-2">
+      <label class="stack"><span>Coding profiles</span>
+        <textarea name="coding_profiles" rows="2" placeholder="LeetCode: 420 solved (210 Medium, 60 Hard)"></textarea></label>
+      <label class="stack"><span>Exam results</span>
+        <textarea name="exams" rows="2" placeholder="GATE 2026 (CS): Score 812 | AIR 312 | 99.6 percentile"></textarea></label>
+      <label class="stack"><span>Publications</span><textarea name="publications" rows="2"></textarea></label>
+      <label class="stack"><span>Achievements</span><textarea name="achievements" rows="3"></textarea></label>
+      <label class="stack"><span>Certifications</span><textarea name="certifications" rows="2"></textarea></label>
+      <label class="stack"><span>Positions of responsibility &amp; service</span>
+        <textarea name="activities" rows="3" placeholder="NSS volunteer: taught 40 children..."></textarea></label>
+      <label class="stack"><span>Relevant coursework <span class="muted">(comma separated)</span></span>
+        <textarea name="coursework" rows="2"></textarea></label>
+      <label class="stack"><span>Languages known <span class="muted">(comma separated)</span></span>
+        <textarea name="languages" rows="2"></textarea></label>
+    </div>
+    <label class="stack narrow-field"><span>Date of birth <span class="muted">(government applications)</span></span>
+      <input type="text" name="date_of_birth" placeholder="14 June 1998"></label>
+  </fieldset>
+
+  <div class="form-actions">
+    <button type="submit" class="button primary">Build my resume</button>
+  </div>
+</form>
+{% endblock %}

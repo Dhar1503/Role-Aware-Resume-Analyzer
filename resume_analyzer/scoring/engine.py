@@ -141,9 +141,14 @@ def _evaluate_gate(gate: Gate, f: Mapping[str, Any], inputs: Mapping[str, Any]) 
     limit = lo if lo is not None else hi
 
     def result(status: str, value: Any) -> GateResult:
-        template = gate.message_missing if value is None and gate.message_missing else gate.message
-        msg = template.format(value=_fmt(value) if value is not None else "not stated",
-                              limit=_fmt(float(limit)) if limit is not None else "")
+        if status == "pass":
+            # The YAML message describes the failure; saying it next to a PASS reads as a contradiction.
+            msg = (f"{_fmt(value)} meets the requirement of {_fmt(float(limit))}." if limit is not None
+                   else "Requirement met.")
+        else:
+            template = gate.message_missing if value is None and gate.message_missing else gate.message
+            msg = template.format(value=_fmt(value) if value is not None else "not stated",
+                                  limit=_fmt(float(limit)) if limit is not None else "")
         return GateResult(gate.id, gate.label, status, msg, value, limit, gate.note)
 
     if gate.feature not in f:

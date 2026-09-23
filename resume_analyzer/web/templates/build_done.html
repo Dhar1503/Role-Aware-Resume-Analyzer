@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Your resume is ready{% endblock %}
+{% block content %}
+<section class="card narrow">
+  <h1>Your resume is ready</h1>
+  <p class="muted">Laid out for <strong>{{ category.label }}</strong> &middot;
+     about {{ generated.estimated_pages }} page{{ '' if generated.estimated_pages == 1 else 's' }} &middot;
+     file name <code>{{ generated.filename }}</code></p>
+
+  <div class="form-actions">
+    <a class="button primary" href="{{ url_for('main.build_download', key=key, file_format='pdf') }}">Download PDF</a>
+    <a class="button" href="{{ url_for('main.build_download', key=key, file_format='docx') }}">Download DOCX</a>
+  </div>
+
+  {% if generated.warnings %}
+    <h2>Before you send it</h2>
+    <ul class="warnings">
+      {% for warning in generated.warnings %}<li>{{ warning }}</li>{% endfor %}
+    </ul>
+  {% else %}
+    <p class="pill pass">No structural problems found.</p>
+  {% endif %}
+
+  <h2>Sections, in order</h2>
+  <ol class="section-order">
+    {% for section in generated.layout.sections %}<li>{{ section.heading | title }}</li>{% endfor %}
+  </ol>
+
+  <p class="hint">Download the PDF, then run it through <a href="{{ url_for('main.home') }}">the analyser</a>
+     with the job description you are targeting - that is the same round trip the test suite performs.</p>
+</section>
+{% endblock %}

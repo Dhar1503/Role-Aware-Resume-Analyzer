@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero">
+  <h1>Is your resume strong <em>for the thing you are applying to</em>?</h1>
+  <p class="lede">Upload a resume, pick what you are applying for, and get three separate scores:
+     how strong the content is for that target, whether screening software can actually read it,
+     and how well it matches a specific job description. Every number shows the line it came from.</p>
+</section>
+
+<form class="card analyse-form" method="post" action="{{ url_for('main.analyse') }}" enctype="multipart/form-data">
+  <div class="grid-2">
+    <div>
+      <label class="field-label" for="resume">1. Your resume</label>
+      <label class="dropzone" for="resume">
+        <input type="file" id="resume" name="resume" accept=".pdf,.docx,.txt" required>
+        <span class="dropzone-text">Choose a PDF, DOCX or TXT file</span>
+        <span class="dropzone-file" data-file-name>No file chosen</span>
+      </label>
+
+      <label class="field-label" for="category">2. What are you applying for?</label>
+      <select id="category" name="category" required>
+        {% for c in categories %}
+          <option value="{{ c.id }}" {% if c.id == 'tech_product_fulltime' %}selected{% endif %}
+                  data-examples="{{ c.examples | join(', ') }}">{{ c.label }}</option>
+        {% endfor %}
+      </select>
+      <p class="hint" data-category-examples></p>
+
+      {% for c in categories %}
+        {% if c.inputs %}
+        <div class="category-inputs" data-for="{{ c.id }}" hidden>
+          <p class="field-label">Details this category needs (not usually on a resume)</p>
+          {% for i in c.inputs %}
+            <div class="inline-field">
+              <label for="input__{{ c.id }}__{{ i.id }}">{{ i.label }}</label>
+              {% if i.type == 'choice' %}
+                <select id="input__{{ c.id }}__{{ i.id }}" name="input__{{ i.id }}" disabled>
+                  <option value="">Prefer not to say</option>
+                  {% for option in i.options %}<option value="{{ option }}">{{ option }}</option>{% endfor %}
+                </select>
+              {% elif i.type == 'bool' %}
+                <input type="checkbox" id="input__{{ c.id }}__{{ i.id }}" name="input__{{ i.id }}" value="true" disabled>
+              {% elif i.type == 'date' %}
+                <input type="date" id="input__{{ c.id }}__{{ i.id }}" name="input__{{ i.id }}" disabled>
+              {% else %}
+                <input type="number" step="1" min="0" id="input__{{ c.id }}__{{ i.id }}" name="input__{{ i.id }}" disabled>
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+
+    <div>
+      <label class="field-label" for="jd">3. Job description <span class="muted">(optional)</span></label>
+      <textarea id="jd" name="jd" rows="9" placeholder="Paste the job posting here to get a JD-fit score, a keyword check and an overall match."></textarea>
+      <details class="sop-block">
+        <summary>Applying for MS/PhD? Paste your statement of purpose</summary>
+        <textarea id="sop" name="sop" rows="6" placeholder="Optional. Scored for specificity: does it name a research problem, your own prior work, and relevant faculty?"></textarea>
+      </details>
+    </div>
+  </div>
+
+  <div class="form-actions">
+    <button type="submit" class="button primary" data-submit-label>Analyse my resume</button>
+    {% if not model_ready %}
+      <span class="pill warn">Semantic model unavailable - JD fit will be skipped</span>
+    {% endif %}
+  </div>
+</form>
+
+<section class="samples">
+  <h2>No resume to hand? Try one of these</h2>
+  <div class="sample-grid">
+    {% for name, (path, description) in samples.items() %}
+      <a class="card sample" href="{{ url_for('main.sample', name=name) }}">
+        <strong>{{ name.replace('_', ' ') | title }}</strong>
+        <span class="muted">{{ description }}</span>
+        <span class="link-arrow">Analyse this &rarr;</span>
+      </a>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="explainer">
+  <h2>What the three scores mean</h2>
+  <div class="grid-3">
+    <div class="card">
+      <h3>Strength</h3>
+      <p>Measured against criteria for the exact thing you are applying to. A software role weights
+         DSA practice and shipped projects; an M.Tech application weights GATE; civil services weights
+         exam progress and public service. Eligibility rules (age limits, attempts, minimum marks with
+         category relaxations) are reported separately and never folded into the score.</p>
+    </div>
+    <div class="card">
+      <h3>ATS compatibility</h3>
+      <p>Can software read the file? Eighteen checks for multi-column layouts, tables, text boxes,
+         contact details hidden in page headers, scanned pages, unusual section headings, mixed date
+         formats and generic file names. You can see the text exactly as a parser reads it.</p>
+    </div>
+    <div class="card">
+      <h3>Job-description fit</h3>
+      <p>Each requirement in the posting is matched against your resume by meaning, not just keywords,
+         and the matching line is shown as evidence. Requirements that name specific skills are also
+         checked literally, because embeddings alone rate unrelated resumes surprisingly well.</p>
+    </div>
+  </div>
+</section>
+{% endblock %}

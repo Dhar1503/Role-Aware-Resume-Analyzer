@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Resume Strength Analyzer{% endblock %}</title>
+  <meta name="description" content="Role-aware resume analysis: content strength, ATS compatibility and job-description fit, with the evidence behind every number.">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#128221;</text></svg>">
+</head>
+<body>
+<header class="site-header">
+  <a class="brand" href="{{ url_for('main.home') }}">
+    <span class="brand-mark">RS</span>
+    <span>Resume Strength Analyzer</span>
+  </a>
+  <nav>
+    <a href="{{ url_for('main.home') }}">Analyse</a>
+    <a href="{{ url_for('main.build_form') }}">Build</a>
+    <a href="https://github.com/" rel="noopener" class="muted">Source</a>
+  </nav>
+</header>
+
+<main>{% block content %}{% endblock %}</main>
+
+<footer class="site-footer">
+  <p>Uploads are analysed in memory and never written to disk. Results are stored under an unguessable
+     link for one hour, then deleted.</p>
+  <p class="muted">Scoring criteria live in editable YAML files; thresholds are indicative and meant to be
+     tuned. ATS behaviour is simulated from well-documented failure modes, not from any vendor's parser.</p>
+</footer>
+<script src="{{ url_for('static', filename='js/app.js') }}" defer></script>
+</body>
+</html>

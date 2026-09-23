@@ -1,0 +1,232 @@
+{% extends "base.html" %}
+{% block title %}Resume report - {{ name or filename }}{% endblock %}
+
+{% macro ring(value, label) -%}
+  {% set shown = value if value is not none else 0 %}
+  <svg class="ring" viewBox="0 0 120 120" role="img" aria-label="{{ label }}: {{ shown }} out of 100">
+    <circle class="ring-track" cx="60" cy="60" r="52"></circle>
+    <circle class="ring-value band-{{ shown | band_class }}" cx="60" cy="60" r="52"
+            style="stroke-dasharray: {{ (shown / 100 * 326.7) | round(1) }} 326.7"></circle>
+    <text class="ring-number" x="60" y="66">{{ value | round | int if value is not none else '--' }}</text>
+  </svg>
+{%- endmacro %}
+
+{% block content %}
+<section class="report-head">
+  <div>
+    <h1>{{ name or 'Your resume' }}</h1>
+    <p class="muted">{{ filename }} &middot; {{ word_count }} words &middot;
+       {{ pages }} page{{ '' if pages == 1 else 's' }} &middot; analysed for
+       <strong>{{ category.label }}</strong></p>
+  </div>
+  <form method="post" action="{{ url_for('main.delete_result', key=key) }}" class="delete-form">
+    {% if expires_in_minutes %}<span class="muted">Link expires in {{ expires_in_minutes }} min</span>{% endif %}
+    <button class="button ghost" type="submit">Delete this report now</button>
+  </form>
+</section>
+
+{% if not eligible %}
+<div class="banner fail">
+  <strong>Eligibility problem.</strong> One or more hard requirements for {{ category.label }} are not met.
+  See the eligibility section below; these are separate from the scores.
+</div>
+{% endif %}
+{% if low_confidence %}
+<div class="banner warn">
+  <strong>Not enough information to score this reliably.</strong>
+  Only {{ (confidence * 100) | round | int }}% of the things this category looks for were found in the file.
+  Treat the scores as a lower bound and check the extracted facts at the bottom of the page.
+</div>
+{% endif %}
+
+<section class="scores">
+  {% for card in cards %}
+    <article class="card score-card">
+      {{ ring(card.value, card.label) }}
+      <h2>{{ card.label }}</h2>
+      {% if card.band %}<span class="pill band-{{ card.value | band_class }}">{{ card.band }}</span>{% endif %}
+      <p class="question">{{ card.question }}</p>
+      {% if card.note %}<p class="hint">{{ card.note }}</p>{% endif %}
+    </article>
+  {% endfor %}
+</section>
+
+<section class="grid-2 top">
+  <div class="card">
+    <h2>Do these next</h2>
+    <p class="hint">Ranked by how many points each would add{{ ' to the overall match' if cards[0].key == 'overall' else '' }}.</p>
+    <ol class="fixes">
+      {% for fix in fixes %}
+        <li>
+          <span class="points">+{{ fix.points }}</span>
+          <span class="source source-{{ fix.source }}">{{ fix.source }}</span>
+          <p>{{ fix.text }}</p>
+        </li>
+      {% else %}
+        <li><p>Nothing significant to fix. Well done.</p></li>
+      {% endfor %}
+    </ol>
+  </div>
+
+  <div class="card">
+    <h2>{{ category.score_label }} breakdown</h2>
+    <ul class="bars">
+      {% for sub in subscores %}
+        <li>
+          <div class="bar-head">
+            <span>{{ sub.label }}</span>
+            <span class="muted">{{ '--' if sub.score is none else sub.score | round | int }}
+              <em>&times;{{ (sub.weight * 100) | round | int }}%</em></span>
+          </div>
+          <div class="bar-track">
+            <div class="bar-fill band-{{ (sub.score or 0) | band_class }}" style="width: {{ sub.score or 0 }}%"></div>
+          </div>
+          {% if sub.score is none %}<p class="hint">Not scored: nothing found for this group.</p>{% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+    <p class="hint">Confidence {{ (confidence * 100) | round | int }}% - the share of this category's
+       signals actually found on the resume.</p>
+  </div>
+</section>
+
+{% if eligibility_all %}
+<section class="card">
+  <h2>Eligibility</h2>
+  <p class="hint">Hard rules for {{ category.label }}. These are reported separately and never change the scores.</p>
+  <ul class="checks">
+    {% for gate in eligibility_all %}
+      <li class="check status-{{ gate.status }}">
+        <span class="status-pill status-{{ gate.status }}">{{ gate.status }}</span>
+        <div>
+          <strong>{{ gate.label }}</strong>
+          <p>{{ gate.message }}</p>
+          {% if gate.note %}<p class="hint">{{ gate.note }}</p>{% endif %}
+        </div>
+      </li>
+    {% endfor %}
+  </ul>
+</section>
+{% endif %}
+
+<section class="card">
+  <h2>ATS report <span class="pill band-{{ ats.score | band_class }}">{{ ats.score | round | int }}/100</span></h2>
+  {% if ats.fatal %}
+    <div class="banner fail"><strong>An ATS would read nothing from this file.</strong>
+      Fix that first; the other checks cannot run until then.</div>
+  {% endif %}
+  <div class="ats-groups">
+    {% for group in ats.groups %}
+      <details class="group" {% if group.score is not none and group.score < 100 %}open{% endif %}>
+        <summary>
+          <span>{{ group.label }}</span>
+          <span class="muted">{{ '--' if group.score is none else group.score | round | int }}
+            <em>&times;{{ (group.weight * 100) | round | int }}%</em></span>
+        </summary>
+        <ul class="checks">
+          {% for check in group.checks %}
+            <li class="check status-{{ check.status }}">
+              <span class="status-pill status-{{ check.status }}">{{ check.status }}</span>
+              <div>
+                <strong>{{ check.label }}</strong>
+                <p>{{ check.message }}</p>
+                {% if check.fix %}<p class="fix">Fix: {{ check.fix }}</p>{% endif %}
+              </div>
+            </li>
+          {% endfor %}
+        </ul>
+      </details>
+    {% endfor %}
+  </div>
+</section>
+
+{% if jd_fit %}
+<section class="card">
+  <h2>Job-description fit <span class="pill band-{{ jd_fit.score | band_class }}">{{ jd_fit.score | round | int }}/100</span></h2>
+  {% if jd_fit.note %}
+    <p class="hint">{{ jd_fit.note }}</p>
+  {% else %}
+  <p class="hint">Each requirement matched against your resume by meaning, then checked for the specific
+     skills it names. Model: {{ jd_fit.model_name }}.</p>
+  <ul class="requirements">
+    {% for match in jd_fit.matches %}
+      <li class="req status-{{ match.status }}">
+        <div class="req-head">
+          <span class="status-pill status-{{ match.status }}">{{ match.status }}</span>
+          <span class="muted">{{ match.importance }}</span>
+          <p>{{ match.requirement }}</p>
+        </div>
+        {% if match.evidence %}
+          <p class="evidence"><span class="muted">your resume:</span> {{ match.evidence }}</p>
+        {% endif %}
+        {% if match.skills_missing %}
+          <p class="missing">Not shown anywhere: {{ match.skills_missing | join(', ') }}</p>
+        {% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+</section>
+{% endif %}
+
+{% if ats.keywords %}
+<section class="card">
+  <h2>Keyword match</h2>
+  <p class="hint">Literal matching, the way most ATS keyword filters work. A "variant" means you used a
+     different word for the same thing than the posting did.</p>
+  <table class="keywords">
+    <thead><tr><th>Keyword</th><th>Importance</th><th>Status</th><th>On your resume</th></tr></thead>
+    <tbody>
+      {% for hit in ats.keywords.hits %}
+        <tr class="status-{{ 'pass' if hit.status == 'exact' else ('warn' if hit.status == 'variant' else 'fail') }}">
+          <td>{{ hit.jd_terms[0] }}</td>
+          <td class="muted">{{ hit.importance }}</td>
+          <td>{{ hit.status }}{% if hit.status == 'exact' and not hit.in_context %} <span class="muted">(skills list only)</span>{% endif %}</td>
+          <td>{{ hit.resume_terms | join(', ') or '--' }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endif %}
+
+{% if sop %}
+<section class="card">
+  <h2>Statement of purpose</h2>
+  <p>{{ sop.word_count }} words, specificity {{ (sop.specificity * 100) | round | int }}%.</p>
+  <p><strong>Present:</strong> {{ sop.present | join(', ') | replace('_', ' ') or 'nothing specific' }}</p>
+  {% if sop.missing %}<p><strong>Missing:</strong> {{ sop.missing | join(', ') | replace('_', ' ') }}</p>{% endif %}
+  {% if sop.cliches %}<p class="fix">Clichés to cut: {{ sop.cliches | join('; ') }}</p>{% endif %}
+</section>
+{% endif %}
+
+<section class="grid-2">
+  <details class="card">
+    <summary><h2>What a parser reads</h2></summary>
+    <p class="hint">Your file as simple screening software sees it. If sentences here look scrambled or
+       details are missing, that is what a recruiter's system receives.</p>
+    <pre class="ats-view">{{ ats_view }}</pre>
+  </details>
+
+  <details class="card">
+    <summary><h2>Everything we extracted</h2></summary>
+    <p class="hint">Sections found: {{ sections_found | join(', ') or 'none' }}.
+      {% if nonstandard_sections %} Non-standard headings: {{ nonstandard_sections | join(', ') }}.{% endif %}</p>
+    <table class="facts">
+      <thead><tr><th>Value</th><th>Meaning</th><th>Found in</th></tr></thead>
+      <tbody>
+        {% for fact in facts %}
+          <tr>
+            <td><strong>{{ fact.value }}</strong> {{ fact.unit }}</td>
+            <td>{{ fact.label }}</td>
+            <td class="muted">{{ fact.evidence or '--' }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </details>
+</section>
+
+<p class="muted timings">Analysed in {{ timings.values() | sum | round | int }} ms
+  ({% for stage, ms in timings.items() %}{{ stage }} {{ ms | round | int }}ms{{ ', ' if not loop.last }}{% endfor %}).</p>
+{% endblock %}
