@@ -3,9 +3,12 @@
 import pytest
 
 from resume_analyzer.extraction.document import (
-    UnreadableDocumentError, UnsupportedFormatError, count_garbled, detect_column_gutters, load_document,
+    UnreadableDocumentError,
+    UnsupportedFormatError,
+    count_garbled,
+    detect_column_gutters,
+    load_document,
 )
-
 
 # --- unsupported and malformed input --------------------------------------------
 
@@ -94,6 +97,7 @@ def test_docx_fonts_and_page_count(docs):
 
 def test_docx_stale_page_count_is_replaced_by_estimate():
     import io
+
     import docx
     d = docx.Document()                               # template's app.xml says <Pages>1</Pages>
     for _ in range(300):

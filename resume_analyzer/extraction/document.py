@@ -23,7 +23,6 @@ import zipfile
 from dataclasses import dataclass, field
 from difflib import SequenceMatcher
 from pathlib import Path
-from typing import List, Optional, Union
 
 SUPPORTED_TYPES = ("pdf", "docx", "txt")
 MAX_LAYOUT_PAGES = 6        # layout analysis is per-page and repetitive; text is still read from every page
@@ -49,7 +48,7 @@ class Line:
     text: str
     page: int = 1
     zone: str = "body"              # body | table | header | footer | textbox
-    size: Optional[float] = None    # font size in pt (PDF/DOCX when known)
+    size: float | None = None    # font size in pt (PDF/DOCX when known)
     bold: bool = False
     style: str = ""                 # DOCX paragraph style name
 
@@ -63,7 +62,7 @@ class PageLayout:
     image_count: int
     image_area_ratio: float         # share of the page covered by images
     table_count: int
-    column_gutters: List[float] = field(default_factory=list)   # x positions as a fraction of width
+    column_gutters: list[float] = field(default_factory=list)   # x positions as a fraction of width
 
 
 @dataclass
@@ -71,10 +70,10 @@ class Document:
     filename: str
     file_type: str
     size_bytes: int
-    lines: List[Line]
+    lines: list[Line]
     ats_text: str
-    pages: List[PageLayout] = field(default_factory=list)
-    page_count: Optional[int] = None
+    pages: list[PageLayout] = field(default_factory=list)
+    page_count: int | None = None
     page_count_estimated: bool = False
     table_count: int = 0
     image_count: int = 0
@@ -83,7 +82,7 @@ class Document:
     docx_columns: int = 1
     garbled_chars: int = 0          # unmapped glyphs inside text (content may be lost)
     garbled_symbols: int = 0        # standalone unmapped glyphs: bullets, icons (cosmetic)
-    reading_order_similarity: Optional[float] = None   # PDF: agreement of two independent extractors
+    reading_order_similarity: float | None = None   # PDF: agreement of two independent extractors
 
     @property
     def text(self) -> str:
@@ -91,7 +90,7 @@ class Document:
         return "\n".join(line.text for line in self.lines)
 
     @property
-    def ats_lines(self) -> List[Line]:
+    def ats_lines(self) -> list[Line]:
         """Lines an ATS is expected to read (body and tables)."""
         return [line for line in self.lines if line.zone in ("body", "table")]
 
@@ -104,7 +103,7 @@ class Document:
 # Entry point
 # --------------------------------------------------------------------------
 
-def load_document(source: Union[str, Path, bytes], filename: Optional[str] = None) -> Document:
+def load_document(source: str | Path | bytes, filename: str | None = None) -> Document:
     """Load a resume from a path or raw bytes. ``filename`` is required with bytes."""
     if isinstance(source, (str, Path)):
         path = Path(source)
@@ -149,11 +148,11 @@ def _load_pdf(data: bytes, filename: str) -> Document:
     if mu.needs_pass:
         raise UnreadableDocumentError(f"'{filename}' is password-protected. Remove the password and upload again.")
 
-    lines: List[Line] = []
+    lines: list[Line] = []
     for page_no, page in enumerate(mu, start=1):
-        blocks: List[List[tuple]] = []
+        blocks: list[list[tuple]] = []
         for block in page.get_text("dict")["blocks"]:
-            raw: List[tuple] = []       # (Line, bbox)
+            raw: list[tuple] = []       # (Line, bbox)
             for ln in block.get("lines", []):
                 spans = [s for s in ln["spans"] if s["text"].strip()]
                 if not spans:
@@ -169,8 +168,8 @@ def _load_pdf(data: bytes, filename: str) -> Document:
             lines.extend(_join_wrapped(raw, leading))
     mu.close()
 
-    pages: List[PageLayout] = []
-    naive: List[str] = []
+    pages: list[PageLayout] = []
+    naive: list[str] = []
     try:
         with pdfplumber.open(io.BytesIO(data)) as pdf:
             for page_no, page in enumerate(pdf.pages, start=1):
@@ -211,7 +210,7 @@ def _load_pdf(data: bytes, filename: str) -> Document:
     )
 
 
-def detect_column_gutters(words: List[dict], page_width: float) -> List[float]:
+def detect_column_gutters(words: list[dict], page_width: float) -> list[float]:
     """Find vertical strips no word crosses, with substantial text on both sides.
 
     A single-column resume always has full-width lines (bullets, summaries)
@@ -228,16 +227,15 @@ def detect_column_gutters(words: List[dict], page_width: float) -> List[float]:
     if height <= 0:
         return []
 
-    best: Optional[tuple] = None   # (clear_fraction, x)
+    best: tuple | None = None   # (clear_fraction, x)
     x = page_width * 0.2
     while x <= page_width * 0.75:
         crossing = sorted((w["top"], w["bottom"]) for w in words if w["x0"] < x < w["x1"])
         # Longest vertical run with no crossing word.
         longest, cursor, run_start = 0.0, top, top
         for w_top, w_bottom in crossing:
-            if w_top > cursor:
-                if w_top - cursor > longest:
-                    longest, run_start = w_top - cursor, cursor
+            if w_top > cursor and w_top - cursor > longest:
+                longest, run_start = w_top - cursor, cursor
             cursor = max(cursor, w_bottom)
         if bottom - cursor > longest:
             longest, run_start = bottom - cursor, cursor
@@ -264,7 +262,7 @@ _STARTS_ITEM = re.compile(r"^\s*(?:[-*•‣▪●◦⁃·]|\(cid:\d+\)|"
                           r"[-]|\d{1,2}[.)]\s)")
 
 
-def _page_leading(blocks: List[List[tuple]]) -> float:
+def _page_leading(blocks: list[list[tuple]]) -> float:
     """The page's tightest line spacing, i.e. the gap inside a wrapped paragraph."""
     gaps = sorted(round(cur[1] - prev[3], 1)
                   for raw in blocks for (_, prev), (_, cur) in zip(raw, raw[1:])
@@ -274,7 +272,7 @@ def _page_leading(blocks: List[List[tuple]]) -> float:
     return gaps[max(0, int(len(gaps) * 0.1) - 1)]      # 10th percentile
 
 
-def _join_wrapped(raw: List[tuple], leading: float = 0.0) -> List[Line]:
+def _join_wrapped(raw: list[tuple], leading: float = 0.0) -> list[Line]:
     """Rejoin lines that are only line-wrapped continuations of the one above.
 
     A continuation follows a line that filled the block's width, breaks
@@ -287,8 +285,8 @@ def _join_wrapped(raw: List[tuple], leading: float = 0.0) -> List[Line]:
     if not raw:
         return []
     right_edge = max(bbox[2] for _, bbox in raw)
-    out: List[Line] = []
-    previous: Optional[tuple] = None        # (x0, filled_to_edge, bottom)
+    out: list[Line] = []
+    previous: tuple | None = None        # (x0, filled_to_edge, bottom)
     for line, (x0, top, x1, bottom) in raw:
         tight = previous is not None and (top - previous[2]) <= leading * 1.4 + 0.6
         merge = (out and previous and previous[1] and tight
@@ -305,7 +303,7 @@ def _join_wrapped(raw: List[tuple], leading: float = 0.0) -> List[Line]:
     return out
 
 
-def _vertical_coverage(words: List[dict]) -> float:
+def _vertical_coverage(words: list[dict]) -> float:
     """Total height covered by the union of the words' vertical extents."""
     total, end = 0.0, float("-inf")
     for top, bottom in sorted((w["top"], w["bottom"]) for w in words):
@@ -318,14 +316,16 @@ def _vertical_coverage(words: List[dict]) -> float:
     return total
 
 
-def word_order_similarity(a: str, b: str) -> Optional[float]:
+def word_order_similarity(a: str, b: str) -> float | None:
     """How closely two extractions agree on word order (1.0 = identical).
 
     Compared at word level because extractors legitimately differ on where
     lines break (e.g. a right-aligned date on its own line or not). Side-by-side
     columns interleave words, which drives the ratio down.
     """
-    tokenize = lambda s: [w for w in re.findall(r"[a-z0-9]+", s.lower()) if len(w) > 1]
+    def tokenize(text: str) -> list[str]:
+        return [w for w in re.findall(r"[a-z0-9]+", text.lower()) if len(w) > 1]
+
     # difflib is quadratic, so the comparison is bounded: page one only (see the
     # caller) and a token cap. autojunk is off because it discards frequent
     # tokens, which misreads a repetitive resume as badly ordered.
@@ -372,7 +372,7 @@ def _load_docx(data: bytes, filename: str) -> Document:
     except Exception as exc:
         raise UnreadableDocumentError(f"'{filename}' could not be opened as a Word document ({exc}).") from None
 
-    def para_line(p: Paragraph, zone: str) -> Optional[Line]:
+    def para_line(p: Paragraph, zone: str) -> Line | None:
         text = " ".join(p.text.split())
         if not text:
             return None
@@ -384,8 +384,8 @@ def _load_docx(data: bytes, filename: str) -> Document:
             sizes = [style_font.size.pt]
         return Line(text, 1, zone, max(sizes) if sizes else None, bool(bold), p.style.name if p.style is not None else "")
 
-    lines: List[Line] = []
-    ats_parts: List[str] = []
+    lines: list[Line] = []
+    ats_parts: list[str] = []
     tables = 0
     for child in doc.element.body.iterchildren():
         if child.tag == f"{_W}p":
@@ -396,7 +396,7 @@ def _load_docx(data: bytes, filename: str) -> Document:
         elif child.tag == f"{_W}tbl":
             tables += 1
             for row in Table(child, doc).rows:
-                cells: List[str] = []
+                cells: list[str] = []
                 for cell in row.cells:
                     for p in cell.paragraphs:
                         line = para_line(p, "table")
@@ -408,7 +408,7 @@ def _load_docx(data: bytes, filename: str) -> Document:
 
     # Text boxes: python-docx skips them; many ATS do too. Word stores each box
     # twice (DrawingML + VML fallback), so de-duplicate.
-    box_texts: List[str] = []
+    box_texts: list[str] = []
     for box in doc.element.body.iter(f"{_W}txbxContent"):
         for p in box.iter(f"{_W}p"):
             text = " ".join("".join(t.text or "" for t in p.iter(f"{_W}t")).split())
@@ -416,7 +416,7 @@ def _load_docx(data: bytes, filename: str) -> Document:
                 box_texts.append(text)
     lines.extend(Line(t, 1, "textbox") for t in box_texts)
 
-    hf: List[str] = []
+    hf: list[str] = []
     zones = {"header": [], "footer": []}
     for section in doc.sections:
         for zone, part in (("header", section.header), ("footer", section.footer)):
@@ -459,7 +459,7 @@ def _load_docx(data: bytes, filename: str) -> Document:
     )
 
 
-def _docx_page_count(data: bytes) -> Optional[int]:
+def _docx_page_count(data: bytes) -> int | None:
     """Word records the page count in docProps/app.xml when it saves; generated files may not."""
     try:
         with zipfile.ZipFile(io.BytesIO(data)) as z:
@@ -498,7 +498,7 @@ def _load_txt(data: bytes, filename: str) -> Document:
     )
 
 
-def body_font_size(lines: List[Line]) -> Optional[float]:
+def body_font_size(lines: list[Line]) -> float | None:
     """Most common font size weighted by characters (the body text size)."""
     weighted = [l.size for l in lines if l.size for _ in range(max(1, len(l.text) // 10))]
     return statistics.mode(weighted) if weighted else None

@@ -15,12 +15,11 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass, field
-from typing import List, Optional
 
+from ..ats.keywords import _PREFERRED, _is_heading
 from ..extraction.document import Document
 from ..extraction.sections import SectionMap, detect_sections
 from ..extraction.skills import skill_names
-from ..ats.keywords import _PREFERRED, _is_heading
 from . import model
 
 # Calibration measured on the validation set (scripts/calibrate_semantic.py).
@@ -53,24 +52,24 @@ class RequirementMatch:
     status: str                     # strong | partial | missing
     similarity: float               # raw cosine similarity of the best line
     score: float                    # 0-1: semantic, blended with skill coverage where applicable
-    evidence: Optional[str]         # the best-matching line from the resume
-    skills_required: List[str] = field(default_factory=list)
-    skills_missing: List[str] = field(default_factory=list)
+    evidence: str | None         # the best-matching line from the resume
+    skills_required: list[str] = field(default_factory=list)
+    skills_missing: list[str] = field(default_factory=list)
 
 
 @dataclass
 class JdFitReport:
     score: float                    # 0-100
-    matches: List[RequirementMatch] = field(default_factory=list)
+    matches: list[RequirementMatch] = field(default_factory=list)
     model_name: str = model.MODEL_NAME
     note: str = ""
 
     @property
-    def gaps(self) -> List[RequirementMatch]:
+    def gaps(self) -> list[RequirementMatch]:
         return [m for m in self.matches if m.status != "strong"]
 
 
-def split_requirements(jd_text: str) -> List[tuple]:
+def split_requirements(jd_text: str) -> list[tuple]:
     """(requirement, importance) for each substantive line of a job description.
 
     Headings switch the mode: "Preferred qualifications" makes the lines below
@@ -79,7 +78,7 @@ def split_requirements(jd_text: str) -> List[tuple]:
     resume can match.
     """
     mode = "required"
-    out: List[tuple] = []
+    out: list[tuple] = []
     lines = jd_text.splitlines()
     title = next((i for i, l in enumerate(lines) if l.strip()), None)
     for index, raw in enumerate(lines):
@@ -101,9 +100,9 @@ def split_requirements(jd_text: str) -> List[tuple]:
     return out[:MAX_REQUIREMENTS]
 
 
-def resume_chunks(doc: Document, sections: Optional[SectionMap] = None) -> List[str]:
+def resume_chunks(doc: Document, sections: SectionMap | None = None) -> list[str]:
     sections = sections or detect_sections(doc.lines)
-    chunks: List[str] = []
+    chunks: list[str] = []
     for section in sections.sections:
         if section.key in _SKIP_SECTIONS:
             continue
@@ -118,7 +117,7 @@ def _calibrate(similarity: float) -> float:
     return max(0.0, min(1.0, (similarity - CAL_LO) / (CAL_HI - CAL_LO)))
 
 
-def jd_fit(doc: Document, jd_text: str, sections: Optional[SectionMap] = None) -> Optional[JdFitReport]:
+def jd_fit(doc: Document, jd_text: str, sections: SectionMap | None = None) -> JdFitReport | None:
     """Semantic fit against a pasted job description, or None if no JD was given."""
     if not jd_text or not jd_text.strip():
         return None
@@ -137,7 +136,7 @@ def jd_fit(doc: Document, jd_text: str, sections: Optional[SectionMap] = None) -
     similarity = np.asarray(queries) @ np.asarray(documents).T
     resume_skills = {s.lower() for s in skill_names(doc.text)}
 
-    matches: List[RequirementMatch] = []
+    matches: list[RequirementMatch] = []
     earned = total = 0.0
     for index, (requirement, importance) in enumerate(requirements):
         best = int(similarity[index].argmax())

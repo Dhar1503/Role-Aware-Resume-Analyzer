@@ -18,7 +18,7 @@ A file with ``abstract: true`` can be extended but is not offered as a category.
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 import yaml
 from pydantic import ValidationError
@@ -43,7 +43,7 @@ def _deep_merge(base: Any, override: Any) -> Any:
     return override
 
 
-def _merge_by_id(parent: List[dict], child: List[dict], removed: List[str], where: str) -> List[dict]:
+def _merge_by_id(parent: list[dict], child: list[dict], removed: list[str], where: str) -> list[dict]:
     known = {item["id"] for item in parent}
     missing = set(removed) - known
     if missing:
@@ -56,8 +56,8 @@ def _merge_by_id(parent: List[dict], child: List[dict], removed: List[str], wher
     return list(result.values())
 
 
-def _read_raw(directory: Path) -> Dict[str, dict]:
-    raw: Dict[str, dict] = {}
+def _read_raw(directory: Path) -> dict[str, dict]:
+    raw: dict[str, dict] = {}
     for path in sorted(directory.glob("*.yaml")):
         try:
             data = yaml.safe_load(path.read_text(encoding="utf-8"))
@@ -73,7 +73,7 @@ def _read_raw(directory: Path) -> Dict[str, dict]:
     return raw
 
 
-def _resolve(cat_id: str, raw: Dict[str, dict], cache: Dict[str, dict], chain: tuple = ()) -> dict:
+def _resolve(cat_id: str, raw: dict[str, dict], cache: dict[str, dict], chain: tuple = ()) -> dict:
     if cat_id in cache:
         return cache[cat_id]
     if cat_id in chain:
@@ -95,12 +95,12 @@ def _resolve(cat_id: str, raw: Dict[str, dict], cache: Dict[str, dict], chain: t
     return resolved
 
 
-def load_categories(directory: Optional[Path] = None) -> Dict[str, Category]:
+def load_categories(directory: Path | None = None) -> dict[str, Category]:
     """Load every non-abstract category in ``directory``; raise CriteriaError on any problem."""
     directory = Path(directory or CATEGORIES_DIR)
     raw = _read_raw(directory)
-    cache: Dict[str, dict] = {}
-    categories: Dict[str, Category] = {}
+    cache: dict[str, dict] = {}
+    categories: dict[str, Category] = {}
 
     def depth(cat_id: str, seen: tuple = ()) -> int:
         parent = raw[cat_id].get("extends")
@@ -124,10 +124,10 @@ def load_categories(directory: Optional[Path] = None) -> Dict[str, Category]:
     return categories
 
 
-_registry: Optional[Dict[str, Category]] = None
+_registry: dict[str, Category] | None = None
 
 
-def get_registry() -> Dict[str, Category]:
+def get_registry() -> dict[str, Category]:
     """Process-wide cached registry of the bundled categories."""
     global _registry
     if _registry is None:

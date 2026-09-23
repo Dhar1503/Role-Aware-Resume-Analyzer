@@ -19,9 +19,10 @@ weights are renormalised, so a resume is never penalised for an optional signal.
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 from dataclasses import asdict, dataclass, field
 from datetime import date
-from typing import Any, Dict, List, Mapping, Optional
+from typing import Any
 
 from ..criteria.schema import Category, Gate, Signal
 from ..features import derive
@@ -37,9 +38,9 @@ class SignalResult:
     subscore: str
     found: bool
     counted: bool
-    score: Optional[float]      # 0-1; None when excluded
+    score: float | None      # 0-1; None when excluded
     value: Any                  # raw value of the feature that produced the score
-    feature: Optional[str]
+    feature: str | None
     nominal_weight: float       # share of the overall score (0-1)
 
 
@@ -48,8 +49,8 @@ class SubscoreResult:
     id: str
     label: str
     weight: float
-    score: Optional[float]      # 0-100; None when every signal was excluded
-    signals: List[SignalResult] = field(default_factory=list)
+    score: float | None      # 0-100; None when every signal was excluded
+    signals: list[SignalResult] = field(default_factory=list)
 
 
 @dataclass
@@ -59,7 +60,7 @@ class GateResult:
     status: str                 # pass | fail | warn | unknown
     message: str
     value: Any
-    limit: Optional[float]
+    limit: float | None
     note: str
 
 
@@ -80,11 +81,11 @@ class StrengthResult:
     score: float                # 0-100
     confidence: float           # 0-1: weighted share of signals actually found on the resume
     eligible: bool              # False if any gate failed
-    subscores: List[SubscoreResult]
-    eligibility: List[GateResult]
-    suggestions: List[Suggestion]
+    subscores: list[SubscoreResult]
+    eligibility: list[GateResult]
+    suggestions: list[Suggestion]
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return asdict(self)
 
 
@@ -96,14 +97,14 @@ def _fmt(value: Any) -> str:
     return str(value)
 
 
-def _template_vars(value: Any, found: bool) -> Dict[str, str]:
+def _template_vars(value: Any, found: bool) -> dict[str, str]:
     if not found:
         return {"value": "not stated", "value_pct": "not stated"}
     pct = f"{round(float(value) * 100)}%" if isinstance(value, (int, float)) and not isinstance(value, bool) else _fmt(value)
     return {"value": _fmt(value), "value_pct": pct}
 
 
-def _apply_inputs(category: Category, features: Mapping[str, Any], inputs: Mapping[str, Any]) -> Dict[str, Any]:
+def _apply_inputs(category: Category, features: Mapping[str, Any], inputs: Mapping[str, Any]) -> dict[str, Any]:
     specs = {i.id: i for i in category.inputs}
     unknown = set(inputs) - set(specs)
     if unknown:
@@ -118,7 +119,7 @@ def _apply_inputs(category: Category, features: Mapping[str, Any], inputs: Mappi
     return merged
 
 
-def _score_signal(sig: Signal, f: Mapping[str, Any]) -> tuple[bool, Optional[float], Any, Optional[str]]:
+def _score_signal(sig: Signal, f: Mapping[str, Any]) -> tuple[bool, float | None, Any, str | None]:
     best = None
     for term in sig.terms:
         if term.feature in f:
@@ -171,7 +172,7 @@ def _impact(points: float) -> str:
 
 
 def score_resume(category: Category, features: Mapping[str, Any],
-                 inputs: Optional[Mapping[str, Any]] = None, today: Optional[date] = None) -> StrengthResult:
+                 inputs: Mapping[str, Any] | None = None, today: date | None = None) -> StrengthResult:
     """Score extracted ``features`` against ``category``.
 
     ``inputs`` are user-supplied form values declared by the category (e.g.
@@ -180,14 +181,14 @@ def score_resume(category: Category, features: Mapping[str, Any],
     inputs = dict(inputs or {})
     f = derive(_apply_inputs(category, features, inputs), today)
 
-    subscores: List[SubscoreResult] = []
-    suggestions: List[Suggestion] = []
+    subscores: list[SubscoreResult] = []
+    suggestions: list[Suggestion] = []
     found_weight = 0.0
 
     for sub_id, sub in category.subscores.items():
         sigs = [s for s in category.signals if s.subscore == sub_id]
         total_w = sum(s.weight for s in sigs)
-        results: List[SignalResult] = []
+        results: list[SignalResult] = []
         for sig in sigs:
             found, s, value, feature = _score_signal(sig, f)
             counted = found or sig.missing == "zero"

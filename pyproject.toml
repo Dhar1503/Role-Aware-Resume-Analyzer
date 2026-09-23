@@ -8,3 +8,26 @@ requires-python = ">=3.11"
 pythonpath = ["."]
 testpaths = ["tests"]
 addopts = "-q"
+
+# Ruff had no configuration here, so the rule set depended on whichever version
+# happened to be installed - clean on one machine, hundreds of findings on
+# another. Pin it so `ruff check .` means the same thing everywhere.
+#
+# Scope: unused/undefined names, import hygiene and order, comparison and
+# except-clause style, and typing modernisation. Deliberately not enabled are
+# the broader style families (B, SIM, RUF, BLE, DTZ, PLW): on this codebase they
+# flag ~100 findings that are intentional - blind excepts around four different
+# document parsers that each raise their own types on malformed uploads, naive
+# dates for civil-calendar age arithmetic, and en-dashes and curly quotes inside
+# regexes that exist precisely to match them in real resumes.
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["F", "E4", "E7", "E9", "I", "UP"]
+ignore = [
+    # `l` for "line", confined to comprehensions in the document parser.
+    # Worth renaming one day; not worth churning the parser for today.
+    "E741",
+]

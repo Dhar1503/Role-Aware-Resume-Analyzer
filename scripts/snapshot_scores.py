@@ -17,7 +17,6 @@ from __future__ import annotations
 import json
 import sys
 from pathlib import Path
-from typing import Dict
 
 from resume_analyzer.pipeline import analyze
 from resume_analyzer.validation import TODAY, VALIDATION_DIR, load_cases
@@ -31,8 +30,8 @@ def jd_for(category: str):
     return path.read_text(encoding="utf-8") if path.exists() else None
 
 
-def measure(include_jd: bool = False) -> Dict[str, Dict[str, float]]:
-    scores: Dict[str, Dict[str, float]] = {}
+def measure(include_jd: bool = False) -> dict[str, dict[str, float]]:
+    scores: dict[str, dict[str, float]] = {}
     for case in load_cases(include_real=False):
         result = analyze(case.data, case.filename, case.category, inputs=case.inputs,
                          jd_text=jd_for(case.category) if include_jd else None,
@@ -46,7 +45,7 @@ def measure(include_jd: bool = False) -> Dict[str, Dict[str, float]]:
     return scores
 
 
-def compare(current: Dict, snapshot: Dict, tolerance: float = TOLERANCE):
+def compare(current: dict, snapshot: dict, tolerance: float = TOLERANCE):
     """Return [(case, field, old, new)] for everything that moved."""
     moved = []
     for case_id, values in current.items():

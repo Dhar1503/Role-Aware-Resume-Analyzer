@@ -11,7 +11,7 @@ confidently wrong number.
 from __future__ import annotations
 
 import io
-from typing import Callable, Dict, Tuple
+from collections.abc import Callable
 
 PROSE = (
     "Ravi Sharma is a computer science student at a private engineering college in Pune who has "
@@ -93,45 +93,45 @@ Languages: Python, SQL
 """
 
 
-def _txt(text: str, name: str) -> Tuple[str, bytes]:
+def _txt(text: str, name: str) -> tuple[str, bytes]:
     return name, text.encode("utf-8")
 
 
-def empty_file() -> Tuple[str, bytes]:
+def empty_file() -> tuple[str, bytes]:
     return "empty.txt", b""
 
 
-def whitespace_only() -> Tuple[str, bytes]:
+def whitespace_only() -> tuple[str, bytes]:
     return "blank.txt", b"   \n\n\t  \n"
 
 
-def prose_resume() -> Tuple[str, bytes]:
+def prose_resume() -> tuple[str, bytes]:
     """No headings, no dates, no bullets: a paragraph about a person."""
     return _txt(PROSE, "prose.txt")
 
 
-def no_dates() -> Tuple[str, bytes]:
+def no_dates() -> tuple[str, bytes]:
     return _txt(NO_DATES, "no_dates.txt")
 
 
-def headings_only() -> Tuple[str, bytes]:
+def headings_only() -> tuple[str, bytes]:
     return _txt(HEADINGS_ONLY, "headings_only.txt")
 
 
-def unicode_name() -> Tuple[str, bytes]:
+def unicode_name() -> tuple[str, bytes]:
     return _txt(UNICODE_NAME, "unicode.txt")
 
 
-def html_injection() -> Tuple[str, bytes]:
+def html_injection() -> tuple[str, bytes]:
     return _txt(INJECTION, "injection.txt")
 
 
-def huge_single_line() -> Tuple[str, bytes]:
+def huge_single_line() -> tuple[str, bytes]:
     body = "Python Java C++ SQL Docker Kubernetes React Node.js " * 400
     return _txt(f"Long Liner\nlong@example.com\n\nSKILLS\n{body}\n", "one_line.txt")
 
 
-def long_resume(pages: int = 20) -> Tuple[str, bytes]:
+def long_resume(pages: int = 20) -> tuple[str, bytes]:
     """A twenty-page PDF: nobody should submit one, and it must not hang the analyser."""
     from scripts.sample_resumes import render_text_pdf
     blocks = []
@@ -143,7 +143,7 @@ def long_resume(pages: int = 20) -> Tuple[str, bytes]:
     return "long.pdf", render_text_pdf(text)
 
 
-def pdf_without_spaces() -> Tuple[str, bytes]:
+def pdf_without_spaces() -> tuple[str, bytes]:
     """Some exporters drop the spaces between words; the text layer is then almost unusable."""
     from reportlab.lib.pagesizes import A4
     from reportlab.pdfgen import canvas
@@ -162,7 +162,7 @@ def pdf_without_spaces() -> Tuple[str, bytes]:
     return "no_spaces.pdf", buffer.getvalue()
 
 
-NASTY: Dict[str, Callable[[], Tuple[str, bytes]]] = {
+NASTY: dict[str, Callable[[], tuple[str, bytes]]] = {
     "empty_file": empty_file,
     "whitespace_only": whitespace_only,
     "prose_resume": prose_resume,

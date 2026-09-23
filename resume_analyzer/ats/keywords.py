@@ -18,7 +18,6 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional, Set
 
 from ..extraction.sections import SectionMap
 from ..extraction.skills import find_skills
@@ -38,10 +37,10 @@ _REQUIRED = re.compile(r"\b(required|requirements?|must[\s-]have|mandatory|basic
 @dataclass
 class KeywordHit:
     skill: str                  # canonical skill
-    jd_terms: List[str]         # how the JD writes it
+    jd_terms: list[str]         # how the JD writes it
     importance: str             # required | preferred
     status: str                 # exact | variant | missing
-    resume_terms: List[str]     # how the resume writes it
+    resume_terms: list[str]     # how the resume writes it
     in_context: bool            # used outside the skills list (experience, projects, ...)
     credit: float
 
@@ -49,13 +48,13 @@ class KeywordHit:
 @dataclass
 class KeywordReport:
     coverage: float                                   # 0-1, importance-weighted
-    hits: List[KeywordHit] = field(default_factory=list)
+    hits: list[KeywordHit] = field(default_factory=list)
 
-    def by_status(self, status: str, importance: Optional[str] = None) -> List[KeywordHit]:
+    def by_status(self, status: str, importance: str | None = None) -> list[KeywordHit]:
         return [h for h in self.hits if h.status == status and (importance is None or h.importance == importance)]
 
     @property
-    def listed_only(self) -> List[KeywordHit]:
+    def listed_only(self) -> list[KeywordHit]:
         return [h for h in self.hits if h.status == "exact" and not h.in_context]
 
 
@@ -64,7 +63,7 @@ def _is_heading(line: str) -> bool:
     return 0 < len(words) <= 6 and not line.strip().startswith(("-", "*", "•"))
 
 
-def parse_jd(jd_text: str) -> Dict[str, dict]:
+def parse_jd(jd_text: str) -> dict[str, dict]:
     """Skills mentioned in a JD -> {"importance": ..., "terms": [...]}.
 
     A heading such as "Preferred qualifications" switches following lines to
@@ -72,7 +71,7 @@ def parse_jd(jd_text: str) -> Dict[str, dict]:
     "familiarity with" etc. is preferred on its own. Everything else is required.
     """
     mode = "required"
-    found: Dict[str, dict] = {}
+    found: dict[str, dict] = {}
     for raw in jd_text.splitlines():
         line = raw.strip()
         if not line:
@@ -95,14 +94,14 @@ def _norm(term: str) -> str:
 
 def match_keywords(jd_text: str, ats_text: str, sections: SectionMap) -> KeywordReport:
     jd = parse_jd(jd_text)
-    resume_terms: Dict[str, List[str]] = {}
+    resume_terms: dict[str, list[str]] = {}
     for m in find_skills(ats_text):
         terms = resume_terms.setdefault(m.skill, [])
         if m.surface not in terms:
             terms.append(m.surface)
-    in_context: Set[str] = {m.skill for m in find_skills(sections.text(*CONTEXT_SECTIONS))}
+    in_context: set[str] = {m.skill for m in find_skills(sections.text(*CONTEXT_SECTIONS))}
 
-    hits: List[KeywordHit] = []
+    hits: list[KeywordHit] = []
     total = earned = 0.0
     for skill, info in jd.items():
         terms = resume_terms.get(skill, [])

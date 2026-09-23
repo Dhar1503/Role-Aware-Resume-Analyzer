@@ -4,7 +4,14 @@ import pytest
 from pydantic import ValidationError
 
 from resume_analyzer.criteria import get_category
-from resume_analyzer.generator import Contact, Education, Project, ResumeDraft, Role, generate
+from resume_analyzer.generator import (
+    Contact,
+    Education,
+    Project,
+    ResumeDraft,
+    Role,
+    generate,
+)
 from resume_analyzer.generator.draft import normalise_month, period
 from resume_analyzer.generator.layout import build_layout
 from resume_analyzer.pipeline import analyze
@@ -104,7 +111,7 @@ def test_warns_when_an_expected_section_is_missing():
 
 @pytest.mark.parametrize("key, file_format", CASES)
 def test_generated_file_passes_the_ats_checks(key, file_format, generated):
-    result, analysis, _ = generated[(key, file_format)]
+    _result, analysis, _ = generated[(key, file_format)]
     failed = [c.id for group in analysis.ats.groups for c in group.checks if c.status == "fail"]
     assert failed == []
     assert analysis.ats.score >= 90, [c.message for g in analysis.ats.groups for c in g.checks
@@ -114,7 +121,7 @@ def test_generated_file_passes_the_ats_checks(key, file_format, generated):
 @pytest.mark.parametrize("key, file_format", CASES)
 def test_round_trip_keeps_every_fact(key, file_format, generated):
     """What the user typed must be readable back out of the generated file."""
-    result, analysis, expected = generated[(key, file_format)]
+    _result, analysis, expected = generated[(key, file_format)]
     lost = {k: (v, analysis.extraction.features.get(k)) for k, v in expected.items()
             if analysis.extraction.features.get(k) != v}
     assert lost == {}, lost
@@ -139,12 +146,12 @@ def test_both_formats_score_the_same(generated):
 
 def test_docx_list_bullets_are_recognised(generated):
     """Word list paragraphs carry no bullet character; the style is the bullet."""
-    result, analysis, _ = generated[("tech", "docx")]
+    _result, analysis, _ = generated[("tech", "docx")]
     assert analysis.extraction.features["projects.count"] == 2
 
 
 def test_dates_come_out_in_one_format(generated):
-    result, analysis, _ = generated[("tech", "pdf")]
+    _result, analysis, _ = generated[("tech", "pdf")]
     assert analysis.ats.check("date_formats").status == "pass"
 
 

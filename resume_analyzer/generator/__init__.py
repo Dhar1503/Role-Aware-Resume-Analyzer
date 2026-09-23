@@ -12,7 +12,6 @@ analyzer and comparing the extracted facts with what went in.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import List
 
 from ..criteria import Category, get_category
 from .draft import Contact, Education, Project, ResumeDraft, Role, SkillGroup
@@ -29,7 +28,7 @@ class GeneratedResume:
     content: bytes
     file_format: str
     layout: Layout
-    warnings: List[str] = field(default_factory=list)
+    warnings: list[str] = field(default_factory=list)
     estimated_pages: int = 1
 
 
@@ -45,5 +44,14 @@ def generate(draft: ResumeDraft, category_id: str, file_format: str = "pdf") -> 
                            estimated_pages=layout.estimated_pages)
 
 
-__all__ = ["Contact", "Education", "GeneratedResume", "Project", "ResumeDraft", "Role", "SkillGroup",
-           "generate", "build_layout"]
+__all__ = [
+    "Contact",
+    "Education",
+    "GeneratedResume",
+    "Project",
+    "ResumeDraft",
+    "Role",
+    "SkillGroup",
+    "build_layout",
+    "generate",
+]

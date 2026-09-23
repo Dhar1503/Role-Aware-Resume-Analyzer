@@ -7,9 +7,14 @@ generated file, so "nothing was lost in formatting" is checked, not assumed.
 
 from __future__ import annotations
 
-from typing import Dict, Tuple
-
-from resume_analyzer.generator import Contact, Education, Project, ResumeDraft, Role, SkillGroup
+from resume_analyzer.generator import (
+    Contact,
+    Education,
+    Project,
+    ResumeDraft,
+    Role,
+    SkillGroup,
+)
 
 TECH = ResumeDraft(
     contact=Contact(name="Arjun Mehta", email="arjun.mehta@gmail.com", phone="+91 98450 12345",
@@ -74,8 +79,8 @@ MTECH = ResumeDraft(
     exams=["GATE 2026 (Computer Science and IT): Score 812/1000 | AIR 312 | 99.62 percentile"],
     coursework=["Algorithms", "Theory of Computation", "Compiler Design", "Computer Architecture",
                 "Operating Systems"],
-    publications=['V. Singh, A. Deshpande. "Cache-Oblivious SpMM Revisited", Workshop on Parallel Algorithms, '
-                  'IPDPS 2026.'],
+    publications=[('V. Singh, A. Deshpande. "Cache-Oblivious SpMM Revisited", '
+                   'Workshop on Parallel Algorithms, IPDPS 2026.')],
     achievements=["University gold medal for third-year academic performance"],
 )
 
@@ -104,7 +109,7 @@ CIVIL = ResumeDraft(
 )
 
 # draft, category, facts the generated file must still contain
-DRAFTS: Dict[str, Tuple[ResumeDraft, str, Dict]] = {
+DRAFTS: dict[str, tuple[ResumeDraft, str, dict]] = {
     "tech": (TECH, "tech_product_fulltime", {
         "academics.ug_cgpa": 8.92, "academics.class12_pct": 94.2, "academics.class10_pct": 96,
         "experience.internship_count": 2, "experience.internship_months": 5,

@@ -18,7 +18,6 @@ import logging
 import os
 import re
 import sys
-from typing import List, Optional, Tuple
 
 logger = logging.getLogger(__name__)
 
@@ -32,7 +31,7 @@ MESSAGE = (
 )
 
 
-def _from_env() -> List[Tuple[str, int]]:
+def _from_env() -> list[tuple[str, int]]:
     found = []
     for name in _ENV_COUNTS:
         raw = os.environ.get(name, "").strip()
@@ -45,18 +44,18 @@ def _from_env() -> List[Tuple[str, int]]:
     return found
 
 
-def _from_argv(argv: Optional[List[str]] = None) -> List[Tuple[str, int]]:
+def _from_argv(argv: list[str] | None = None) -> list[tuple[str, int]]:
     match = _FLAG.search(" ".join(argv if argv is not None else sys.argv))
     return [("command line", int(match.group(1)))] if match else []
 
 
-def detect_worker_count(argv: Optional[List[str]] = None) -> Optional[Tuple[str, int]]:
+def detect_worker_count(argv: list[str] | None = None) -> tuple[str, int] | None:
     """The configured worker count and where it came from, or None if nothing says."""
     found = _from_env() + _from_argv(argv)
     return max(found, key=lambda item: item[1]) if found else None
 
 
-def check_single_worker(argv: Optional[List[str]] = None, strict: Optional[bool] = None) -> Optional[str]:
+def check_single_worker(argv: list[str] | None = None, strict: bool | None = None) -> str | None:
     """Warn (or raise) when the deployment asks for more than one worker."""
     detected = detect_worker_count(argv)
     if not detected or detected[1] <= 1:

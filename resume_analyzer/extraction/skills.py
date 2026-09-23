@@ -11,9 +11,9 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass
-from functools import lru_cache
+from functools import cache
 from pathlib import Path
-from typing import Dict, List, Pattern, Tuple
+from re import Pattern
 
 import yaml
 
@@ -58,12 +58,12 @@ def _compile(alias: str, case_sensitive: bool) -> Pattern[str]:
                       0 if case_sensitive else re.IGNORECASE)
 
 
-@lru_cache(maxsize=None)
-def load_taxonomy(path: Path = TAXONOMY_PATH) -> Tuple[Dict[str, Skill], Tuple[_Alias, ...]]:
+@cache
+def load_taxonomy(path: Path = TAXONOMY_PATH) -> tuple[dict[str, Skill], tuple[_Alias, ...]]:
     data = yaml.safe_load(Path(path).read_text(encoding="utf-8"))
-    skills: Dict[str, Skill] = {}
-    aliases: List[_Alias] = []
-    seen: Dict[str, str] = {}
+    skills: dict[str, Skill] = {}
+    aliases: list[_Alias] = []
+    seen: dict[str, str] = {}
     for category, entries in data.items():
         for entry in entries:
             name = entry["name"]
@@ -86,7 +86,7 @@ def skill_category(name: str) -> str:
     return load_taxonomy()[0][name].category
 
 
-def skills_in_category(category: str) -> List[str]:
+def skills_in_category(category: str) -> list[str]:
     return [s.name for s in load_taxonomy()[0].values() if s.category == category]
 
 
@@ -102,12 +102,12 @@ def _blank_urls(text: str) -> str:
     return _URL_OR_EMAIL.sub(lambda m: " " * len(m.group(0)), text)
 
 
-def find_skills(text: str) -> List[SkillMention]:
+def find_skills(text: str) -> list[SkillMention]:
     """All skill mentions in ``text`` (longest-match, non-overlapping), in order of appearance."""
     if not text:
         return []
     clean = _blank_urls(text)
-    candidates: List[SkillMention] = []
+    candidates: list[SkillMention] = []
     for alias in load_taxonomy()[1]:
         for m in alias.pattern.finditer(clean):
             if alias.list_only and not _in_list_context(clean, m.start(), m.end()):
@@ -116,16 +116,16 @@ def find_skills(text: str) -> List[SkillMention]:
             candidates.append(SkillMention(alias.skill, surface, m.start(), m.end()))
     # Longest span wins; ties keep the first alias listed.
     candidates.sort(key=lambda c: (-(c.end - c.start), c.start))
-    taken: List[SkillMention] = []
+    taken: list[SkillMention] = []
     for c in candidates:
         if all(c.end <= t.start or c.start >= t.end for t in taken):
             taken.append(c)
     return sorted(taken, key=lambda c: c.start)
 
 
-def skill_names(text: str) -> List[str]:
+def skill_names(text: str) -> list[str]:
     """Distinct canonical skills in order of first appearance."""
-    seen: Dict[str, None] = {}
+    seen: dict[str, None] = {}
     for m in find_skills(text):
         seen.setdefault(m.skill, None)
     return list(seen)

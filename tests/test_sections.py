@@ -3,7 +3,11 @@
 import pytest
 
 from resume_analyzer.extraction.document import Line
-from resume_analyzer.extraction.sections import detect_sections, match_heading, suggest_standard
+from resume_analyzer.extraction.sections import (
+    detect_sections,
+    match_heading,
+    suggest_standard,
+)
 
 
 @pytest.mark.parametrize("text, key", [

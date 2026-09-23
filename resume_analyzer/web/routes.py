@@ -11,10 +11,19 @@ from __future__ import annotations
 import io
 from dataclasses import asdict
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
-from flask import (Blueprint, abort, current_app, jsonify, redirect, render_template,
-                   request, send_file, url_for)
+from flask import (
+    Blueprint,
+    abort,
+    current_app,
+    jsonify,
+    redirect,
+    render_template,
+    request,
+    send_file,
+    url_for,
+)
 from pydantic import ValidationError
 
 from ..criteria import get_category, get_registry
@@ -39,13 +48,13 @@ def _store():
     return current_app.extensions["results"]
 
 
-def _categories() -> List[Any]:
+def _categories() -> list[Any]:
     return sorted(get_registry().values(), key=lambda c: c.label)
 
 
-def _form_inputs(category_id: str, form) -> Dict[str, Any]:
+def _form_inputs(category_id: str, form) -> dict[str, Any]:
     """Read the category's declared inputs out of the submitted form."""
-    values: Dict[str, Any] = {}
+    values: dict[str, Any] = {}
     for spec in get_category(category_id).inputs:
         raw = (form.get(f"input__{spec.id}") or "").strip()
         if not raw:
@@ -63,7 +72,7 @@ def _form_inputs(category_id: str, form) -> Dict[str, Any]:
 
 
 def _run(data: bytes, filename: str, category_id: str, jd_text: str, sop_text: str,
-         inputs: Dict[str, Any]) -> str:
+         inputs: dict[str, Any]) -> str:
     result = analyze(data, filename, category_id, jd_text=jd_text or None,
                      inputs=inputs or None, sop_text=sop_text or None)
     return _store().put(result)
@@ -174,10 +183,10 @@ def build_download(key: str, file_format: str):
                      as_attachment=True, download_name=generated.filename)
 
 
-def _rows(form, prefix: str, fields: List[str]) -> List[Dict[str, Any]]:
+def _rows(form, prefix: str, fields: list[str]) -> list[dict[str, Any]]:
     """Collect repeated form rows named prefix__0__field, prefix__1__field, ..."""
-    rows: Dict[int, Dict[str, Any]] = {}
-    for key in form.keys():
+    rows: dict[int, dict[str, Any]] = {}
+    for key in form:
         parts = key.split("__")
         if len(parts) != 3 or parts[0] != prefix or parts[2] not in fields:
             continue
@@ -193,11 +202,11 @@ def _rows(form, prefix: str, fields: List[str]) -> List[Dict[str, Any]]:
     return [rows[i] for i in sorted(rows)]
 
 
-def _lines(form, field: str) -> List[str]:
+def _lines(form, field: str) -> list[str]:
     return [line.strip() for line in (form.get(field) or "").splitlines() if line.strip()]
 
 
-def _draft_payload(form) -> Dict[str, Any]:
+def _draft_payload(form) -> dict[str, Any]:
     role_fields = ["title", "organisation", "location", "start", "end", "bullets"]
     return {
         "contact": {k: (form.get(f"contact__{k}") or "").strip()

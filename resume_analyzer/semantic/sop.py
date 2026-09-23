@@ -14,7 +14,6 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass, field
-from typing import Dict, List
 
 SIGNALS = {
     "names_faculty": (0.25, re.compile(r"\b(prof\.?|professor|dr\.)\s*[A-Z]", re.IGNORECASE)),
@@ -38,11 +37,11 @@ CLICHE_PENALTY = 0.08
 class SopReport:
     word_count: int
     specificity: float                      # 0-1
-    present: List[str] = field(default_factory=list)
-    missing: List[str] = field(default_factory=list)
-    cliches: List[str] = field(default_factory=list)
+    present: list[str] = field(default_factory=list)
+    missing: list[str] = field(default_factory=list)
+    cliches: list[str] = field(default_factory=list)
 
-    def features(self) -> Dict[str, float]:
+    def features(self) -> dict[str, float]:
         return {"sop.word_count": self.word_count, "sop.specificity": self.specificity}
 
 

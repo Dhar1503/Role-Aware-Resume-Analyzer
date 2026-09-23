@@ -9,7 +9,7 @@ its own scale, into one ordered list of what to do next.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from ..extraction.sections import SECTIONS
 from ..features import spec
@@ -44,20 +44,20 @@ class Fix:
 class ScoreCard:
     key: str
     label: str
-    value: Optional[float]
+    value: float | None
     question: str
     band: str = ""
     note: str = ""
     icon: str = "dot"
 
 
-def band(score: Optional[float]) -> str:
+def band(score: float | None) -> str:
     if score is None:
         return ""
     return next(label for threshold, label in BAND_LABELS if score >= threshold)
 
 
-def _score_cards(result: AnalysisResult) -> List[ScoreCard]:
+def _score_cards(result: AnalysisResult) -> list[ScoreCard]:
     cards = [
         ScoreCard("strength", result.category.score_label, result.strength.score,
                   f"Does the content meet the bar for {result.category.label}?", band(result.strength.score)),
@@ -82,10 +82,10 @@ def _score_cards(result: AnalysisResult) -> List[ScoreCard]:
     return cards
 
 
-def _top_fixes(result: AnalysisResult, limit: int = 6) -> List[Fix]:
+def _top_fixes(result: AnalysisResult, limit: int = 6) -> list[Fix]:
     """Merge advice from the three scores, weighted by how much each moves the overall number."""
     scaled = result.overall_match is not None
-    fixes: List[Fix] = []
+    fixes: list[Fix] = []
     for suggestion in result.strength.suggestions:
         points = suggestion.points * (OVERALL_WEIGHTS["strength"] if scaled else 1.0)
         fixes.append(Fix(suggestion.text, round(points, 1), "strength", suggestion.impact))
@@ -109,7 +109,7 @@ def _top_fixes(result: AnalysisResult, limit: int = 6) -> List[Fix]:
     return fixes[:limit]
 
 
-def _facts(result: AnalysisResult) -> List[Dict[str, Any]]:
+def _facts(result: AnalysisResult) -> list[dict[str, Any]]:
     rows = []
     for key in sorted(result.extraction.features):
         if key == "skills.list":
@@ -122,7 +122,7 @@ def _facts(result: AnalysisResult) -> List[Dict[str, Any]]:
     return rows
 
 
-def present(result: AnalysisResult, key: str = "", expires_in: Optional[int] = None) -> Dict[str, Any]:
+def present(result: AnalysisResult, key: str = "", expires_in: int | None = None) -> dict[str, Any]:
     strength = result.strength
     subscores = [{"id": s.id, "label": s.label, "score": s.score, "weight": s.weight,
                   "icon": SUBSCORE_ICONS.get(s.id, "dot"),

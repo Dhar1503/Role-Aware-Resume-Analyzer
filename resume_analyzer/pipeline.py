@@ -20,7 +20,7 @@ from __future__ import annotations
 import time
 from dataclasses import dataclass, field
 from datetime import date
-from typing import Any, Dict, Optional, Union
+from typing import Any
 
 from .ats.report import AtsReport, run_ats
 from .criteria import Category, get_category
@@ -37,29 +37,29 @@ OVERALL_WEIGHTS = {"strength": 0.5, "jd_fit": 0.3, "ats": 0.2}
 @dataclass
 class AnalysisResult:
     category: Category
-    name: Optional[str]
+    name: str | None
     document: Document
     sections: SectionMap
     extraction: Extraction
     strength: StrengthResult
     ats: AtsReport
-    jd_fit: Optional[JdFitReport] = None
-    sop: Optional[SopReport] = None
-    overall_match: Optional[float] = None       # only when a JD was pasted
-    timings_ms: Dict[str, float] = field(default_factory=dict)
+    jd_fit: JdFitReport | None = None
+    sop: SopReport | None = None
+    overall_match: float | None = None       # only when a JD was pasted
+    timings_ms: dict[str, float] = field(default_factory=dict)
 
     @property
-    def scores(self) -> Dict[str, Optional[float]]:
+    def scores(self) -> dict[str, float | None]:
         return {"strength": self.strength.score, "ats": self.ats.score,
                 "jd_fit": self.jd_fit.score if self.jd_fit else None, "overall_match": self.overall_match}
 
 
-def analyze(source: Union[str, bytes], filename: Optional[str] = None, category_id: str = "tech_product_fulltime",
-            jd_text: Optional[str] = None, inputs: Optional[Dict[str, Any]] = None,
-            sop_text: Optional[str] = None, today: Optional[date] = None,
+def analyze(source: str | bytes, filename: str | None = None, category_id: str = "tech_product_fulltime",
+            jd_text: str | None = None, inputs: dict[str, Any] | None = None,
+            sop_text: str | None = None, today: date | None = None,
             use_semantic: bool = True) -> AnalysisResult:
     """Analyse one resume against one category, optionally against a pasted JD and SOP."""
-    timings: Dict[str, float] = {}
+    timings: dict[str, float] = {}
     clock = time.perf_counter
 
     start = clock()

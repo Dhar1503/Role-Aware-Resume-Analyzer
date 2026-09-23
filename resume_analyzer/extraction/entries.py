@@ -10,9 +10,9 @@ treat every bullet as its own entry.
 from __future__ import annotations
 
 import re
+from collections.abc import Sequence
 from dataclasses import dataclass, field
 from datetime import date
-from typing import List, Optional, Sequence
 
 from .dates import duration_months, has_date
 from .document import Line
@@ -26,8 +26,8 @@ SEPARATORS = re.compile(r"\s(?:\||–|—|-)\s|:\s")
 @dataclass
 class Entry:
     header: str
-    body: List[str] = field(default_factory=list)
-    months: Optional[float] = None
+    body: list[str] = field(default_factory=list)
+    months: float | None = None
 
     @property
     def text(self) -> str:
@@ -47,14 +47,14 @@ def strip_bullet(text: str) -> str:
     return NUMBERED.sub("", BULLET.sub("", text)).strip()
 
 
-def split_entries(lines: Sequence[Line], today: Optional[date] = None) -> List[Entry]:
+def split_entries(lines: Sequence[Line], today: date | None = None) -> list[Entry]:
     lines = [l for l in lines if l.text.strip()]
     if not lines:
         return []
     bullets = [l for l in lines if _is_bullet_line(l)]
     bold_ratio = sum(1 for l in lines if l.bold) / len(lines)
 
-    entries: List[Entry] = []
+    entries: list[Entry] = []
     previous_was_bullet = False
     for line in lines:
         text = line.text.strip()

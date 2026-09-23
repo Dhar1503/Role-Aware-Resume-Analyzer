@@ -12,7 +12,6 @@ marked "not checked": nothing else matters if the ATS cannot read it.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional
 
 from ..criteria.schema import AtsHints, Category
 from ..extraction.document import Document
@@ -20,7 +19,7 @@ from ..extraction.sections import SectionMap, detect_sections
 from .checks import ALL_CHECKS, CHECK_WEIGHTS, CheckResult, Context
 from .keywords import KeywordReport
 
-GROUPS: Dict[str, tuple] = {
+GROUPS: dict[str, tuple] = {
     "parseability": ("Parseability", 0.30),
     "sections": ("Section Structure", 0.20),
     "contact": ("Contact Details", 0.10),
@@ -34,8 +33,8 @@ class GroupResult:
     id: str
     label: str
     weight: float
-    score: Optional[float]              # 0-100, None when nothing in the group applied
-    checks: List[CheckResult] = field(default_factory=list)
+    score: float | None              # 0-100, None when nothing in the group applied
+    checks: list[CheckResult] = field(default_factory=list)
 
 
 @dataclass
@@ -49,17 +48,17 @@ class Fix:
 class AtsReport:
     score: float
     fatal: bool
-    groups: List[GroupResult]
-    fixes: List[Fix]
-    keywords: Optional[KeywordReport]
+    groups: list[GroupResult]
+    fixes: list[Fix]
+    keywords: KeywordReport | None
     ats_view: str                       # the text as a simple parser reads it
 
     def check(self, check_id: str) -> CheckResult:
         return next(c for g in self.groups for c in g.checks if c.id == check_id)
 
 
-def run_ats(doc: Document, category: Optional[Category] = None, jd_text: Optional[str] = None,
-            candidate_name: Optional[str] = None, sections: Optional[SectionMap] = None) -> AtsReport:
+def run_ats(doc: Document, category: Category | None = None, jd_text: str | None = None,
+            candidate_name: str | None = None, sections: SectionMap | None = None) -> AtsReport:
     hints = category.ats if category else AtsHints()
     ctx = Context(doc=doc, sections=sections or detect_sections(doc.ats_lines), hints=hints,
                   category_label=category.label if category else None, jd_text=jd_text,
@@ -74,7 +73,7 @@ def run_ats(doc: Document, category: Optional[Category] = None, jd_text: Optiona
                 r.status, r.score, r.fix = "na", None, None
                 r.message = "Not checked: the file has no readable text."
 
-    groups: List[GroupResult] = []
+    groups: list[GroupResult] = []
     for gid, (label, weight) in GROUPS.items():
         checks = [r for r in results if r.group == gid]
         scored = [r for r in checks if r.score is not None]
@@ -87,7 +86,7 @@ def run_ats(doc: Document, category: Optional[Category] = None, jd_text: Optiona
     overall = round(sum(g.score * g.weight for g in live) / live_w, 1) if live_w else 0.0
 
     # Rank fixes by the points each would add to the overall ATS score.
-    fixes: List[Fix] = []
+    fixes: list[Fix] = []
     for g in live:
         scored = [r for r in g.checks if r.score is not None]
         total_w = sum(r.weight for r in scored)

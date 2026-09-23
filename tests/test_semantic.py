@@ -115,6 +115,7 @@ def test_sop_features_feed_the_engine():
 def test_missing_dependency_is_not_fatal(monkeypatch):
     """With sentence-transformers absent the app still runs; JD fit reports itself unavailable."""
     import builtins
+
     from resume_analyzer.semantic import model as model_module
     model_module.get_model.cache_clear()
     real_import = builtins.__import__

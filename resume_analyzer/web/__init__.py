@@ -5,7 +5,6 @@ from __future__ import annotations
 import os
 import secrets
 from pathlib import Path
-from typing import Optional
 
 from flask import Flask
 
@@ -23,12 +22,12 @@ def _band_class(score) -> str:
     return next(name for threshold, name in BANDS if score >= threshold)
 
 
-def create_app(config: Optional[dict] = None) -> Flask:
+def create_app(config: dict | None = None) -> Flask:
     app = Flask(__name__, template_folder="templates", static_folder="static")
     app.config.update(
         SECRET_KEY=os.environ.get("SECRET_KEY") or secrets.token_hex(32),
         MAX_CONTENT_LENGTH=MAX_UPLOAD_BYTES,
-        RESULT_TTL_SECONDS=int(os.environ.get("RESULT_TTL_SECONDS", 3600)),
+        RESULT_TTL_SECONDS=int(os.environ.get("RESULT_TTL_SECONDS", "3600")),
         SAMPLES_DIR=Path(__file__).resolve().parent.parent.parent / "samples",
         JSON_SORT_KEYS=False,
     )

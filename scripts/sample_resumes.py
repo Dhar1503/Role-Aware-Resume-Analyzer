@@ -11,8 +11,12 @@ from __future__ import annotations
 
 import io
 import re
+from collections.abc import Callable
 from pathlib import Path
-from typing import Callable, Dict, List, Tuple
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:                       # reportlab is imported lazily inside the builders
+    from reportlab.platypus import Table
 
 NAME = "Priya Sharma"
 CONTACT = "priya.sharma@gmail.com | +91 98765 43210 | linkedin.com/in/priyasharma | github.com/priyasharma"
@@ -91,7 +95,7 @@ def _styles():
     }
 
 
-def _entry_row(title: str, dates: str, width: float, st) -> "Table":
+def _entry_row(title: str, dates: str, width: float, st) -> Table:
     from reportlab.platypus import Paragraph, Table, TableStyle
     t = Table([[Paragraph(title, st["entry"]), Paragraph(dates, st["body"])]], colWidths=[width * 0.72, width * 0.28])
     t.setStyle(TableStyle([("ALIGN", (1, 0), (1, 0), "RIGHT"), ("LEFTPADDING", (0, 0), (-1, -1), 0),
@@ -110,7 +114,7 @@ def _pdf(story, frames=None) -> bytes:
     return buf.getvalue()
 
 
-def _headings(creative: bool) -> Dict[str, str]:
+def _headings(creative: bool) -> dict[str, str]:
     if creative:
         return {"summary": "About Me", "education": "Education", "experience": "My Journey",
                 "projects": "Things I've Built", "skills": "Toolbox", "achievements": "Wins"}
@@ -142,17 +146,17 @@ def _single_column_story(width: float, creative: bool = False, mixed_dates: bool
     return story
 
 
-def clean_pdf() -> Tuple[str, bytes]:
+def clean_pdf() -> tuple[str, bytes]:
     from reportlab.lib.pagesizes import A4
     return "Priya_Sharma_Resume_SDE.pdf", _pdf(_single_column_story(A4[0] - 80))
 
 
-def creative_pdf() -> Tuple[str, bytes]:
+def creative_pdf() -> tuple[str, bytes]:
     from reportlab.lib.pagesizes import A4
     return "CV_final_v2.pdf", _pdf(_single_column_story(A4[0] - 80, creative=True, mixed_dates=True, pad_pages=True))
 
 
-def two_column_pdf() -> Tuple[str, bytes]:
+def two_column_pdf() -> tuple[str, bytes]:
     from reportlab.lib.pagesizes import A4
     from reportlab.platypus import Frame, FrameBreak, Paragraph
     st, h = _styles(), _headings(False)
@@ -180,7 +184,7 @@ def two_column_pdf() -> Tuple[str, bytes]:
     return "resume.pdf", _pdf(sidebar + [FrameBreak()] + main, frames=[left, right])
 
 
-def table_pdf() -> Tuple[str, bytes]:
+def table_pdf() -> tuple[str, bytes]:
     from reportlab.lib import colors
     from reportlab.lib.pagesizes import A4
     from reportlab.platypus import Paragraph, Table, TableStyle
@@ -206,7 +210,7 @@ def table_pdf() -> Tuple[str, bytes]:
     return "Untitled.pdf", _pdf(story)
 
 
-def scanned_pdf() -> Tuple[str, bytes]:
+def scanned_pdf() -> tuple[str, bytes]:
     """The clean resume rasterised to an image, as if printed and scanned."""
     import pymupdf
     from reportlab.lib.pagesizes import A4
@@ -233,7 +237,7 @@ def _docx_bytes(doc) -> bytes:
     return buf.getvalue()
 
 
-def _add_body(doc, skip: Tuple[str, ...] = ()) -> None:
+def _add_body(doc, skip: tuple[str, ...] = ()) -> None:
     h = _headings(False)
     if "summary" not in skip:
         doc.add_heading(h["summary"].title(), level=1)
@@ -261,7 +265,7 @@ def _add_body(doc, skip: Tuple[str, ...] = ()) -> None:
         doc.add_paragraph(a, style="List Bullet")
 
 
-def clean_docx() -> Tuple[str, bytes]:
+def clean_docx() -> tuple[str, bytes]:
     import docx
     doc = docx.Document()
     doc.add_heading(NAME, level=0)
@@ -270,7 +274,7 @@ def clean_docx() -> Tuple[str, bytes]:
     return "Priya_Sharma_Resume_SDE.docx", _docx_bytes(doc)
 
 
-def messy_docx() -> Tuple[str, bytes]:
+def messy_docx() -> tuple[str, bytes]:
     """Contact details in the page header, skills in a text box, education in a table."""
     import docx
     from docx.oxml import parse_xml
@@ -302,9 +306,9 @@ def messy_docx() -> Tuple[str, bytes]:
     return "Resume.docx", _docx_bytes(doc)
 
 
-def plain_txt() -> Tuple[str, bytes]:
+def plain_txt() -> tuple[str, bytes]:
     h = _headings(False)
-    out: List[str] = [NAME, CONTACT, "", h["summary"], SUMMARY, "", h["education"]]
+    out: list[str] = [NAME, CONTACT, "", h["summary"], SUMMARY, "", h["education"]]
     out += [f"{d} | {y} | {s}" for d, y, s in EDUCATION] + ["", h["experience"]]
     for title, dates, bullets in EXPERIENCE:
         out += [f"{title} | {dates}"] + [f"- {b}" for b in bullets]
@@ -316,7 +320,7 @@ def plain_txt() -> Tuple[str, bytes]:
     return "Priya_Sharma_Resume_SDE.txt", "\n".join(out).encode("utf-8")
 
 
-BUILDERS: Dict[str, Callable[[], Tuple[str, bytes]]] = {
+BUILDERS: dict[str, Callable[[], tuple[str, bytes]]] = {
     "clean_pdf": clean_pdf, "clean_docx": clean_docx, "plain_txt": plain_txt, "two_column_pdf": two_column_pdf,
     "table_pdf": table_pdf, "creative_pdf": creative_pdf, "messy_docx": messy_docx, "scanned_pdf": scanned_pdf,
 }
@@ -341,8 +345,9 @@ def render_text_pdf(text: str) -> bytes:
 
     Used to check that extraction survives the PDF path, where long lines wrap.
     """
-    from reportlab.platypus import Paragraph
     from xml.sax.saxutils import escape
+
+    from reportlab.platypus import Paragraph
     st = _styles()
     story = []
     # Helvetica has no glyph for these; the renderer is a test fixture, not the product.

@@ -14,7 +14,8 @@ import textwrap
 from resume_analyzer.ats.report import AtsReport, run_ats
 from resume_analyzer.criteria import get_category
 from resume_analyzer.extraction.document import load_document
-from scripts.sample_resumes import BUILDERS, SDE_JD, main as write_samples
+from scripts.sample_resumes import BUILDERS, SDE_JD
+from scripts.sample_resumes import main as write_samples
 
 ICON = {"pass": "PASS", "warn": "WARN", "fail": "FAIL", "info": "INFO", "na": " -- "}
 

@@ -15,9 +15,10 @@ Conventions
 
 from __future__ import annotations
 
+from collections.abc import Callable, Mapping
 from dataclasses import dataclass
 from datetime import date
-from typing import Any, Callable, Dict, Mapping, Optional
+from typing import Any
 
 
 @dataclass(frozen=True)
@@ -27,7 +28,7 @@ class FeatureSpec:
     unit: str = ""
 
 
-FEATURES: Dict[str, FeatureSpec] = {
+FEATURES: dict[str, FeatureSpec] = {
     # --- Education & academics -------------------------------------------
     "education.has_bachelor": FeatureSpec("bool", "Completed or pursuing a bachelor's degree"),
     "education.has_master": FeatureSpec("bool", "Completed or pursuing a master's degree"),
@@ -92,7 +93,7 @@ FEATURES: Dict[str, FeatureSpec] = {
 }
 
 
-def _age_years(dob: Any, today: date) -> Optional[float]:
+def _age_years(dob: Any, today: date) -> float | None:
     if isinstance(dob, str):
         try:
             dob = date.fromisoformat(dob)
@@ -104,14 +105,14 @@ def _age_years(dob: Any, today: date) -> Optional[float]:
     return float(years)
 
 
-def _medium_hard_share(f: Mapping[str, Any], today: date) -> Optional[float]:
+def _medium_hard_share(f: Mapping[str, Any], today: date) -> float | None:
     total, med, hard = f.get("coding.leetcode.total"), f.get("coding.leetcode.medium"), f.get("coding.leetcode.hard")
     if not total or med is None or hard is None:
         return None
     return min(1.0, (med + hard) / total)
 
 
-def _ug_pct_est(f: Mapping[str, Any], today: date) -> Optional[float]:
+def _ug_pct_est(f: Mapping[str, Any], today: date) -> float | None:
     # Prefer an explicitly stated percentage. Otherwise estimate from CGPA with
     # the common x9.5 conversion; universities differ, so treat it as approximate.
     if f.get("academics.ug_pct") is not None:
@@ -121,18 +122,18 @@ def _ug_pct_est(f: Mapping[str, Any], today: date) -> Optional[float]:
     return None
 
 
-def _sum_months(f: Mapping[str, Any], today: date) -> Optional[float]:
+def _sum_months(f: Mapping[str, Any], today: date) -> float | None:
     parts = [f.get("experience.internship_months"), f.get("experience.fulltime_months")]
     if all(p is None for p in parts):
         return None
     return float(sum(p or 0 for p in parts))
 
 
-def _count(key: str) -> Callable[[Mapping[str, Any], date], Optional[int]]:
+def _count(key: str) -> Callable[[Mapping[str, Any], date], int | None]:
     return lambda f, today: None if f.get(key) is None else len(f[key])
 
 
-DERIVED: Dict[str, tuple[FeatureSpec, Callable[[Mapping[str, Any], date], Any]]] = {
+DERIVED: dict[str, tuple[FeatureSpec, Callable[[Mapping[str, Any], date], Any]]] = {
     "candidate.age": (FeatureSpec("number", "Age in completed years", "years"),
                       lambda f, today: _age_years(f.get("candidate.date_of_birth"), today)),
     "coding.leetcode.medium_hard_share": (FeatureSpec("number", "Share of LeetCode solves that are Medium or Hard"),
@@ -155,7 +156,7 @@ def spec(name: str) -> FeatureSpec:
     return FEATURES[name] if name in FEATURES else DERIVED[name][0]
 
 
-def derive(features: Mapping[str, Any], today: Optional[date] = None) -> Dict[str, Any]:
+def derive(features: Mapping[str, Any], today: date | None = None) -> dict[str, Any]:
     """Return a copy of ``features`` with derived features filled in and ``None`` values dropped."""
     unknown = set(features) - set(FEATURES)
     if unknown:

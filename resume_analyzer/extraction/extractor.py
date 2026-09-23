@@ -14,11 +14,12 @@ question answered by the ATS report.
 from __future__ import annotations
 
 import re
+from collections.abc import Sequence
 from dataclasses import dataclass, field
 from datetime import date
 from functools import lru_cache
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Sequence
+from typing import Any
 
 import yaml
 
@@ -155,10 +156,10 @@ CONTEXT_FOR_SKILLS = ("preamble", "summary", "skills", "coursework", "projects",
 
 @dataclass
 class Extraction:
-    features: Dict[str, Any] = field(default_factory=dict)
-    evidence: Dict[str, str] = field(default_factory=dict)
-    name: Optional[str] = None
-    entries: Dict[str, List[Entry]] = field(default_factory=dict)
+    features: dict[str, Any] = field(default_factory=dict)
+    evidence: dict[str, str] = field(default_factory=dict)
+    name: str | None = None
+    entries: dict[str, list[Entry]] = field(default_factory=dict)
 
     def put(self, key: str, value: Any, evidence: str = "") -> None:
         if value is None:
@@ -169,19 +170,19 @@ class Extraction:
 
 
 @lru_cache(maxsize=1)
-def _companies() -> Dict[str, List[str]]:
+def _companies() -> dict[str, list[str]]:
     data = yaml.safe_load(COMPANIES_PATH.read_text(encoding="utf-8"))
     return {k: sorted(v, key=len, reverse=True) for k, v in data.items()}
 
 
-def _matches_company(text: str, group: str) -> Optional[str]:
+def _matches_company(text: str, group: str) -> str | None:
     for name in _companies()[group]:
         if re.search(rf"(?<![A-Za-z0-9]){re.escape(name)}(?![A-Za-z0-9])", text, re.IGNORECASE):
             return name
     return None
 
 
-def _scale(raw: float, denominator: Optional[str], label: str) -> Optional[float]:
+def _scale(raw: float, denominator: str | None, label: str) -> float | None:
     """Normalise a CGPA to a 10-point scale."""
     if denominator:
         scale = float(denominator)
@@ -194,7 +195,7 @@ def _scale(raw: float, denominator: Optional[str], label: str) -> Optional[float
     return round(raw * 10 / scale, 3)
 
 
-def _cgpa(text: str) -> Optional[float]:
+def _cgpa(text: str) -> float | None:
     m = CGPA_LABELLED.search(text)
     if m:
         return _scale(float(m.group(2)), m.group(3), m.group(1))
@@ -204,7 +205,7 @@ def _cgpa(text: str) -> Optional[float]:
     return None
 
 
-def _percent(text: str) -> Optional[float]:
+def _percent(text: str) -> float | None:
     m = PERCENT.search(text)
     if m:
         value = float(m.group(1) or m.group(2))
@@ -212,25 +213,25 @@ def _percent(text: str) -> Optional[float]:
     return None
 
 
-def _level_spans(text: str) -> List[tuple]:
+def _level_spans(text: str) -> list[tuple]:
     """(position, level) for each strong qualification token, in reading order."""
     spans = [(m.start(), name) for name, pattern in LEVELS for m in pattern.finditer(text)]
     return sorted(spans)
 
 
-def _weak_level(text: str) -> Optional[str]:
+def _weak_level(text: str) -> str | None:
     for name, pattern in WEAK_LEVELS:
         if pattern.search(text):
             return name
     return None
 
 
-def _education_blocks(lines: Sequence[str]) -> List[tuple]:
-    blocks: List[tuple] = []          # (level, text)
+def _education_blocks(lines: Sequence[str]) -> list[tuple]:
+    blocks: list[tuple] = []          # (level, text)
     for raw in lines:
         text = strip_bullet(raw)
         spans = _level_spans(text)
-        levels_here: List[tuple] = []
+        levels_here: list[tuple] = []
         for position, name in spans:
             if name not in {n for _, n in levels_here}:
                 levels_here.append((position, name))
@@ -283,7 +284,7 @@ def _education(out: Extraction, sections: SectionMap) -> None:
 
 
 def _coursework(out: Extraction, sections: SectionMap, all_lines: Sequence[Line]) -> None:
-    items: List[str] = []
+    items: list[str] = []
     evidence = ""
     for line in all_lines:
         m = COURSEWORK_LINE.search(line.text)
@@ -330,7 +331,7 @@ def _coding_profiles(out: Extraction, all_lines: Sequence[Line]) -> None:
 
 
 def _gate(out: Extraction, sections: SectionMap, all_lines: Sequence[Line]) -> None:
-    texts: List[str] = [l.text for l in all_lines if GATE.search(l.text)]
+    texts: list[str] = [l.text for l in all_lines if GATE.search(l.text)]
     for section in sections.sections:
         if section.heading and GATE.search(section.heading):
             texts.append(section.heading)
@@ -359,7 +360,7 @@ def _gate(out: Extraction, sections: SectionMap, all_lines: Sequence[Line]) -> N
         out.put("exam.gate.year", int(m.group(1) or m.group(2)), m.group(0))
 
 
-def _exam_stage(lines: Sequence[str], exam: re.Pattern) -> Optional[tuple]:
+def _exam_stage(lines: Sequence[str], exam: re.Pattern) -> tuple | None:
     best, evidence = None, ""
     for text in lines:
         if not exam.search(text) or not CLEARED.search(text):
@@ -389,9 +390,9 @@ def _exams(out: Extraction, sections: SectionMap) -> None:
 
 
 def _experience(out: Extraction, sections: SectionMap, today: date) -> None:
-    internships: List[Entry] = []
-    fulltime: List[Entry] = []
-    research: List[Entry] = []
+    internships: list[Entry] = []
+    fulltime: list[Entry] = []
+    research: list[Entry] = []
     product = core = 0
     product_evidence = core_evidence = ""
 
@@ -445,7 +446,7 @@ def _faculty_guided(out: Extraction, sections: SectionMap) -> None:
 
 
 def _projects(out: Extraction, sections: SectionMap, today: date) -> None:
-    entries: List[Entry] = []
+    entries: list[Entry] = []
     for section in sections.sections:
         if section.key == "projects":
             entries.extend(split_entries(section.lines, today))
@@ -458,7 +459,7 @@ def _projects(out: Extraction, sections: SectionMap, today: date) -> None:
 
 
 def _achievements(out: Extraction, sections: SectionMap, today: date) -> None:
-    lines: List[str] = []
+    lines: list[str] = []
     for section in sections.sections:
         if section.key in ("achievements", "activities", "coding_profiles"):
             lines.extend(e.text for e in split_entries(section.lines, today))
@@ -490,7 +491,7 @@ def _publications(out: Extraction, sections: SectionMap, today: date) -> None:
 
 def _skills(out: Extraction, doc: Document, sections: SectionMap) -> None:
     mentions = find_skills(doc.text)
-    names: Dict[str, str] = {}
+    names: dict[str, str] = {}
     for m in mentions:
         names.setdefault(m.skill, m.surface)
         # "DSA" and "Data Structures and Algorithms" imply Algorithms too.
@@ -502,7 +503,7 @@ def _skills(out: Extraction, doc: Document, sections: SectionMap) -> None:
 
 
 def _spoken_languages(out: Extraction, sections: SectionMap, all_lines: Sequence[Line]) -> None:
-    candidates: List[str] = []
+    candidates: list[str] = []
     evidence = ""
     for section in sections.sections:
         if section.key == "languages":
@@ -513,7 +514,7 @@ def _spoken_languages(out: Extraction, sections: SectionMap, all_lines: Sequence
         if m:
             candidates += re.split(r"\s*[,;|/]\s*", m.group(1))
             evidence = evidence or line.text
-    found: Dict[str, None] = {}
+    found: dict[str, None] = {}
     for item in candidates:
         word = re.sub(r"\(.*?\)", "", item).strip().strip(".")
         if word.lower() in SPOKEN_LANGUAGES:
@@ -541,7 +542,7 @@ def _personal(out: Extraction, doc: Document, all_lines: Sequence[Line]) -> None
         out.put("academics.active_backlogs", 0 if word in ("no", "zero", "nil", "none") else int(word), m.group(0))
 
 
-def extract(doc: Document, sections: Optional[SectionMap] = None, today: Optional[date] = None) -> Extraction:
+def extract(doc: Document, sections: SectionMap | None = None, today: date | None = None) -> Extraction:
     """Extract the feature vocabulary from a parsed resume."""
     today = today or date.today()
     sections = sections or detect_sections(doc.lines)

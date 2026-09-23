@@ -6,9 +6,9 @@ import time
 
 import pytest
 
+from resume_analyzer.validation import VALIDATION_DIR, load_cases
 from resume_analyzer.web import create_app
 from resume_analyzer.web.store import ResultStore
-from resume_analyzer.validation import VALIDATION_DIR, load_cases
 
 CASES = {c.case_id: c for c in load_cases(include_real=False)}
 JD = (VALIDATION_DIR / "jds" / "tech_product_fulltime.txt").read_text(encoding="utf-8")
@@ -85,7 +85,7 @@ def test_analysis_redirects_to_an_unguessable_result_url(client):
 
 
 def test_dashboard_shows_the_scores_and_evidence(client):
-    key, html = analysed(client, jd=JD)
+    _key, html = analysed(client, jd=JD)
     for needle in ("Overall match", "ATS compatibility", "Job-description fit", "Do these next",
                    "Eligibility", "Keyword match", "What a parser reads", "Everything we extracted",
                    "Delete this report now"):

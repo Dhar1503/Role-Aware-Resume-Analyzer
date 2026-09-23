@@ -12,7 +12,7 @@ formats are one of the ATS checks the generated file has to pass.
 from __future__ import annotations
 
 import re
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
@@ -26,7 +26,7 @@ _MON = re.compile(r"^([A-Za-z]{3,9})\.?,?\s*'?(\d{2,4})$")
 _YEAR = re.compile(r"^(\d{4})$")
 
 
-def normalise_month(value: Optional[str]) -> Optional[str]:
+def normalise_month(value: str | None) -> str | None:
     """'05/2025', '2025-05', 'may 2025', 'Present' -> 'May 2025' / 'Present'."""
     if not value:
         return None
@@ -52,7 +52,7 @@ def normalise_month(value: Optional[str]) -> Optional[str]:
     return text
 
 
-def period(start: Optional[str], end: Optional[str]) -> str:
+def period(start: str | None, end: str | None) -> str:
     start, end = normalise_month(start), normalise_month(end)
     if start and end:
         return f"{start} - {end}"
@@ -103,7 +103,7 @@ class Role(_Model):
     location: str = ""
     start: str = ""
     end: str = ""
-    bullets: List[str] = Field(default_factory=list)
+    bullets: list[str] = Field(default_factory=list)
 
     def heading(self) -> str:
         left = ", ".join(p for p in (self.title, self.organisation, self.location) if p)
@@ -117,7 +117,7 @@ class Project(_Model):
     start: str = ""
     end: str = ""
     link: str = ""
-    bullets: List[str] = Field(default_factory=list)
+    bullets: list[str] = Field(default_factory=list)
 
     def heading(self) -> str:
         parts = [self.title]
@@ -131,7 +131,7 @@ class Project(_Model):
 
 class SkillGroup(_Model):
     label: str                              # "Languages"
-    items: List[str] = Field(default_factory=list)
+    items: list[str] = Field(default_factory=list)
 
     def line(self) -> str:
         return f"{self.label}: {', '.join(self.items)}"
@@ -140,26 +140,26 @@ class SkillGroup(_Model):
 class ResumeDraft(_Model):
     contact: Contact
     summary: str = ""
-    education: List[Education] = Field(default_factory=list)
-    experience: List[Role] = Field(default_factory=list)
-    internships: List[Role] = Field(default_factory=list)
-    research: List[Role] = Field(default_factory=list)
-    projects: List[Project] = Field(default_factory=list)
-    skills: List[SkillGroup] = Field(default_factory=list)
-    coding_profiles: List[str] = Field(default_factory=list)      # "LeetCode: 420 solved (210 Medium, 60 Hard)"
-    exams: List[str] = Field(default_factory=list)                # "GATE 2026 (CS): Score 812 | AIR 312"
-    publications: List[str] = Field(default_factory=list)
-    achievements: List[str] = Field(default_factory=list)
-    certifications: List[str] = Field(default_factory=list)
-    activities: List[str] = Field(default_factory=list)           # positions of responsibility, NSS/NCC
-    coursework: List[str] = Field(default_factory=list)
-    languages: List[str] = Field(default_factory=list)            # spoken
-    interests: List[str] = Field(default_factory=list)
+    education: list[Education] = Field(default_factory=list)
+    experience: list[Role] = Field(default_factory=list)
+    internships: list[Role] = Field(default_factory=list)
+    research: list[Role] = Field(default_factory=list)
+    projects: list[Project] = Field(default_factory=list)
+    skills: list[SkillGroup] = Field(default_factory=list)
+    coding_profiles: list[str] = Field(default_factory=list)      # "LeetCode: 420 solved (210 Medium, 60 Hard)"
+    exams: list[str] = Field(default_factory=list)                # "GATE 2026 (CS): Score 812 | AIR 312"
+    publications: list[str] = Field(default_factory=list)
+    achievements: list[str] = Field(default_factory=list)
+    certifications: list[str] = Field(default_factory=list)
+    activities: list[str] = Field(default_factory=list)           # positions of responsibility, NSS/NCC
+    coursework: list[str] = Field(default_factory=list)
+    languages: list[str] = Field(default_factory=list)            # spoken
+    interests: list[str] = Field(default_factory=list)
     date_of_birth: str = ""                                       # government applications ask for it
     declaration: bool = False                                     # common in Indian government resumes
 
     @classmethod
-    def from_payload(cls, payload: Dict[str, Any]) -> "ResumeDraft":
+    def from_payload(cls, payload: dict[str, Any]) -> ResumeDraft:
         """Build from a JSON payload, dropping empty rows the form may send."""
         data = dict(payload or {})
         for key in ("education", "experience", "internships", "research", "projects", "skills"):
@@ -172,7 +172,7 @@ class ResumeDraft(_Model):
         return cls.model_validate(data)
 
     @property
-    def all_roles(self) -> List[Role]:
+    def all_roles(self) -> list[Role]:
         return [*self.experience, *self.internships, *self.research]
 
     def filename(self, role_tag: str, extension: str) -> str:

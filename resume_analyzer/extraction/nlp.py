@@ -17,7 +17,6 @@ from __future__ import annotations
 
 import re
 from functools import lru_cache
-from typing import List, Optional
 
 MODEL = "en_core_web_sm"
 _NAME_STOPWORDS = {"resume", "curriculum", "vitae", "cv", "bio", "data", "biodata", "profile", "name",
@@ -38,7 +37,7 @@ def available() -> bool:
     return _nlp() is not None
 
 
-def entities(text: str, label: str) -> List[str]:
+def entities(text: str, label: str) -> list[str]:
     nlp = _nlp()
     if not nlp or not text.strip():
         return []
@@ -72,7 +71,7 @@ def _tidy(text: str) -> str:
     return text
 
 
-def candidate_name(preamble_lines: List[str], full_text: str = "") -> Optional[str]:
+def candidate_name(preamble_lines: list[str], full_text: str = "") -> str | None:
     """Name from a 'Name:' line, else the top of the resume, confirmed by spaCy when available."""
     for line in preamble_lines[:6]:
         m = _NAME_LINE.match(line.strip())

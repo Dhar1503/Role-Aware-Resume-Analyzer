@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import re
 from datetime import date
-from typing import Optional
 
 MONTHS = {m: i for i, m in enumerate(
     ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"], start=1)}
@@ -28,7 +27,7 @@ _D_MON_Y = re.compile(rf"(\d{{1,2}})(?:st|nd|rd|th)?\s+({_MONTH_RE})\s*,?\s*({_Y
 _MON_D_Y = re.compile(rf"({_MONTH_RE})\s+(\d{{1,2}})(?:st|nd|rd|th)?\s*,?\s*({_YEAR})", re.IGNORECASE)
 
 
-def _month_num(token: str) -> Optional[int]:
+def _month_num(token: str) -> int | None:
     return MONTHS.get(token.lower().rstrip(".")[:4]) or MONTHS.get(token.lower().rstrip(".")[:3])
 
 
@@ -53,7 +52,7 @@ def _points(text: str) -> list:
     return sorted(found)
 
 
-def duration_months(text: str, today: Optional[date] = None) -> Optional[float]:
+def duration_months(text: str, today: date | None = None) -> float | None:
     """Months covered by a date range or an explicit duration; inclusive (Jun-Aug = 3)."""
     today = today or date.today()
     explicit = DURATION.search(text)
@@ -84,7 +83,7 @@ def has_date(text: str) -> bool:
                 re.search(rf"{_YEAR}{_DASH}(?:{_YEAR}|{_PRESENT})", text, re.IGNORECASE))
 
 
-def parse_date_of_birth(text: str) -> Optional[str]:
+def parse_date_of_birth(text: str) -> str | None:
     """ISO date from a labelled date of birth. Ambiguous numeric dates are read day-first (Indian convention)."""
     m = _DMY.search(text)
     if m:

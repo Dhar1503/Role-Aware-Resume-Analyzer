@@ -10,7 +10,6 @@ Unicode mapping and reaches parsers as "(cid:127)").
 from __future__ import annotations
 
 import io
-from typing import List
 from xml.sax.saxutils import escape
 
 from .layout import Layout
@@ -42,7 +41,7 @@ def render_pdf(layout: Layout) -> bytes:
     from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer
 
     st = _styles()
-    story: List = [Paragraph(escape(layout.name), st["name"])]
+    story: list = [Paragraph(escape(layout.name), st["name"])]
     if layout.contact:
         story.append(Paragraph(escape(layout.contact), st["contact"]))
 

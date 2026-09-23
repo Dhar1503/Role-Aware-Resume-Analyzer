@@ -23,7 +23,7 @@ import secrets
 import threading
 import time
 from dataclasses import dataclass
-from typing import Any, Dict, Optional
+from typing import Any
 
 DEFAULT_TTL_SECONDS = 3600
 DEFAULT_MAX_ENTRIES = 200
@@ -40,7 +40,7 @@ class ResultStore:
     def __init__(self, ttl_seconds: int = DEFAULT_TTL_SECONDS, max_entries: int = DEFAULT_MAX_ENTRIES):
         self.ttl_seconds = ttl_seconds
         self.max_entries = max_entries
-        self._entries: Dict[str, _Entry] = {}
+        self._entries: dict[str, _Entry] = {}
         self._lock = threading.Lock()
 
     def put(self, value: Any) -> str:
@@ -53,7 +53,7 @@ class ResultStore:
             self._entries[key] = _Entry(value, time.time() + self.ttl_seconds)
         return key
 
-    def get(self, key: str) -> Optional[Any]:
+    def get(self, key: str) -> Any | None:
         with self._lock:
             self._purge()
             entry = self._entries.get(key)
@@ -63,7 +63,7 @@ class ResultStore:
         with self._lock:
             return self._entries.pop(key, None) is not None
 
-    def expires_in(self, key: str) -> Optional[int]:
+    def expires_in(self, key: str) -> int | None:
         with self._lock:
             entry = self._entries.get(key)
             return max(0, int(entry.expires_at - time.time())) if entry else None

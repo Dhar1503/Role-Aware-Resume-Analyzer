@@ -16,14 +16,14 @@ company names as headings, which a font-only rule would do.
 from __future__ import annotations
 
 import re
+from collections.abc import Sequence
 from dataclasses import dataclass, field
 from difflib import get_close_matches
-from typing import Dict, List, Optional, Sequence, Tuple
 
 from .document import Line, body_font_size
 
 # canonical key -> (display name, aliases)
-SECTIONS: Dict[str, Tuple[str, List[str]]] = {
+SECTIONS: dict[str, tuple[str, list[str]]] = {
     "summary": ("Summary", ["summary", "professional summary", "profile", "profile summary", "career objective",
                             "objective", "career summary", "about me", "professional profile"]),
     "education": ("Education", ["education", "academic background", "academic qualifications",
@@ -70,7 +70,7 @@ SECTIONS: Dict[str, Tuple[str, List[str]]] = {
 }
 
 SECTION_KEYS = tuple(SECTIONS)
-_ALIASES: Dict[str, str] = {alias: key for key, (_, aliases) in SECTIONS.items() for alias in aliases}
+_ALIASES: dict[str, str] = {alias: key for key, (_, aliases) in SECTIONS.items() for alias in aliases}
 
 # Hints for suggesting a standard name for a creative heading.
 _HINTS = {
@@ -85,9 +85,9 @@ _HINTS = {
 
 @dataclass
 class Section:
-    key: Optional[str]          # canonical key; "preamble" before the first heading; None if non-standard
+    key: str | None          # canonical key; "preamble" before the first heading; None if non-standard
     heading: str                # heading text as written ("" for the preamble)
-    lines: List[Line] = field(default_factory=list)
+    lines: list[Line] = field(default_factory=list)
 
     @property
     def text(self) -> str:
@@ -96,14 +96,14 @@ class Section:
 
 @dataclass
 class SectionMap:
-    sections: List[Section]
+    sections: list[Section]
 
     @property
-    def found(self) -> List[str]:
+    def found(self) -> list[str]:
         return [s.key for s in self.sections if s.key and s.key != "preamble"]
 
     @property
-    def nonstandard(self) -> List[str]:
+    def nonstandard(self) -> list[str]:
         return [s.heading for s in self.sections if s.key is None]
 
     def has(self, key: str) -> bool:
@@ -121,7 +121,7 @@ def normalize_heading(text: str) -> str:
     return " ".join(text.split())
 
 
-def match_heading(text: str) -> Optional[str]:
+def match_heading(text: str) -> str | None:
     """Canonical key for a heading-like line, or None."""
     norm = normalize_heading(text)
     if not norm or len(norm.split()) > 6:
@@ -159,7 +159,7 @@ def _looks_like_heading(text: str) -> bool:
     return len(letters) >= 0.6 * len(stripped.replace(" ", ""))
 
 
-def _style(line: Line, body: Optional[float]) -> Tuple:
+def _style(line: Line, body: float | None) -> tuple:
     letters = "".join(c for c in line.text if c.isalpha())
     caps = bool(letters) and letters.isupper()
     colon = line.text.rstrip().endswith(":")
@@ -168,8 +168,8 @@ def _style(line: Line, body: Optional[float]) -> Tuple:
     return (size, line.bold, caps, colon, larger, line.style if line.style.lower().startswith(("heading", "title")) else "")
 
 
-def _emphasised(style: Tuple) -> bool:
-    size, bold, caps, colon, larger, style_name = style
+def _emphasised(style: tuple) -> bool:
+    _size, bold, caps, colon, larger, style_name = style
     return bold or caps or colon or larger or bool(style_name)
 
 
@@ -200,7 +200,7 @@ def detect_sections(lines: Sequence[Line]) -> SectionMap:
     # so a bold job title such as "Research Assistant" (partial match, different
     # style) or a bold "Leadership" skill line is not mistaken for a heading.
     styled = [m for m in matched if _emphasised(m[2])]
-    counts: Dict[Tuple, int] = {}
+    counts: dict[tuple, int] = {}
     for _, _, style, exact in styled:
         if exact:
             counts[style] = counts.get(style, 0) + 1
@@ -211,7 +211,7 @@ def detect_sections(lines: Sequence[Line]) -> SectionMap:
         known = {i: key for i, key, style, exact in matched if exact or _emphasised(style)}
         heading_styles = {style for i, key, style, exact in styled if i in known}
 
-    unknown: Dict[int, None] = {}
+    unknown: dict[int, None] = {}
     first_heading = min(known) if known else None
     for i, line in candidates:
         if i in known or (first_heading is not None and i < first_heading):
@@ -228,7 +228,7 @@ def detect_sections(lines: Sequence[Line]) -> SectionMap:
             unknown[i] = None
 
     starts = sorted(set(known) | set(unknown))
-    sections: List[Section] = [Section("preamble", "", list(lines[: starts[0] if starts else len(lines)]))]
+    sections: list[Section] = [Section("preamble", "", list(lines[: starts[0] if starts else len(lines)]))]
     for n, start in enumerate(starts):
         end = starts[n + 1] if n + 1 < len(starts) else len(lines)
         sections.append(Section(known.get(start), lines[start].text.rstrip(":").strip(), list(lines[start + 1:end])))

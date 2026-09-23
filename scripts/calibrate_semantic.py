@@ -32,7 +32,10 @@ def main() -> None:
 
     def describe(name, values):
         values = sorted(values)
-        q = lambda p: values[int(len(values) * p)]
+
+        def q(pct):
+            return values[int(len(values) * pct)]
+
         print(f"  {name:12s} n={len(values):4d}  min={values[0]:.2f}  p10={q(.1):.2f}  median={q(.5):.2f}  "
               f"p90={q(.9):.2f}  max={values[-1]:.2f}  mean={statistics.mean(values):.2f}")
 

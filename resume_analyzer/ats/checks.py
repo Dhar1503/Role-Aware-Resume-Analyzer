@@ -17,7 +17,7 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any
 
 from ..criteria.schema import AtsHints
 from ..extraction.document import Document
@@ -56,10 +56,10 @@ class CheckResult:
     label: str
     status: str                         # pass | warn | fail | info | na
     message: str
-    fix: Optional[str] = None
-    score: Optional[float] = None       # 0-1; None = excluded from scoring
+    fix: str | None = None
+    score: float | None = None       # 0-1; None = excluded from scoring
     weight: float = 1.0                 # relative weight within its group
-    details: Dict[str, Any] = field(default_factory=dict)
+    details: dict[str, Any] = field(default_factory=dict)
 
     def __post_init__(self):
         if self.score is None and self.status in STATUS_SCORE:
@@ -71,9 +71,9 @@ class Context:
     doc: Document
     sections: SectionMap
     hints: AtsHints
-    category_label: Optional[str]
-    jd_text: Optional[str]
-    candidate_name: Optional[str]
+    category_label: str | None
+    jd_text: str | None
+    candidate_name: str | None
 
 
 # --------------------------------------------------------------------------
@@ -278,7 +278,7 @@ def check_expected_sections(c: Context) -> CheckResult:
 # Contact
 # --------------------------------------------------------------------------
 
-def _find_phone(text: str) -> Optional[str]:
+def _find_phone(text: str) -> str | None:
     for m in PHONE_CANDIDATE.finditer(text):
         digits = re.sub(r"\D", "", m.group(0))
         if 10 <= len(digits) <= 13:
@@ -383,7 +383,7 @@ def check_length(c: Context) -> CheckResult:
                        details={"pages": pages, "limit": limit})
 
 
-def _name_guess(c: Context) -> Optional[str]:
+def _name_guess(c: Context) -> str | None:
     if c.candidate_name:
         return c.candidate_name
     for line in c.sections.sections[0].lines[:3]:

@@ -13,8 +13,8 @@ Headings use the standard names the ATS check looks for.
 from __future__ import annotations
 
 import re
+from collections.abc import Callable
 from dataclasses import dataclass, field
-from typing import Callable, Dict, List, Optional
 
 from ..criteria.schema import Category
 from ..extraction.extractor import METRIC
@@ -28,8 +28,8 @@ LINES_PER_PAGE = 46
 class Block:
     kind: str                              # para | bullets | entry | inline
     text: str = ""
-    items: List[str] = field(default_factory=list)
-    bullets: List[str] = field(default_factory=list)
+    items: list[str] = field(default_factory=list)
+    bullets: list[str] = field(default_factory=list)
 
     @property
     def line_count(self) -> int:
@@ -40,23 +40,23 @@ class Block:
 class Section:
     key: str
     heading: str
-    blocks: List[Block] = field(default_factory=list)
+    blocks: list[Block] = field(default_factory=list)
 
 
 @dataclass
 class Layout:
     name: str
     contact: str
-    sections: List[Section]
-    warnings: List[str] = field(default_factory=list)
+    sections: list[Section]
+    warnings: list[str] = field(default_factory=list)
     estimated_pages: int = 1
 
 
-def _roles(roles, heading: str) -> List[Block]:
+def _roles(roles, heading: str) -> list[Block]:
     return [Block("entry", text=r.heading(), bullets=list(r.bullets)) for r in roles]
 
 
-def _section_builders() -> Dict[str, Callable[[ResumeDraft], Optional[Section]]]:
+def _section_builders() -> dict[str, Callable[[ResumeDraft], Section | None]]:
     def summary(draft):
         return Section("summary", "SUMMARY", [Block("para", text=draft.summary)]) if draft.summary else None
 
@@ -162,7 +162,7 @@ def build_layout(draft: ResumeDraft, category: Category) -> Layout:
     order += [key for key in FALLBACK_ORDER if key not in order]
 
     explicit = set(category.generator.section_order) if category.generator else set()
-    sections: List[Section] = []
+    sections: list[Section] = []
     seen_keys: set = set()
     for key in order:
         builder = builders.get(key)
@@ -191,8 +191,8 @@ def build_layout(draft: ResumeDraft, category: Category) -> Layout:
                   warnings=warnings, estimated_pages=pages)
 
 
-def _warnings(draft: ResumeDraft, category: Category, sections: List[Section]) -> List[str]:
-    out: List[str] = []
+def _warnings(draft: ResumeDraft, category: Category, sections: list[Section]) -> list[str]:
+    out: list[str] = []
     present = {s.key for s in sections}
     if "experience" in present:
         present.add("internships")

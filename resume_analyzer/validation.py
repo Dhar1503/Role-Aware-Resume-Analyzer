@@ -9,7 +9,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from datetime import date
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 import yaml
 
@@ -31,7 +31,7 @@ ALWAYS_REPORTED = [
     "certifications.count", "certifications.recognized_count",
     "publications.count", "publications.peer_reviewed_count",
 ]
-DEFAULTS: Dict[str, Any] = {f: 0 for f in ALWAYS_REPORTED}
+DEFAULTS: dict[str, Any] = {f: 0 for f in ALWAYS_REPORTED}
 DEFAULTS.update({"education.has_bachelor": False, "education.has_master": False, "contact.github": False,
                  "contact.linkedin": False, "research.faculty_guided": False,
                  "skills.languages": [], "skills.cs_fundamentals": []})
@@ -52,12 +52,12 @@ class CaseResult:
     case_id: str
     category: str
     tier: str
-    fields: List[FieldResult] = field(default_factory=list)
-    name_expected: Optional[str] = None
-    name_got: Optional[str] = None
+    fields: list[FieldResult] = field(default_factory=list)
+    name_expected: str | None = None
+    name_got: str | None = None
 
     @property
-    def wrong(self) -> List[FieldResult]:
+    def wrong(self) -> list[FieldResult]:
         return [f for f in self.fields if not f.ok]
 
     @property
@@ -72,16 +72,16 @@ class Case:
     tier: str
     data: bytes
     filename: str
-    labels: Dict[str, Any]
-    inputs: Dict[str, Any] = field(default_factory=dict)
-    name: Optional[str] = None
-    sop: Optional[str] = None
-    sop_expect: Optional[str] = None
+    labels: dict[str, Any]
+    inputs: dict[str, Any] = field(default_factory=dict)
+    name: str | None = None
+    sop: str | None = None
+    sop_expect: str | None = None
     source: str = "synthetic"
 
 
-def load_cases(directory: Optional[Path] = None, include_real: bool = True) -> List[Case]:
-    cases: List[Case] = []
+def load_cases(directory: Path | None = None, include_real: bool = True) -> list[Case]:
+    cases: list[Case] = []
     for path in sorted(Path(directory or VALIDATION_DIR).glob("*.yaml")):
         doc = yaml.safe_load(path.read_text(encoding="utf-8"))
         for raw in doc["cases"]:
@@ -130,6 +130,6 @@ def check_case(case: Case, today: date = TODAY) -> CaseResult:
     return out
 
 
-def accuracy(results: List[CaseResult]) -> float:
+def accuracy(results: list[CaseResult]) -> float:
     fields = [f for r in results for f in r.fields]
     return sum(f.ok for f in fields) / len(fields) if fields else 1.0

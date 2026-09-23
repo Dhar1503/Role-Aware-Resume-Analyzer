@@ -2,7 +2,12 @@
 
 import pytest
 
-from resume_analyzer.extraction.skills import find_skills, load_taxonomy, skill_names, skills_in_category
+from resume_analyzer.extraction.skills import (
+    find_skills,
+    load_taxonomy,
+    skill_names,
+    skills_in_category,
+)
 
 
 def names(text):
