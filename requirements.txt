@@ -20,3 +20,6 @@ en_core_web_sm @ https://github.com/explosion/spacy-models/releases/download/en_
 #   pip install torch --index-url https://download.pytorch.org/whl/cpu
 torch>=2.2
 sentence-transformers>=3.0
+
+# Production server (Linux; the container uses it, Windows dev uses app.py)
+gunicorn>=22.0; platform_system != "Windows"

@@ -1,0 +1,25 @@
+# Keep the image small and free of local state.
+.git
+.github
+.venv
+venv
+__pycache__
+**/__pycache__
+*.py[cod]
+.pytest_cache
+.coverage
+htmlcov
+*.log
+
+# Local-only material: the app does not read these at runtime.
+tests
+docs
+samples/validation
+samples/generated
+samples/real
+scripts/demo_*.py
+scripts/calibrate_semantic.py
+scripts/snapshot_scores.py
+
+# The sample resumes behind the "try one of these" buttons stay in:
+# samples/ats/ is deliberately NOT ignored.
