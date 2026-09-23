@@ -50,12 +50,19 @@ def entities(text: str, label: str) -> List[str]:
 
 
 def _looks_like_name(text: str) -> bool:
+    """Any script, not just ASCII: 'Sai Kṛṣṇa Śrīnivāsan' is a name."""
     words = text.split()
     if not 2 <= len(words) <= 5:
         return False
     if any(w.lower().strip(".,") in _NAME_STOPWORDS for w in words):
         return False
-    return all(re.fullmatch(r"[A-Za-z][A-Za-z'\-.]*", w) and w[:1].isupper() for w in words)
+    for word in words:
+        letters = [c for c in word if c.isalpha()]
+        if not letters or not all(c.isalpha() or c in ".'’-" for c in word):
+            return False
+        if not (letters[0].isupper() or not letters[0].isalpha() or letters[0].lower() == letters[0].upper()):
+            return False        # scripts without case (Devanagari, Tamil) pass this check
+    return True
 
 
 def _tidy(text: str) -> str:
@@ -73,6 +80,7 @@ def candidate_name(preamble_lines: List[str], full_text: str = "") -> Optional[s
             return _tidy(m.group(1).strip())
 
     for line in preamble_lines[:4]:
+        line = re.sub(r"<[^>]{1,80}>", " ", line)       # someone pasted HTML into their header
         for part in re.split(r"[|/•–—,]| - ", line):
             part = part.strip()
             if _looks_like_name(_tidy(part)):

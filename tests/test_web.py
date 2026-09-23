@@ -228,3 +228,59 @@ def test_api_categories_and_health(client):
     assert len(categories) == 7 and all("inputs" in c for c in categories)
     health = client.get("/healthz").get_json()
     assert health["status"] == "ok" and health["categories"] == 7
+
+
+# --- category inputs and remaining error paths -------------------------------------
+
+def test_category_inputs_reach_the_analysis(client):
+    """Date, choice and number inputs declared by a category are read from the form."""
+    case = CASES["cs_weak_pooja"]
+    response = client.post("/analyze", data={
+        "resume": (io.BytesIO(case.data), case.filename), "category": "govt_civil_services",
+        "input__reservation_category": "OBC-NCL", "input__pwbd": "on",
+        "input__attempts_used": "2", "input__date_of_birth": "1998-06-14"},
+        content_type="multipart/form-data")
+    html = client.get(response.headers["Location"]).get_data(as_text=True)
+    assert "Upper age limit" in html
+    assert "45" in html          # 32 + 3 (OBC-NCL) + 10 (PwBD)
+
+
+def test_invalid_category_input_is_explained(client):
+    case = CASES["cs_weak_pooja"]
+    response = client.post("/analyze", data={
+        "resume": (io.BytesIO(case.data), case.filename), "category": "govt_civil_services",
+        "input__reservation_category": "NOT-A-CATEGORY"}, content_type="multipart/form-data")
+    assert response.status_code == 400
+    assert "must be one of" in response.get_data(as_text=True)
+
+
+def test_non_numeric_number_input_is_ignored(client):
+    case = CASES["cs_average_rakesh"]
+    response = client.post("/analyze", data={
+        "resume": (io.BytesIO(case.data), case.filename), "category": "govt_civil_services",
+        "input__attempts_used": "many"}, content_type="multipart/form-data")
+    assert response.status_code == 302        # ignored, not a crash
+
+
+def test_build_form_rejects_unknown_category(client):
+    assert client.get("/build?category=nope").status_code == 404
+
+
+def test_build_download_rejects_unknown_format(client):
+    html = client.post("/build", data=build_payload()).get_data(as_text=True)
+    key = re.search(r"/build/([\w-]+)/download/pdf", html).group(1)
+    assert client.get(f"/build/{key}/download/rtf").status_code == 400
+
+
+def test_api_rejects_unknown_category(client):
+    case = CASES["tpf_strong_arjun"]
+    response = client.post("/api/analyze", data={"resume": (io.BytesIO(case.data), case.filename),
+                                                 "category": "nope"},
+                           content_type="multipart/form-data")
+    assert response.status_code == 400 and "unknown category" in response.get_json()["error"]
+
+
+def test_api_reports_unreadable_files(client):
+    response = client.post("/api/analyze", data={"resume": (io.BytesIO(b"x"), "cv.doc")},
+                           content_type="multipart/form-data")
+    assert response.status_code == 400 and ".docx" in response.get_json()["error"]

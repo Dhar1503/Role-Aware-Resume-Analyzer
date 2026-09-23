@@ -1,0 +1,43 @@
+name: tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      # The embedding model is ~130 MB; download it once and reuse it across runs.
+      - name: Cache Hugging Face models
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/huggingface
+          key: hf-${{ runner.os }}-bge-small-en-v1.5
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          # CPU-only torch: the default wheel pulls in ~2.5 GB of CUDA libraries.
+          pip install torch --index-url https://download.pytorch.org/whl/cpu
+          pip install -r requirements-dev.txt
+
+      - name: Run the test suite
+        run: pytest -q --cov=resume_analyzer --cov-report=term-missing:skip-covered
+
+      - name: Check the score snapshot
+        run: python -m scripts.snapshot_scores
+
+      - name: Check the knowledge base loads
+        run: python -m scripts.demo_criteria > /dev/null

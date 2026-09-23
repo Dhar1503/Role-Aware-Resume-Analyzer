@@ -269,5 +269,7 @@ def api_analyze():
 
 @bp.get("/healthz")
 def healthz():
+    warning = current_app.extensions.get("worker_warning")
     return jsonify({"status": "ok", "semantic_model": model.available(),
-                    "categories": len(get_registry()), "cached_results": len(_store())})
+                    "categories": len(get_registry()), "cached_results": len(_store()),
+                    "worker_warning": warning})

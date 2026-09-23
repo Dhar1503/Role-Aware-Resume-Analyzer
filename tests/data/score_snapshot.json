@@ -1,0 +1,226 @@
+{
+  "cs_average_rakesh": {
+    "ats": 96.8,
+    "category": "govt_civil_services",
+    "confidence": 0.85,
+    "eligible": true,
+    "strength": 50.4,
+    "tier": "average"
+  },
+  "cs_edge_senthil": {
+    "ats": 96.0,
+    "category": "govt_civil_services",
+    "confidence": 1.0,
+    "eligible": true,
+    "strength": 82.0,
+    "tier": "strong"
+  },
+  "cs_strong_aishwarya": {
+    "ats": 96.8,
+    "category": "govt_civil_services",
+    "confidence": 1.0,
+    "eligible": true,
+    "strength": 93.5,
+    "tier": "strong"
+  },
+  "cs_weak_pooja": {
+    "ats": 93.3,
+    "category": "govt_civil_services",
+    "confidence": 0.15,
+    "eligible": false,
+    "strength": 7.8,
+    "tier": "weak"
+  },
+  "mt_average_neha": {
+    "ats": 95.8,
+    "category": "higher_ed_mtech",
+    "confidence": 0.85,
+    "eligible": true,
+    "strength": 52.2,
+    "tier": "average"
+  },
+  "mt_edge_farhan": {
+    "ats": 95.8,
+    "category": "higher_ed_mtech",
+    "confidence": 0.9,
+    "eligible": true,
+    "strength": 70.3,
+    "tier": "average"
+  },
+  "mt_strong_vikram": {
+    "ats": 98.4,
+    "category": "higher_ed_mtech",
+    "confidence": 1.0,
+    "eligible": true,
+    "strength": 94.9,
+    "tier": "strong"
+  },
+  "mt_weak_suresh": {
+    "ats": 95.8,
+    "category": "higher_ed_mtech",
+    "confidence": 0.25,
+    "eligible": false,
+    "strength": 8.2,
+    "tier": "weak"
+  },
+  "psu_average_sanjana": {
+    "ats": 96.8,
+    "category": "psu_via_gate",
+    "confidence": 1.0,
+    "eligible": true,
+    "strength": 62.0,
+    "tier": "average"
+  },
+  "psu_edge_megha": {
+    "ats": 91.5,
+    "category": "psu_via_gate",
+    "confidence": 0.91,
+    "eligible": true,
+    "strength": 77.1,
+    "tier": "strong"
+  },
+  "psu_strong_harsh": {
+    "ats": 98.4,
+    "category": "psu_via_gate",
+    "confidence": 1.0,
+    "eligible": true,
+    "strength": 99.4,
+    "tier": "strong"
+  },
+  "psu_weak_ravi": {
+    "ats": 59.3,
+    "category": "psu_via_gate",
+    "confidence": 0.85,
+    "eligible": true,
+    "strength": 7.0,
+    "tier": "weak"
+  },
+  "rs_average_kiran": {
+    "ats": 95.8,
+    "category": "higher_ed_ms_phd_research",
+    "confidence": 0.72,
+    "eligible": true,
+    "strength": 46.4,
+    "tier": "average"
+  },
+  "rs_edge_sameer": {
+    "ats": 95.8,
+    "category": "higher_ed_ms_phd_research",
+    "confidence": 0.85,
+    "eligible": true,
+    "strength": 80.6,
+    "tier": "strong"
+  },
+  "rs_strong_aditi": {
+    "ats": 98.4,
+    "category": "higher_ed_ms_phd_research",
+    "confidence": 0.95,
+    "eligible": true,
+    "strength": 90.4,
+    "tier": "strong"
+  },
+  "rs_weak_deepa": {
+    "ats": 58.2,
+    "category": "higher_ed_ms_phd_research",
+    "confidence": 0.23,
+    "eligible": true,
+    "strength": 15.0,
+    "tier": "weak"
+  },
+  "sb_average_divya": {
+    "ats": 64.7,
+    "category": "govt_ssc_banking",
+    "confidence": 1.0,
+    "eligible": true,
+    "strength": 66.5,
+    "tier": "average"
+  },
+  "sb_edge_pradeep": {
+    "ats": 94.7,
+    "category": "govt_ssc_banking",
+    "confidence": 0.85,
+    "eligible": true,
+    "strength": 79.1,
+    "tier": "strong"
+  },
+  "sb_strong_ankit": {
+    "ats": 89.3,
+    "category": "govt_ssc_banking",
+    "confidence": 1.0,
+    "eligible": true,
+    "strength": 93.6,
+    "tier": "strong"
+  },
+  "sb_weak_sunil": {
+    "ats": 55.8,
+    "category": "govt_ssc_banking",
+    "confidence": 0.0,
+    "eligible": true,
+    "strength": 0.0,
+    "tier": "weak"
+  },
+  "ti_average_mohit": {
+    "ats": 95.8,
+    "category": "tech_internship",
+    "confidence": 0.68,
+    "eligible": true,
+    "strength": 55.4,
+    "tier": "average"
+  },
+  "ti_edge_rohan": {
+    "ats": 96.8,
+    "category": "tech_internship",
+    "confidence": 0.69,
+    "eligible": true,
+    "strength": 74.1,
+    "tier": "strong"
+  },
+  "ti_strong_ananya": {
+    "ats": 96.6,
+    "category": "tech_internship",
+    "confidence": 0.99,
+    "eligible": true,
+    "strength": 94.5,
+    "tier": "strong"
+  },
+  "ti_weak_priyanka": {
+    "ats": 95.8,
+    "category": "tech_internship",
+    "confidence": 0.31,
+    "eligible": true,
+    "strength": 13.5,
+    "tier": "weak"
+  },
+  "tpf_average_sneha": {
+    "ats": 96.8,
+    "category": "tech_product_fulltime",
+    "confidence": 0.69,
+    "eligible": true,
+    "strength": 52.2,
+    "tier": "average"
+  },
+  "tpf_edge_karthik": {
+    "ats": 98.4,
+    "category": "tech_product_fulltime",
+    "confidence": 0.84,
+    "eligible": true,
+    "strength": 76.3,
+    "tier": "strong"
+  },
+  "tpf_strong_arjun": {
+    "ats": 98.4,
+    "category": "tech_product_fulltime",
+    "confidence": 1.0,
+    "eligible": true,
+    "strength": 94.5,
+    "tier": "strong"
+  },
+  "tpf_weak_rahul": {
+    "ats": 91.6,
+    "category": "tech_product_fulltime",
+    "confidence": 0.23,
+    "eligible": true,
+    "strength": 10.9,
+    "tier": "weak"
+  }
+}

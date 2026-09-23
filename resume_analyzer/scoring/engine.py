@@ -195,7 +195,10 @@ def score_resume(category: Category, features: Mapping[str, Any],
             results.append(SignalResult(sig.id, sig.label, sub_id, found, counted,
                                         s if found else (0.0 if counted else None),
                                         value, feature, round(nominal, 4)))
-            if found:
+            # Confidence asks "how much did we learn about this person?". A count of
+            # zero from a section that does not exist teaches us nothing, so an empty
+            # value does not count as evidence even though it scores.
+            if found and value not in (0, False, [], ""):
                 found_weight += nominal
 
             # An unstated optional signal only gets a suggestion if the YAML wrote one for that case.

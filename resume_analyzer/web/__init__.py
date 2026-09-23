@@ -10,6 +10,7 @@ from typing import Optional
 from flask import Flask
 
 from .store import ResultStore
+from .workers import check_single_worker
 
 MAX_UPLOAD_BYTES = 8 * 1024 * 1024
 BANDS = [(85, "excellent"), (70, "strong"), (55, "fair"), (35, "weak"), (0, "poor")]
@@ -34,6 +35,8 @@ def create_app(config: Optional[dict] = None) -> Flask:
     if config:
         app.config.update(config)
     app.extensions["results"] = ResultStore(ttl_seconds=app.config["RESULT_TTL_SECONDS"])
+    # Results live in this process, so more than one worker breaks them silently.
+    app.extensions["worker_warning"] = check_single_worker()
     app.jinja_env.filters["band_class"] = _band_class
 
     from .routes import bp

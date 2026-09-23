@@ -25,6 +25,7 @@ from ..extraction.sections import SECTIONS, SectionMap, suggest_standard
 from .keywords import KeywordReport, match_keywords
 
 STATUS_SCORE = {"pass": 1.0, "warn": 0.5, "fail": 0.0}
+CHARS_PER_WORD_LIMIT = 15   # above this, the text layer has lost its word breaks
 
 EMAIL = re.compile(r"\b[\w.+-]+@[\w-]+(?:\.[\w-]+)+\b")
 PHONE_CANDIDATE = re.compile(r"(?<![\w/])\+?\d[\d\s().-]{8,16}\d(?![\w/])")
@@ -97,6 +98,18 @@ def check_text_layer(c: Context) -> CheckResult:
                 f"Page(s) {', '.join(map(str, empty))} contain no selectable text, so their content is invisible to an ATS.",
                 "Re-export those pages as text, not images.", details={"image_only_pages": image_only})
     if d.word_count < 50:
+        characters = len(d.text.replace(" ", ""))
+        # Long "words" mean the export lost its spaces, not that the file is empty:
+        # 200 characters across 8 tokens is a wall of text, 74 across 8 is a stub.
+        if characters / max(d.word_count, 1) > CHARS_PER_WORD_LIMIT:
+            # Plenty of characters, almost no words: the export lost its word breaks.
+            return CheckResult(
+                "text_layer", "parseability", "Selectable text", "fail",
+                f"The text layer has almost no word breaks ({d.word_count} words across {characters} "
+                "characters), so an ATS reads your resume as a handful of very long tokens and "
+                "cannot match any skill.",
+                "Re-export the PDF from the original document (Word, Google Docs, LaTeX) rather than "
+                "printing or converting it.", details={"fatal": True})
         return CheckResult("text_layer", "parseability", "Selectable text", "fail",
                            f"Only {d.word_count} words could be read from the file.",
                            "Check that the file is not empty or made of images.", details={"fatal": d.word_count < 10})

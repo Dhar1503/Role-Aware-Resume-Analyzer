@@ -50,5 +50,11 @@ def embed(texts: Sequence[str], as_queries: bool = False):
 
 
 def warm_up() -> bool:
-    """Load the model now (used at server start-up so the first request is fast)."""
+    """Load both models now, so no visitor's request pays for the import.
+
+    spaCy's NER backend pulls in torch on its first call (about seven seconds),
+    which otherwise lands on whichever upload first needs the name fallback.
+    """
+    from ..extraction import nlp
+    nlp.entities("Priya Sharma worked at Acme Labs in Bengaluru.", "PERSON")
     return available()

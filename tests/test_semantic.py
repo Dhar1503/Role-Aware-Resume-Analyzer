@@ -110,3 +110,24 @@ def test_sop_features_feed_the_engine():
     report = analyse_sop("I want to study calibration under distribution shift with Prof. R. Sharma.")
     assert report.features()["sop.specificity"] == report.specificity
     assert report.features()["sop.word_count"] == 12
+
+
+def test_missing_dependency_is_not_fatal(monkeypatch):
+    """With sentence-transformers absent the app still runs; JD fit reports itself unavailable."""
+    import builtins
+    from resume_analyzer.semantic import model as model_module
+    model_module.get_model.cache_clear()
+    real_import = builtins.__import__
+
+    def fake_import(name, *args, **kwargs):
+        if name.startswith("sentence_transformers"):
+            raise ImportError("not installed")
+        return real_import(name, *args, **kwargs)
+
+    monkeypatch.setattr(builtins, "__import__", fake_import)
+    try:
+        assert model_module.get_model() is None
+        assert model_module.available() is False
+        assert model_module.embed(["text"]) is None
+    finally:
+        model_module.get_model.cache_clear()

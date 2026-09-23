@@ -26,6 +26,8 @@ from pathlib import Path
 from typing import List, Optional, Union
 
 SUPPORTED_TYPES = ("pdf", "docx", "txt")
+MAX_LAYOUT_PAGES = 6        # layout analysis is per-page and repetitive; text is still read from every page
+MAX_ORDER_TOKENS = 1500     # cap for the reading-order comparison (difflib is quadratic)
 _BOLD_FONT = re.compile(r"bold|black|heavy|semibold|demi", re.IGNORECASE)
 _GARBLED = re.compile(r"\(cid:\d+\)|[\ue000-\uf8ff\ufffd]")   # unmapped glyphs, icon-font PUA chars, U+FFFD
 
@@ -176,6 +178,12 @@ def _load_pdf(data: bytes, filename: str) -> Document:
                 naive.append(page_text)
                 area = float(page.width * page.height) or 1.0
                 img_area = sum(max(0.0, (im["x1"] - im["x0"]) * (im["bottom"] - im["top"])) for im in page.images)
+                if page_no > MAX_LAYOUT_PAGES:
+                    # Layout problems repeat; scanning 40 pages of them only costs time.
+                    pages.append(PageLayout(page_no, float(page.width), float(page.height),
+                                            len(page_text.replace(" ", "").replace("\n", "")),
+                                            len(page.images), round(min(1.0, img_area / area), 3), 0))
+                    continue
                 tables = [t for t in page.find_tables() if len(t.rows) >= 2 and len(t.rows[0].cells) >= 2]
                 # Words inside tables are reported by the table check, not mistaken for columns.
                 words = [w for w in page.extract_words(use_text_flow=False, keep_blank_chars=False)
@@ -196,7 +204,10 @@ def _load_pdf(data: bytes, filename: str) -> Document:
         pages=pages, page_count=len(pages),
         table_count=sum(p.table_count for p in pages), image_count=sum(p.image_count for p in pages),
         garbled_chars=content, garbled_symbols=bullets,
-        reading_order_similarity=word_order_similarity(" ".join(l.text for l in lines), ats_text),
+        # Compared on page one only: the two streams must cover the same content
+        # to be comparable, and a document's layout does not change halfway.
+        reading_order_similarity=word_order_similarity(
+            " ".join(l.text for l in lines if l.page == 1), naive[0] if naive else ""),
     )
 
 
@@ -315,7 +326,10 @@ def word_order_similarity(a: str, b: str) -> Optional[float]:
     columns interleave words, which drives the ratio down.
     """
     tokenize = lambda s: [w for w in re.findall(r"[a-z0-9]+", s.lower()) if len(w) > 1]
-    wa, wb = tokenize(a), tokenize(b)
+    # difflib is quadratic, so the comparison is bounded: page one only (see the
+    # caller) and a token cap. autojunk is off because it discards frequent
+    # tokens, which misreads a repetitive resume as badly ordered.
+    wa, wb = tokenize(a)[:MAX_ORDER_TOKENS], tokenize(b)[:MAX_ORDER_TOKENS]
     if len(wa) < 20 or len(wb) < 20:
         return None
     return round(SequenceMatcher(None, wa, wb, autojunk=False).ratio(), 3)
