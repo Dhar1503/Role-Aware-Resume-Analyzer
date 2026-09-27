@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% from "_icons.html" import icon %}
+{% block title %}My reports{% endblock %}
+
+{% block content %}
+<section class="hero hero-single rise">
+  <div class="hero-copy">
+    <span class="eyebrow">Your account</span>
+    <h1>Saved <span class="grad">reports</span></h1>
+    <p class="lede">Reports you kept. They stay here until you delete them &mdash; unlike
+       anonymous reports, which are discarded an hour after they are produced.</p>
+  </div>
+</section>
+
+{% if reports %}
+  <div class="report-list">
+    {% for report in reports %}
+      <article class="panel panel-hover saved-row">
+        <a class="saved-main" href="{{ url_for('auth.saved_report', report_id=report.id) }}">
+          <span class="itile sm dim-overall">{{ icon('doc') }}</span>
+          <span class="saved-text">
+            <strong>{{ report.title }}</strong>
+            <span class="muted">{{ report.category_label }} &middot;
+              <span class="file">{{ report.filename }}</span> &middot;
+              kept {{ report.created_at.strftime('%d %b %Y') }}</span>
+          </span>
+        </a>
+
+        <span class="saved-scores">
+          {% if report.overall is not none %}
+            <span class="pill band-{{ report.overall | band_class }}">
+              Overall {{ report.overall | round | int }}</span>
+          {% endif %}
+          {% if report.strength is not none %}
+            <span class="pill band-{{ report.strength | band_class }}">
+              Strength {{ report.strength | round | int }}</span>
+          {% endif %}
+          {% if report.ats is not none %}
+            <span class="pill band-{{ report.ats | band_class }}">
+              ATS {{ report.ats | round | int }}</span>
+          {% endif %}
+        </span>
+
+        <form method="post" class="saved-delete"
+              action="{{ url_for('auth.delete_saved_report', report_id=report.id) }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button class="btn btn-ghost btn-sm" type="submit">{{ icon('trash') }} Delete</button>
+        </form>
+      </article>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="panel empty-state rise">
+    <span class="itile dim-jd">{{ icon('doc') }}</span>
+    <h2>Nothing saved yet</h2>
+    <p class="hint">Analyse a resume, then use <strong>Save this report</strong> on the
+       report page to keep it here.</p>
+    <a class="btn btn-primary" href="{{ url_for('main.home') }}">{{ icon('upload') }} Analyse a resume</a>
+  </div>
+{% endif %}
+{% endblock %}

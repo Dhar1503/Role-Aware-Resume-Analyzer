@@ -273,7 +273,11 @@ label.stack > span:first-child { font-weight: 600; color: var(--ink-2); }
   font-size: var(--t-xs); font-weight: 800; color: var(--dim-overall);
 }
 
-input[type=text], input[type=email], input[type=date], input[type=number], select, textarea {
+/* Every text-like input, by exclusion rather than by listing types: the
+   password fields on the account pages fell through an explicit list and
+   rendered as unstyled browser boxes. */
+input:not([type=checkbox]):not([type=radio]):not([type=file]):not([type=hidden]),
+select, textarea {
   width: 100%; padding: var(--s-3) var(--s-3);
   border-radius: var(--r-md); border: 1px solid var(--line);
   background: var(--surface-2); color: var(--ink);
@@ -795,3 +799,87 @@ h2 > svg { width: 18px; height: 18px; vertical-align: -3px; color: var(--band-fa
 
 .sop-block > summary svg { width: 14px; height: 14px; transition: transform 260ms var(--ease); }
 .sop-block[open] > summary svg { transform: rotate(180deg); }
+
+/* ------------------------------------------------- accounts + saved reports */
+
+.nav-user {
+  max-width: 16ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  font-size: var(--t-sm); color: var(--ink-3); padding: var(--s-2) var(--s-2);
+}
+.nav-form { display: inline; }
+.nav-link-button {
+  background: none; border: 0; cursor: pointer; font: inherit;
+  font-size: var(--t-sm); font-weight: 500; color: var(--ink-2);
+  padding: var(--s-2) var(--s-3); border-radius: var(--r-sm);
+  transition: color var(--fast) var(--ease), background var(--fast) var(--ease);
+}
+.nav-link-button:hover { color: var(--ink); background: var(--surface-2); }
+.site-nav .nav-cta {
+  color: #fff; background: var(--signature); background-size: 160% 160%;
+  background-position: 0% 50%; font-weight: 600;
+  transition: background-position 420ms var(--ease);
+}
+.site-nav .nav-cta:hover { background-position: 100% 50%; color: #fff; }
+
+.banner.ok {
+  border-color: color-mix(in srgb, var(--band-strong) 42%, transparent);
+  background: color-mix(in srgb, var(--band-strong) 11%, #fff);
+  color: var(--band-strong-ink);
+}
+.flash { margin-bottom: var(--s-5); }
+
+/* auth pages: one narrow card, centred, same panel language */
+.auth-page { display: grid; place-items: center; padding: var(--s-7) 0 var(--s-8); }
+.auth-card { width: 100%; max-width: 27rem; margin-bottom: 0; }
+.auth-card h1 { font-size: 1.6rem; margin-bottom: var(--s-2); }
+.auth-card .itile { margin-bottom: var(--s-4); }
+.auth-form { display: grid; gap: var(--s-4); margin-top: var(--s-5); }
+.auth-form .btn { width: 100%; margin-top: var(--s-2); }
+.auth-alt { margin: var(--s-5) 0 0; font-size: var(--t-sm); color: var(--ink-2); }
+
+/* saved report list */
+.report-list { display: grid; gap: var(--s-3); }
+.saved-row {
+  display: flex; align-items: center; gap: var(--s-4); flex-wrap: wrap;
+  margin-bottom: 0; padding: var(--s-4) var(--s-5);
+}
+.saved-main {
+  display: flex; align-items: center; gap: var(--s-3);
+  text-decoration: none; color: var(--ink); flex: 1 1 18rem; min-width: 0;
+}
+.saved-text { display: grid; gap: 2px; min-width: 0; }
+.saved-text strong { font-family: var(--font-display); font-size: var(--t-md); }
+.saved-text .muted { font-size: var(--t-sm); }
+.saved-text .file { font-family: var(--font-mono); font-size: var(--t-xs); }
+.saved-scores { display: flex; gap: var(--s-2); flex-wrap: wrap; }
+.saved-delete { flex: none; }
+
+.owner-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: var(--s-4); flex-wrap: wrap; margin-bottom: var(--s-5);
+  padding: var(--s-4) var(--s-5); border-radius: var(--r-lg);
+  border: 1px solid var(--line); background: var(--surface); box-shadow: var(--shadow);
+}
+.owner-bar .eyebrow { margin-bottom: var(--s-1); }
+
+.empty-state { text-align: center; padding: var(--s-8) var(--s-5); }
+.empty-state .itile { margin: 0 auto var(--s-4); }
+.empty-state .hint { max-width: 42ch; margin-inline: auto; }
+
+@media (max-width: 760px) {
+  .nav-user { display: none; }
+  .saved-row { align-items: flex-start; }
+  .saved-delete { margin-left: auto; }
+}
+
+/* Four nav items plus an account no longer fit a phone at the desktop size,
+   and "My reports" / "Log out" were wrapping mid-label. */
+.site-nav a, .nav-link-button { white-space: nowrap; }
+
+@media (max-width: 760px) {
+  .site-nav { gap: 0; }
+  .site-nav a, .nav-link-button { padding: var(--s-2); font-size: var(--t-xs); }
+  .site-nav .nav-cta { padding: var(--s-2) var(--s-3); }
+  .saved-main { align-items: flex-start; }
+  .saved-row { padding: var(--s-4); }
+}

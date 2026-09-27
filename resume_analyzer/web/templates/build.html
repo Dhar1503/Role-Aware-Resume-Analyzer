@@ -42,6 +42,7 @@
 </section>
 
 <form class="panel build-form rise" style="--delay: 80ms" method="post" action="{{ url_for('main.build_submit') }}">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
   <p class="field-label"><span class="step-no">1</span> Target</p>
   <select id="category" name="category" onchange="location.href='?category=' + this.value">
     {% for c in categories %}

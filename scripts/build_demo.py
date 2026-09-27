@@ -1,7 +1,7 @@
 """
 Pre-render the permanent example report.
 
-    python -m scripts.build_demo            # write resume_analyzer/web/demo/report.html
+    python -m scripts.build_demo            # write resume_analyzer/web/demo/report.html (a body fragment)
     python -m scripts.build_demo --check    # fail if the checked-in file is stale
 
 The public demo link has to keep working after a restart, without an upload and
@@ -49,7 +49,9 @@ def render() -> str:
     app = create_app({"TESTING": True})
     with app.test_request_context("/demo"):
         from flask import render_template
-        html = render_template("result.html", **present(result, key="", permanent=True))
+        # The fragment, not the page: /demo re-renders the shell per request so
+        # the header nav belongs to whoever is looking at it.
+        html = render_template("_report.html", **present(result, key="", permanent=True))
 
     # Millisecond timings differ run to run and would make every rebuild a diff.
     return _strip_timings(html)

@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% from "_icons.html" import icon %}
+{% block title %}Create an account{% endblock %}
+
+{% block content %}
+<section class="auth-page">
+  <div class="panel auth-card rise">
+    <span class="itile dim-jd">{{ icon('user') }}</span>
+    <span class="eyebrow">Get started</span>
+    <h1>Create an account</h1>
+    <p class="hint">Only so you can keep reports. Analysing a resume works without one,
+       and uploads are never stored either way.</p>
+
+    {% if error %}
+      <div class="banner fail">
+        {{ icon('warn') }}
+        <div><strong>{{ error }}</strong></div>
+      </div>
+    {% endif %}
+
+    <form method="post" action="{{ url_for('auth.register') }}" class="auth-form">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+      <label class="stack">
+        <span>Email</span>
+        <input type="email" name="email" value="{{ email or '' }}" autocomplete="email"
+               required autofocus>
+      </label>
+
+      <label class="stack">
+        <span>Password</span>
+        <input type="password" name="password" autocomplete="new-password"
+               minlength="{{ min_password_length }}" required>
+        <span class="hint" style="margin:0">At least {{ min_password_length }} characters.</span>
+      </label>
+
+      <label class="stack">
+        <span>Confirm password</span>
+        <input type="password" name="confirm" autocomplete="new-password"
+               minlength="{{ min_password_length }}" required>
+      </label>
+
+      <button type="submit" class="btn btn-primary btn-lg">{{ icon('spark') }} Create account</button>
+    </form>
+
+    <p class="auth-alt">
+      Already have one? <a href="{{ url_for('auth.login_form') }}">Sign in</a>.
+    </p>
+  </div>
+</section>
+{% endblock %}

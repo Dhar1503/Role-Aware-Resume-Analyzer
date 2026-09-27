@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% from "_icons.html" import icon %}
+{% block title %}Sign in{% endblock %}
+
+{% block content %}
+<section class="auth-page">
+  <div class="panel auth-card rise">
+    <span class="itile dim-overall">{{ icon('lock') }}</span>
+    <span class="eyebrow">Welcome back</span>
+    <h1>Sign in</h1>
+    <p class="hint">Saved reports live in your account. Analysing a resume never needs one.</p>
+
+    {% if error %}
+      <div class="banner fail">
+        {{ icon('warn') }}
+        <div><strong>{{ error }}</strong></div>
+      </div>
+    {% endif %}
+
+    <form method="post" action="{{ url_for('auth.login') }}" class="auth-form">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <input type="hidden" name="next" value="{{ next or '' }}">
+
+      <label class="stack">
+        <span>Email</span>
+        <input type="email" name="email" value="{{ email or '' }}" autocomplete="email"
+               required autofocus>
+      </label>
+
+      <label class="stack">
+        <span>Password</span>
+        <input type="password" name="password" autocomplete="current-password" required>
+      </label>
+
+      <button type="submit" class="btn btn-primary btn-lg">{{ icon('arrow') }} Sign in</button>
+    </form>
+
+    <p class="auth-alt">
+      No account yet? <a href="{{ url_for('auth.register_form') }}">Create one</a>.
+    </p>
+  </div>
+</section>
+{% endblock %}

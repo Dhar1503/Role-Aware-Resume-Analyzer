@@ -17,6 +17,7 @@ from flask import (
     Blueprint,
     abort,
     current_app,
+    flash,
     jsonify,
     redirect,
     render_template,
@@ -24,6 +25,7 @@ from flask import (
     send_file,
     url_for,
 )
+from flask_login import current_user, login_required
 from pydantic import ValidationError
 
 from ..criteria import get_category, get_registry
@@ -32,6 +34,7 @@ from ..generator import generate
 from ..generator.draft import ResumeDraft
 from ..pipeline import analyze
 from ..semantic import model
+from .models import SavedReport, db
 from .presenter import present
 
 bp = Blueprint("main", __name__)
@@ -141,7 +144,40 @@ def demo():
     if not path.exists():
         return render_template("error.html", title="The example report is not built",
                                message="Run `python -m scripts.build_demo` to generate it."), 404
-    return send_file(path, mimetype="text/html")
+    return render_template("prerendered.html", body=path.read_text(encoding="utf-8"),
+                           page_title="Example resume report", demo=True)
+
+
+@bp.post("/r/<key>/save")
+@login_required
+def save_result(key: str):
+    """Keep a copy of this report against the signed-in account.
+
+    Only the rendered report is stored - the upload itself was never written
+    anywhere, and saving does not change that.
+    """
+    analysis = _store().get(key)
+    if analysis is None:
+        return render_template("error.html", title="That result has expired",
+                               message="Results are kept for a short time and then deleted. "
+                                       "Upload the resume again to save it."), 404
+
+    data = present(analysis, key=key, permanent=True)
+    report = SavedReport(
+        user_id=current_user.id,
+        title=analysis.name or analysis.document.filename,
+        category_label=analysis.category.label,
+        filename=analysis.document.filename,
+        strength=analysis.strength.score,
+        ats=analysis.ats.score,
+        jd_fit=None if analysis.jd_fit is None else analysis.jd_fit.score,
+        overall=analysis.overall_match,
+        body=render_template("_report.html", **data),
+    )
+    db.session.add(report)
+    db.session.commit()
+    flash("Report saved.", "success")
+    return redirect(url_for("auth.saved_report", report_id=report.id))
 
 
 @bp.post("/r/<key>/delete")

@@ -2,6 +2,12 @@
 Flask>=3.1
 Werkzeug>=3.1
 
+# Accounts: sessions, ORM and CSRF. Passwords use werkzeug.security, which
+# Flask already brings in - no separate hashing library.
+Flask-Login>=0.6
+Flask-SQLAlchemy>=3.1
+Flask-WTF>=1.2
+
 # Documents
 pdfplumber>=0.11
 pymupdf>=1.24

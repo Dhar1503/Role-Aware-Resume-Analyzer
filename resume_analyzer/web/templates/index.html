@@ -55,6 +55,7 @@
 
 <form class="panel analyse-form rise" id="analyse" style="--delay: 80ms" method="post"
       action="{{ url_for('main.analyse') }}" enctype="multipart/form-data">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
   <div class="grid-2">
     <div>
       <p class="field-label"><span class="step-no">1</span> Your resume</p>

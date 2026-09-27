@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% from "_icons.html" import icon %}
+{% block title %}{{ page_title }}{% endblock %}
+
+{#
+  Replays a stored report body inside a freshly rendered page shell, so the
+  header nav belongs to whoever is looking at it rather than to whoever saved
+  the report. Used by the permanent demo and by saved reports.
+#}
+{% block content %}
+{% if saved_report %}
+  <section class="owner-bar rise">
+    <div>
+      <span class="eyebrow">Saved report</span>
+      <p class="hint" style="margin:0">
+        Kept on {{ saved_report.created_at.strftime('%d %B %Y') }} &middot;
+        {{ saved_report.category_label }}
+      </p>
+    </div>
+    <form method="post" action="{{ url_for('auth.delete_saved_report', report_id=saved_report.id) }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <button class="btn btn-ghost btn-sm" type="submit">{{ icon('trash') }} Delete this report</button>
+    </form>
+  </section>
+{% elif demo %}
+  <section class="owner-bar rise">
+    <div>
+      <span class="eyebrow">Example</span>
+      <p class="hint" style="margin:0">A fixed example report, so this link always works.</p>
+    </div>
+    <a class="btn btn-sm" href="{{ url_for('main.home') }}">{{ icon('upload') }} Analyse your own</a>
+  </section>
+{% endif %}
+
+{{ body | safe }}
+{% endblock %}

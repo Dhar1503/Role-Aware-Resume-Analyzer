@@ -290,6 +290,26 @@ docker run --rm -p 7860:7860 -e SECRET_KEY=$(openssl rand -hex 32) resume-analyz
 
 Both models are baked into the image at build time, so no visitor waits for a download.
 
+### Accounts and persistence
+
+Accounts live wherever `DATABASE_URL` points. With it unset, the app uses a local SQLite
+file at `instance/app.db`, which is right for development and **wrong for the free Hugging
+Face Space**: that filesystem is ephemeral, so every restart, sleep-wake or redeploy wipes
+it. On the live Space, expect accounts and saved reports to disappear without warning.
+
+Nothing in the code needs to change to fix that — point the variable at a hosted Postgres
+(a free Neon or Supabase database is enough) in *Settings → Variables and secrets*:
+
+```
+DATABASE_URL = postgresql://user:password@host/dbname?sslmode=require
+```
+
+`postgres://` URLs are rewritten to `postgresql://` on the way in, since SQLAlchemy 2
+dropped the older scheme name. Add `psycopg[binary]` to `requirements.txt` for Postgres.
+
+Tables are created with `db.create_all()` at start-up. That is honest for two tables with no
+history; a schema change later wants Alembic rather than this.
+
 ### The permanent example report
 
 `/demo` serves a pre-rendered report — a strong sample resume scored against a real job
@@ -338,7 +358,8 @@ models into the image.
 
 | Variable | Default | Purpose |
 |---|---|---|
-| `SECRET_KEY` | random per process | Set it in production |
+| `SECRET_KEY` | random per process | Set it in production. Sessions are signed with it, so changing it logs everyone out |
+| `DATABASE_URL` | `sqlite:///instance/app.db` | Accounts and saved reports. **Must** be a hosted database on the free Space |
 | `RESULT_TTL_SECONDS` | `3600` | How long a result link lives |
 | `WARM_MODEL` | `1` | Load models at start-up |
 | `STRICT_SINGLE_WORKER` | unset | `1` refuses to start with >1 worker |
@@ -346,14 +367,37 @@ models into the image.
 
 ## Privacy
 
-Resumes are personal data, and the demo link is public:
+Resumes are personal data, and the demo link is public.
+
+**Uploads are never stored, with or without an account.** The file is read into memory,
+analysed, and dropped. Nothing writes it to disk, and creating an account does not change
+that — a saved report keeps the *rendered report*, not the resume it came from.
+
+Anonymous analysis, which is the default and needs no account:
 
 - uploads are analysed **in memory and never written to disk**;
-- result URLs use an unguessable `secrets.token_urlsafe` key, expire after an hour, and are
-  purged on every access;
+- result URLs use an unguessable `secrets.token_urlsafe` key, expire after **one hour**, and
+  are purged on every access;
 - the store is capped, so a busy demo evicts rather than grows;
 - **"Delete this report now"** on every report removes it immediately;
 - a restart clears everything.
+
+With an account:
+
+- a report is only kept if you press **Save this report**; analysing without saving behaves
+  exactly as above;
+- saved reports persist **until you delete them**, or until you delete the account, which
+  takes its reports with it (`ON DELETE CASCADE`);
+- what is stored is the rendered report body plus its title, category, filename and scores —
+  all of it already visible on the report. No file, no bytes, no extracted text beyond that;
+- passwords are hashed with `werkzeug.security.generate_password_hash` (salted scrypt); the
+  plain password is never stored, and a test asserts it does not appear anywhere in the
+  database file;
+- a failed sign-in says only *"Invalid email or password"*, so the form cannot be used to
+  find out which addresses have accounts. A test asserts the two failure responses are
+  byte-identical.
+
+> **On the free Hugging Face Space, accounts reset.** See the deployment note below.
 
 ## Caveats
 
@@ -381,13 +425,14 @@ resume_analyzer/
   ats/               18 checks, literal JD keyword matching, report
   semantic/          embeddings, JD fit, SOP signals
   generator/         draft model, category-aware layout, PDF + DOCX renderers
-  web/               Flask app, dashboard, builder, expiring result store
+  web/               Flask app, dashboard, builder, expiring result store,
+                     accounts (models.py, auth.py) and saved reports
                      (templates/_icons.html holds the inline icon set)
 samples/
   validation/        28 labelled resumes + job descriptions
   ats/               8 layout variants of one resume
   real/              drop anonymised real resumes here
-tests/               453 tests
+tests/               478 tests
 scripts/             demos, validation, calibration, score snapshot
 docs/                design system, screenshots
 ```
