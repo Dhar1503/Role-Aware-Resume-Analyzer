@@ -122,7 +122,8 @@ def _facts(result: AnalysisResult) -> list[dict[str, Any]]:
     return rows
 
 
-def present(result: AnalysisResult, key: str = "", expires_in: int | None = None) -> dict[str, Any]:
+def present(result: AnalysisResult, key: str = "", expires_in: int | None = None,
+            permanent: bool = False) -> dict[str, Any]:
     strength = result.strength
     subscores = [{"id": s.id, "label": s.label, "score": s.score, "weight": s.weight,
                   "icon": SUBSCORE_ICONS.get(s.id, "dot"),
@@ -134,6 +135,9 @@ def present(result: AnalysisResult, key: str = "", expires_in: int | None = None
 
     return {
         "key": key,
+        # A permanent report is pre-rendered and served from disk: it never
+        # expires and there is nothing to delete.
+        "permanent": permanent,
         "expires_in_minutes": None if expires_in is None else max(1, expires_in // 60),
         "category": result.category,
         "name": result.name,

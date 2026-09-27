@@ -18,7 +18,8 @@ Upload a resume, pick a target, and get three separate scores — how strong the
 for that target, whether screening software can actually read the file, and how well it
 matches a pasted job description. Every number shows the line of the resume it came from.
 
-> **Live demo:** https://huggingface.co/spaces/dharanidv/resume-strength-analyzer
+> **Live demo:** https://huggingface.co/spaces/dharanidv/resume-strength-analyzer  
+> **Example report** (permanent, no upload or account needed): https://dharanidv-resume-strength-analyzer.hf.space/demo
 > **Source:** https://github.com/Dhar1503/Role-Aware-Resume-Analyzer
 
 ![The dashboard](docs/screenshots/dashboard.png)
@@ -288,6 +289,23 @@ docker run --rm -p 7860:7860 -e SECRET_KEY=$(openssl rand -hex 32) resume-analyz
 ```
 
 Both models are baked into the image at build time, so no visitor waits for a download.
+
+### The permanent example report
+
+`/demo` serves a pre-rendered report — a strong sample resume scored against a real job
+description — straight off disk. It exists because a link on a CV or a LinkedIn profile has
+to survive a restart, and the result store deliberately cannot offer that: entries expire
+after an hour and are evicted under pressure. Exempting one entry from its own TTL would
+have meant special-casing the privacy guarantee; pre-rendering sidesteps it entirely, and
+costs no model load at request time.
+
+```bash
+python -m scripts.build_demo           # rebuild resume_analyzer/web/demo/report.html
+python -m scripts.build_demo --check   # fail if the checked-in copy is stale
+```
+
+`tests/test_demo.py` runs the `--check` mode, so a change to the report template that would
+alter the page fails the suite until the demo is rebuilt.
 
 ### Deploying the Space
 

@@ -129,6 +129,21 @@ def result(key: str):
     return render_template("result.html", **present(analysis, key, _store().expires_in(key)))
 
 
+@bp.get("/demo")
+def demo():
+    """A permanent example report.
+
+    Pre-rendered by scripts/build_demo.py and served straight off disk, so the
+    link in a CV or a LinkedIn profile keeps working across restarts without an
+    upload, an account, or an entry in the expiring result store.
+    """
+    path = Path(__file__).resolve().parent / "demo" / "report.html"
+    if not path.exists():
+        return render_template("error.html", title="The example report is not built",
+                               message="Run `python -m scripts.build_demo` to generate it."), 404
+    return send_file(path, mimetype="text/html")
+
+
 @bp.post("/r/<key>/delete")
 def delete_result(key: str):
     _store().delete(key)

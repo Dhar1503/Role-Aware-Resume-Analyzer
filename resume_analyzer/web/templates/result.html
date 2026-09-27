@@ -32,12 +32,19 @@
       <span>{{ icon('target') }} analysed for <strong>{{ category.label }}</strong></span>
     </div>
   </div>
-  <form method="post" action="{{ url_for('main.delete_result', key=key) }}" class="delete-form">
-    {% if expires_in_minutes %}
-      <span class="pill">{{ icon('clock') }} Expires in {{ expires_in_minutes }} min</span>
-    {% endif %}
-    <button class="btn btn-ghost btn-sm" type="submit">{{ icon('trash') }} Delete this report now</button>
-  </form>
+  {% if permanent %}
+    <div class="delete-form">
+      <span class="pill">{{ icon('link') }} Permanent example report</span>
+      <a class="btn btn-sm" href="{{ url_for('main.home') }}">{{ icon('upload') }} Analyse your own</a>
+    </div>
+  {% else %}
+    <form method="post" action="{{ url_for('main.delete_result', key=key) }}" class="delete-form">
+      {% if expires_in_minutes %}
+        <span class="pill">{{ icon('clock') }} Expires in {{ expires_in_minutes }} min</span>
+      {% endif %}
+      <button class="btn btn-ghost btn-sm" type="submit">{{ icon('trash') }} Delete this report now</button>
+    </form>
+  {% endif %}
 </section>
 
 {% if not eligible %}
