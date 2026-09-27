@@ -59,7 +59,7 @@
     "ats": 95.8,
     "category": "higher_ed_mtech",
     "confidence": 0.25,
-    "eligible": false,
+    "eligible": true,
     "strength": 8.2,
     "tier": "weak"
   },

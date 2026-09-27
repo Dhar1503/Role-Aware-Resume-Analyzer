@@ -133,9 +133,9 @@ def test_upsc_age_relaxations_stack(inputs, dob, status, limit):
 
 
 @pytest.mark.parametrize("inputs, limit", [
-    ({"reservation_category": "GEN"}, 6.5),
-    ({"reservation_category": "SC"}, 6.0),
-    ({"reservation_category": "SC", "pwbd": True}, 6.0),      # does not stack to 5.5
+    ({"reservation_category": "GEN"}, 6.0),
+    ({"reservation_category": "SC"}, 5.5),
+    ({"reservation_category": "SC", "pwbd": True}, 5.5),      # does not stack to 5.0
 ])
 def test_mtech_cgpa_relaxation_does_not_stack(inputs, limit):
     r = score_resume(get_category("higher_ed_mtech"), {"academics.ug_cgpa": 6.2}, inputs, today=TODAY)

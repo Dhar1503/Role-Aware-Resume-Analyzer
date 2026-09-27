@@ -10,14 +10,28 @@ last_reviewed: "2026-09"
 notes:
   - >
     GATE cutoffs differ widely by institute, department, paper and year; the
-    bands below describe a competitive profile for top-5 IITs in popular
+    bands below describe a competitive profile for top IITs in popular
     departments and are indicative only.
+  - >
+    Anchored on published COAP 2025 closing scores. IIT (BHU) Computer Science
+    closed at 772 (GEN), 721 (OBC-NCL) and 569 (SC) for the AI specialisation,
+    and 757 / 706 / 564 for IoT. The older IITs run higher than this in CSE, so
+    a score near 800 is what the top band describes.
   - >
     Graduates of IITs with CPI >= 8.0 are exempt from GATE at many IITs; the
     missing-GATE check is therefore a warning, not a hard fail.
 sources:
-  - COAP / CCMT admission brochures (eligibility and GATE validity)
-  - Individual IIT M.Tech admission pages
+  - >-
+    IIT Guwahati, M.Tech eligibility (CPI 6.0 / 60%, relaxed 0.5 / 5% for
+    SC/ST/PwD): https://iitg.ac.in/acad/admission/master/eligibility.php
+  - >-
+    IIT Delhi CSE, M.Tech shortlisting criteria 2025 (60% / GPA 6.0 GEN-EWS,
+    55% / 5.5 SC-ST-PH):
+    https://www.cse.iitd.ac.in/~rjaiswal/mtech/2025/MTech-shortlisting-2025.pdf
+  - >-
+    IIT (BHU), GATE cutoff scores for M.Tech admission through COAP 2025:
+    https://www.iitbhu.ac.in/contents/institute/admin/doc/mtech_admission_through_coap25_gate_cuttoff_scores.pdf
+  - "COAP / CCMT admission brochures (GATE score validity: 3 years)"
 
 inputs:
   - {id: reservation_category, label: Reservation category, type: choice, options: [GEN, EWS, OBC-NCL, SC, ST]}
@@ -117,13 +131,16 @@ eligibility:
   - id: min_cgpa
     label: Minimum UG CGPA
     feature: academics.ug_cgpa
-    min: 6.5
+    min: 6.0
     adjust:
       - {input: reservation_category, in: [SC, ST], delta: -0.5}
       - {input: pwbd, equals: true, delta: -0.5}
     adjust_mode: largest
     message: UG CGPA {value} is below the {limit} minimum for your category.
-    note: Commonly 6.5 CGPA / 60% (GEN, EWS, OBC-NCL) and 6.0 / 55% (SC, ST, PwBD). Verify with the institute.
+    note: >-
+      IIT Guwahati, IIT Delhi and IIT Bombay publish CPI 6.0 / 60% for GEN, EWS and
+      OBC-NCL, relaxed by 0.5 CPI / 5% for SC, ST and PwD. IIT Kanpur is lower still
+      (5.5 / 55%). This is the floor to be considered, not a competitive score.
   - id: min_pct
     label: Minimum UG percentage
     feature: academics.ug_pct

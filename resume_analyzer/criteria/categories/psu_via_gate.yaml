@@ -17,7 +17,12 @@ notes:
     their own or the university's conversion formula.
   - Most PSUs accept only the GATE score of the notified year.
 sources:
-  - Individual PSU recruitment notifications through GATE
+  - >-
+    IOCL, Recruitment of Engineers/Officers through GATE (minimum marks 65.00%
+    GEN/EWS/OBC-NCL and 55.00% SC/ST/PwBD; upper age 26 for GEN/EWS; current-year
+    GATE only):
+    https://iocl.com/admin/img/UploadedFiles/LatestJobOpening/Files/ff4f416adeb64f218a13592917f3af95.pdf
+  - Individual PSU recruitment notifications through GATE (thresholds vary by PSU)
 
 inputs:
   - {id: date_of_birth, label: Date of birth, type: date, feature: candidate.date_of_birth}
@@ -124,7 +129,10 @@ eligibility:
     adjust_mode: largest
     level: warn
     message: UG marks ~{value}% are below the {limit}% minimum used by many PSUs for your category.
-    note: Varies by PSU (commonly 60-65% GEN/OBC/EWS, 55% or pass for SC/ST/PwBD).
+    note: >-
+      IOCL's GATE recruitment advertisement sets 65.00% for General, EWS and
+      OBC-NCL and 55.00% for SC, ST and PwBD, which is what these numbers follow.
+      Other PSUs vary; some use 60%. Rounding up is explicitly not allowed.
   - id: max_age
     label: Upper age limit (typical)
     feature: candidate.age
@@ -136,7 +144,10 @@ eligibility:
     adjust_mode: sum
     level: warn
     message: Age {value} exceeds the typical {limit}-year limit for your category.
-    note: Varies by PSU (commonly 26-30 for GEN) with standard relaxations.
+    note: >-
+      26 for General and EWS, with +3 for OBC-NCL, +5 for SC and ST and +10 for
+      PwBD, matching the date-of-birth table in IOCL's advertisement. Other PSUs
+      differ; check the notification for the post.
 
 ats: {expected_sections: [education, projects], max_pages: 2, filename_role: PSU_GET, linkedin_expected: false}
 

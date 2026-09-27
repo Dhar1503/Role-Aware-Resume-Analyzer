@@ -14,6 +14,13 @@ notes:
     any single company's internal process.
   - Thresholds are indicative and meant to be tuned; edit this file, not code.
 
+sources:
+  - >-
+    TCS All India NQT eligibility - the one publicly documented floor for mass
+    recruiters (60% aggregate in class 10, 12 and graduation; no pending backlog
+    at the time of the selection process):
+    https://www.tcs.com/careers/india/tcs-all-india-nqt-hiring
+
 subscores:
   coding:       {label: DSA & Competitive Coding,     weight: 0.30}
   projects:     {label: Projects,                     weight: 0.22}
@@ -234,7 +241,11 @@ eligibility:
     min: 7.0
     level: warn
     message: CGPA {value} is below the {limit} cutoff many campus drives use.
-    note: Cutoffs vary by company and drive (often 6.0-8.0).
+    note: >-
+      Product companies do not publish CGPA bars, so 7.0 is a stated convention for
+      these drives rather than a documented rule - it is a warning, never an
+      eligibility fact. The mass-recruiter floor IS documented: TCS requires 60%
+      (about CGPA 6.0) across class 10, 12 and graduation, with no pending backlog.
   - id: backlogs
     label: No active backlogs
     feature: academics.active_backlogs
