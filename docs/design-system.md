@@ -7,16 +7,20 @@ template should invent a colour, a radius or a pixel gap of its own.
 ## 1. The idea
 
 The product reads a document and tells you an uncomfortable truth about it. The interface
-should feel like an **instrument**, not a form: dark, precise, and confident, with colour
-used only where it carries meaning.
+should feel like an **instrument**, not a form: bright, precise and optimistic, with
+colour used only where it carries meaning.
 
-So: a deep navy canvas lit by a soft gradient mesh, content floating on translucent glass
+So: a warm cream canvas lit by a soft gradient mesh, content floating on frosted white
 panels, one vivid signature gradient, and a strict colour language for scores.
 
-**Texture language: glass on a gradient mesh.** One language, used everywhere. No flat
-blocks, no skeuomorphic depth, no mixing. Panels are `--surface` (a translucent slate) with
-a hairline `--line` border and a soft shadow; the canvas behind them carries three fixed
-radial blooms that never scroll.
+**Texture language: frosted panels on a gradient mesh.** One language, used everywhere. No
+flat blocks, no skeuomorphic depth, no mixing. Panels are `--surface` (translucent white)
+with a hairline `--line` border and a soft warm-tinted shadow; the canvas behind them
+carries three fixed radial blooms that never scroll.
+
+The canvas is deliberately **not** `#FFFFFF`. Stark white reads as clinical and glares next
+to the signature gradient; a warm cream keeps the page bright without that, and makes the
+white panels register as raised surfaces rather than as the page itself.
 
 ## 2. Colour
 
@@ -24,31 +28,39 @@ radial blooms that never scroll.
 
 | Token | Value | Use |
 |---|---|---|
-| `--bg` | `#080B16` | Page canvas, under the mesh |
-| `--bg-mesh-a/b/c` | violet / pink / cyan blooms | Fixed radial gradients on `body::before` |
-| `--surface` | `rgba(19, 24, 43, .72)` | Panels, glass |
-| `--surface-2` | `rgba(255, 255, 255, .045)` | Wells: inputs, evidence, code |
-| `--surface-3` | `rgba(255, 255, 255, .08)` | Hover wells, track fills |
-| `--line` | `rgba(255, 255, 255, .10)` | Hairline borders |
-| `--line-strong` | `rgba(255, 255, 255, .18)` | Focused / hovered borders |
-| `--ink` | `#EEF1F8` | Primary text |
-| `--ink-2` | `#9AA6BF` | Secondary text |
-| `--ink-3` | `#6B7691` | Tertiary, captions, table headers |
+| `--bg` | `#FDF9F4` | Warm cream page canvas, under the mesh |
+| mesh blooms | violet / pink / amber | Fixed radial gradients on `body::before` |
+| `--surface` | `rgba(255, 255, 255, .86)` | Panels, frosted white |
+| `--surface-2` | `rgba(38, 28, 62, .045)` | Wells: inputs, evidence, code |
+| `--surface-3` | `rgba(38, 28, 62, .085)` | Hover wells, track fills |
+| `--line` | `rgba(38, 28, 62, .12)` | Hairline borders |
+| `--line-strong` | `rgba(38, 28, 62, .26)` | Focused / hovered borders |
+| `--ink` | `#1E1830` | Primary text — **14.9:1** on `--bg` |
+| `--ink-2` | `#57506E` | Secondary text — **7.0:1** |
+| `--ink-3` | `#6E6685` | Tertiary, captions, table headers — **5.2:1** |
 
-This is a **single-mode dark interface**. There is no light theme: two themes means two
-sets of screenshots to verify and twice the surface for a contrast mistake to hide in.
-Print is the exception — `@media print` flips to black on white, because a report someone
-prints should not empty an ink cartridge.
+The ink colours are chosen for light, not inverted from the previous dark set. A palette
+that reads well as light-on-dark goes muddy when flipped, because the eye tolerates far
+less contrast loss against a bright background.
+
+This is a **single light theme**. There is no dark mode: two themes means two sets of
+screenshots to verify and twice the surface for a contrast mistake to hide in. Print is the
+exception — `@media print` drops to plain black on white.
 
 ### Signature gradient
 
 ```css
---signature: linear-gradient(120deg, #A78BFA 0%, #F472B6 52%, #FF9F6B 100%);
+--signature: linear-gradient(120deg, #7C3AED 0%, #DB2777 52%, #EA580C 100%);
 ```
 
-Violet → pink → warm amber. Used for: the brand mark, the primary button, the hero
-headline's emphasised clause, and the thin rule under section eyebrows. Nowhere else —
-a gradient that appears on every surface stops being a signature.
+Violet → pink → orange. Used for: the brand mark, the primary button, the hero headline's
+emphasised clause, the numbered step markers on the two forms, and the thin rule under
+section eyebrows. Nowhere else — a gradient that appears on every surface stops being a
+signature.
+
+These stops are deeper than the dark theme's pastel version of the same ramp. Against cream
+a pastel gradient washes out; against black it glowed. The gradient now carries **white**
+text on the primary button, where the dark theme used near-black.
 
 ### Score dimensions
 
@@ -57,26 +69,39 @@ its card icon, its section heading, and the source tag on any improvement it sug
 
 | Dimension | Token | Hue |
 |---|---|---|
-| Overall match | `--dim-overall` | `#A78BFA` violet |
-| Strength | `--dim-strength` | `#F472B6` pink |
-| ATS compatibility | `--dim-ats` | `#22D3EE` cyan |
-| Job-description fit | `--dim-jd` | `#A3E635` lime |
+| Overall match | `--dim-overall` | `#7C3AED` violet |
+| Strength | `--dim-strength` | `#DB2777` pink |
+| ATS compatibility | `--dim-ats` | `#0E7490` cyan |
+| Job-description fit | `--dim-jd` | `#4D7C0F` lime |
 
-Dimension hue is always used **quietly**: as a glyph colour on a 12%-alpha tile of the same
-hue, or as a 1px rule. It identifies; it does not shout.
+Dimension hue is always used **quietly**: as a glyph colour on a ~13%-alpha tile of the
+same hue, or as a thin rule. It identifies; it does not shout.
+
+Each is a darkened version of the dark theme's hue, because these are used as *glyph and
+label colours against white*. The old cyan `#22D3EE` and lime `#A3E635` were right on
+black and are close to illegible on cream.
 
 ### Score bands
 
 Quality is a separate axis from identity. Bands colour the **arcs, the bars and the band
 pill** — the things that say *how good is this number*.
 
-| Band | Token | Range |
-|---|---|---|
-| Excellent | `--band-excellent` `#2EE6A8` | ≥ 85 |
-| Strong | `--band-strong` `#7EE787` | ≥ 70 |
-| Fair | `--band-fair` `#F5C451` | ≥ 55 |
-| Weak | `--band-weak` `#FF9A5A` | ≥ 35 |
-| Poor | `--band-poor` `#FF6B6B` | < 35 |
+Each band has **two** variants, and confusing them is the single easiest way to break a
+light theme:
+
+| Band | Fill (`--band-*`) | Ink (`--band-*-ink`) | Range |
+|---|---|---|---|
+| Excellent | `#0D9488` | `#0F766E` | ≥ 85 |
+| Strong | `#16A34A` | `#15803D` | ≥ 70 |
+| Fair | `#D97706` | `#B45309` | ≥ 55 |
+| Weak | `#EA580C` | `#C2410C` | ≥ 35 |
+| Poor | `#DC2626` | `#B91C1C` | < 35 |
+
+The **fill** variant colours large shapes — score arcs, breakdown bars, the group progress
+rule — where saturation reads as energy. The **ink** variant colours small text — band
+pills, status pills, score numerals, the status column of the keyword table — where the
+requirement is ≥ 4.5:1 against white, not mere visibility. A `.band-*` class sets both
+`--band` and `--band-ink`, so each component takes whichever its job needs.
 
 **Why two axes.** A score card carries both: the arc is band-coloured, so a weak ATS score
 looks alarming whatever dimension it belongs to, while the icon tile is dimension-coloured,
@@ -110,13 +135,17 @@ the webfont one at headline size.
 Scale, all `rem`, all tokens:
 
 ```
---t-xs: .75rem    captions, table headers, pills
---t-sm: .8125rem  secondary copy, hints
---t-base: .9375rem body
---t-md: 1.0625rem lede
---t-lg: 1.375rem  card headings
---t-xl: 1.875rem  page headings
+--t-xs: .78rem    captions, table headers, pills
+--t-sm: .875rem   secondary copy, hints
+--t-base: 1rem    body
+--t-md: 1.125rem  lede
+--t-lg: 1.4rem    card headings
+--t-xl: 1.95rem   page headings
 ```
+
+The scale sits one notch above the dark theme's. 15px body was thin for a page this
+text-dense, and dark-on-light wants marginally more size to read as comfortably as
+light-on-dark did.
 
 The hero headline is the one size outside the scale: `clamp(1.95rem, 3.5vw, 2.7rem)`, so it
 fills a desktop column without swallowing the first screen on a phone.
@@ -147,7 +176,7 @@ Polish, not noise. Every animation is ≤ 900ms, eased, and runs **once** on loa
 
 | Interaction | Behaviour |
 |---|---|
-| Score arcs | `stroke-dashoffset` animates from empty to the value over 900ms, staggered 90ms per card |
+| Score arcs | `stroke-dashoffset` animates from empty to the value over 900ms, staggered 90ms per card. The glow is a soft drop-shadow; the dark theme's bloom only worked against black |
 | Score numerals | Count up from 0, `requestAnimationFrame`, same duration as the arc |
 | Breakdown bars | Width grows from 0 on load |
 | Cards | `translateY(-2px)` + `--shadow-lift` on hover, 180ms |

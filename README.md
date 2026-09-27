@@ -28,9 +28,9 @@ matches a pasted job description. Every number shows the line of the resume it c
 ## Before / after
 
 The first version worked but looked like a form with a title on top of it, so I rebuilt the
-interface around a documented design system rather than patching it: a dark canvas under a
-gradient mesh, glass panels, one signature gradient, a fixed hue per score dimension and a
-separate five-step scale for score bands. The rules live in
+interface around a documented design system rather than patching it: a warm cream canvas
+under a gradient mesh, frosted panels, one signature gradient, a fixed hue per score
+dimension and a separate five-step scale for score bands. The rules live in
 [docs/design-system.md](docs/design-system.md).
 
 **Landing page**
@@ -144,9 +144,10 @@ does not become a Class X percentage.
 
 ## Screenshots
 
-The interface is a single dark theme: glass panels over a gradient mesh, one signature
-gradient, a fixed hue per score dimension and a separate five-step colour scale for score
-bands. The tokens, type pairing, motion rules and the no-JavaScript contract are written
+The interface is a single light theme: frosted panels on a warm cream canvas lit by a
+gradient mesh, one signature gradient, a fixed hue per score dimension and a separate
+five-step colour scale for score bands, each with a saturated *fill* variant for arcs and
+bars and a darker *ink* variant for small text. The tokens, type pairing, motion rules and the no-JavaScript contract are written
 down in [docs/design-system.md](docs/design-system.md).
 
 | ATS report | Job-description fit |
